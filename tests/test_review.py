@@ -1,18 +1,19 @@
 import html
 
-from flowjudge.data import load_pilot
 from flowjudge.review import generate_review_page
 
 
-def test_review_page_contains_every_scenario_and_annotation(tmp_path) -> None:
+def test_review_page_is_compact_and_reports_mapping_validation_and_examples(tmp_path) -> None:
     output = generate_review_page(tmp_path / "pilot_review.html")
     rendered = html.unescape(output.read_text(encoding="utf-8"))
 
-    assert "FlowJudge pilot gold review" in rendered
-    for case in load_pilot():
-        assert case.scenario.scenario_id in rendered
-        assert case.scenario.units[0].text in rendered
-        for edge in case.gold.gold_relations:
-            assert edge.explanation in rendered
-        for hard_negative in case.gold.hard_negatives:
-            assert hard_negative.explanation in rendered
+    assert "FlowJudge benchmark conversion review" in rendered
+    assert "Explicit mapping rules" in rendered
+    assert "Automated validation" in rendered
+    assert "all source adus preserved" in rendered
+    assert "VivesDebate Debate1" in rendered
+    assert "VivesDebate Debate2" in rendered
+    assert "Dropped affordability argument" in rendered
+    assert "One rebuttal cross-applied to two claims" in rendered
+    assert "FlowJudge pilot gold review" not in rendered
+    assert len(rendered) < 100_000

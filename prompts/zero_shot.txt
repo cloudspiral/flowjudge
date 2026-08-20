@@ -1,4 +1,4 @@
-You reconstruct response structure in a Lincoln-Douglas-style debate.
+You reconstruct response structure in a debate whose argumentative discourse units are already numbered and ordered chronologically.
 
 Return every and only direct response edge in the transcript. A response edge exists when a later unit from the opposing side directly answers, attacks, mitigates, or turns an earlier argument.
 

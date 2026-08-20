@@ -8,8 +8,7 @@ from typing import Any, Iterable
 
 from pydantic import ValidationError
 
-from .data import eligible_response_pairs
-from .schemas import Category, JudgeAssessment, PilotCase, RelationGraph
+from .schemas import BenchmarkCase, JudgeAssessment, RelationGraph
 
 EdgeKey = tuple[str, str, str]
 
@@ -49,7 +48,7 @@ def graph_edges(graph: RelationGraph | None) -> set[EdgeKey]:
     return {(edge.source, edge.target, edge.type) for edge in graph.relations}
 
 
-def score_records(cases: Iterable[PilotCase], records: list[dict[str, Any]]) -> dict[str, Any]:
+def score_records(cases: Iterable[BenchmarkCase], records: list[dict[str, Any]]) -> dict[str, Any]:
     case_by_id = {case.scenario.scenario_id: case for case in cases}
     category_accumulators: dict[str, _Accumulator] = defaultdict(_Accumulator)
     combination_accumulators: dict[str, _Accumulator] = defaultdict(_Accumulator)
@@ -62,22 +61,21 @@ def score_records(cases: Iterable[PilotCase], records: list[dict[str, Any]]) -> 
         predicted = graph_edges(parsed.graph)
         gold = graph_edges(case.graph())
         category = case.scenario.category.value
-        eligible = {
-            (source, target, "responds_to")
-            for source, target in eligible_response_pairs(case.scenario)
+        hard_negatives = {
+            (pair.source, pair.target, "responds_to")
+            for pair in case.gold.hard_negatives
         }
-        is_topical_nonresponse = case.scenario.category == Category.NONRESPONSIVE
         judge_attempted = "raw_judge_response" in record
         judge = parse_judge_assessment(record["raw_judge_response"]) if judge_attempted else None
 
-        overall.add(parsed.valid_json, predicted, gold, eligible, is_topical_nonresponse, judge_attempted, judge)
+        overall.add(parsed.valid_json, predicted, gold, hard_negatives, judge_attempted, judge)
         category_accumulators[category].add(
-            parsed.valid_json, predicted, gold, eligible, is_topical_nonresponse, judge_attempted, judge
+            parsed.valid_json, predicted, gold, hard_negatives, judge_attempted, judge
         )
         if all(field in record for field in ("provider", "model", "prompt")):
             combination = f'{record["provider"]}:{record["model"]}:{record["prompt"]}'
             combination_accumulators[combination].add(
-                parsed.valid_json, predicted, gold, eligible, is_topical_nonresponse, judge_attempted, judge
+                parsed.valid_json, predicted, gold, hard_negatives, judge_attempted, judge
             )
         if not (parsed.valid_json and predicted == gold):
             failures.append(
@@ -116,10 +114,8 @@ class _Accumulator:
         self.tp = 0
         self.fp = 0
         self.fn = 0
-        self.topical_assignments = 0
-        self.topical_assignments_with_fp = 0
-        self.topical_pair_fp = 0
-        self.topical_pair_candidates = 0
+        self.hard_negative_fp = 0
+        self.hard_negative_pairs = 0
         self.judge_assignments = 0
         self.judge_valid = 0
         self.judge_correct = 0
@@ -129,8 +125,7 @@ class _Accumulator:
         valid: bool,
         predicted: set[EdgeKey],
         gold: set[EdgeKey],
-        eligible: set[EdgeKey],
-        is_topical_nonresponse: bool,
+        hard_negatives: set[EdgeKey],
         judge_attempted: bool,
         judge: JudgeAssessment | None,
     ) -> None:
@@ -140,11 +135,8 @@ class _Accumulator:
         self.tp += len(predicted & gold)
         self.fp += len(predicted - gold)
         self.fn += len(gold - predicted)
-        if is_topical_nonresponse:
-            self.topical_assignments += 1
-            self.topical_assignments_with_fp += int(bool(predicted - gold))
-            self.topical_pair_fp += len((predicted - gold) & eligible)
-            self.topical_pair_candidates += len(eligible)
+        self.hard_negative_fp += len(predicted & hard_negatives)
+        self.hard_negative_pairs += len(hard_negatives)
         if judge_attempted:
             self.judge_assignments += 1
         if judge is not None:
@@ -168,11 +160,8 @@ class _Accumulator:
             "true_positive_edges": self.tp,
             "false_positive_edges": self.fp,
             "false_negative_edges": self.fn,
-            "topical_nonresponse_false_positive_rate": _divide(
-                self.topical_assignments_with_fp, self.topical_assignments
-            ),
-            "topical_nonresponse_pair_false_positive_rate": _divide(
-                self.topical_pair_fp, self.topical_pair_candidates
+            "annotated_hard_negative_false_positive_rate": _divide(
+                self.hard_negative_fp, self.hard_negative_pairs
             ),
             "fixed_judge_valid_json_rate": _divide(self.judge_valid, self.judge_assignments),
             "fixed_judge_correct_rate": _divide(self.judge_correct, self.judge_assignments),
@@ -188,7 +177,7 @@ def _edge_dict(edge: EdgeKey) -> dict[str, str]:
     return {"source": source, "target": target, "type": edge_type}
 
 
-def score_run(run_directory: Path, cases: Iterable[PilotCase]) -> dict[str, Any]:
+def score_run(run_directory: Path, cases: Iterable[BenchmarkCase]) -> dict[str, Any]:
     records_path = run_directory / "records.jsonl"
     records = [json.loads(line) for line in records_path.read_text(encoding="utf-8").splitlines() if line]
     summary = score_records(cases, records)

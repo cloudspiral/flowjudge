@@ -1,0 +1,27 @@
+{
+  "record_id": 6531487,
+  "doi": "10.5281/zenodo.6531487",
+  "concept_doi": "10.5281/zenodo.5145655",
+  "paper_doi": "10.3390/app11157160",
+  "version": "ver.3",
+  "published": "2022-05-09",
+  "retrieved": "2026-08-20",
+  "license": "CC BY-NC-SA 4.0",
+  "selected_language": "ADU_EN",
+  "selection_rule": "Debates 1 through 10 from the pinned VivesDebate version 3 release; each has a jury outcome and non-empty stance annotations for every ADU.",
+  "source_annotation_policy": "Preserve every valid RA/CA/MA target and retain malformed relation slots verbatim as structured issues without imputation.",
+  "selected_debates": [
+    {"debate_id": "Debate1", "file": "Debate1.csv", "md5": "45158cfc30c10c4665070fd97e9b7864"},
+    {"debate_id": "Debate2", "file": "Debate2.csv", "md5": "5a4d0bd7169ffba9818831d92bf19613"},
+    {"debate_id": "Debate3", "file": "Debate3.csv", "md5": "324212d836827341c7479e3a09c8556c"},
+    {"debate_id": "Debate4", "file": "Debate4.csv", "md5": "1288185a6f40fe60abd0e75d4afafc84"},
+    {"debate_id": "Debate5", "file": "Debate5.csv", "md5": "6a77347fec666bcea03da3ff7b494853"},
+    {"debate_id": "Debate6", "file": "Debate6.csv", "md5": "76979e7f68d7678e271f075ce828c1d2"},
+    {"debate_id": "Debate7", "file": "Debate7.csv", "md5": "8ddf3035222e468b586cbb6a3fff2d29"},
+    {"debate_id": "Debate8", "file": "Debate8.csv", "md5": "bd2a38ea2e39b744a88186a27ec4f8ea"},
+    {"debate_id": "Debate9", "file": "Debate9.csv", "md5": "47082b3602a30c7c72da185f92beaf00"},
+    {"debate_id": "Debate10", "file": "Debate10.csv", "md5": "789081eb05f6afbb1b27d734e965acba"}
+  ],
+  "evaluation_file": {"file": "VivesDebate_eval.csv", "md5": "3eca28fa7a2f5f177d15d5200165b420"},
+  "excluded_before_tenth_selection": []
+}

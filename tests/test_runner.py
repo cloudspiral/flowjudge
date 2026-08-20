@@ -1,6 +1,6 @@
 import pytest
 
-from flowjudge.data import load_pilot
+from flowjudge.data import load_benchmark
 from flowjudge.runner import (
     APPROVAL_PHRASE,
     ExperimentConfig,
@@ -22,7 +22,10 @@ def test_offline_dry_run_requires_no_keys_and_plans_exact_matrix(monkeypatch) ->
 
     manifest = dry_run_manifest()
 
-    assert manifest["pilot_scenarios"] == 12
+    assert manifest["benchmark_scenarios"] == 12
+    assert manifest["real_debates"] == 10
+    assert manifest["synthetic_scenarios"] == 2
+    assert manifest["total_units"] == 2944
     assert manifest["planned_primary_model_calls"] == 72
     assert manifest["planned_fixed_judge_calls"] == 72
     assert manifest["network_calls_made"] == 0
@@ -31,7 +34,7 @@ def test_offline_dry_run_requires_no_keys_and_plans_exact_matrix(monkeypatch) ->
 
 def test_assignment_matrix_is_two_providers_by_three_prompts_by_twelve_cases() -> None:
     config = ExperimentConfig("openai-key", "anthropic-key", "openai-model", "anthropic-model", "judge-model")
-    assignments = build_assignments(load_pilot(), config)
+    assignments = build_assignments(load_benchmark(), config)
 
     assert len(assignments) == 72
     assert len({assignment.assignment_id for assignment in assignments}) == 72

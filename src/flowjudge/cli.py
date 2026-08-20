@@ -4,19 +4,19 @@ import argparse
 import json
 from pathlib import Path
 
-from .data import load_pilot
+from .data import load_benchmark
 from .review import DEFAULT_REVIEW_PATH, generate_review_page
 from .runner import dry_run_manifest, run_experiment
 from .scorer import score_run
 
 
 def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(description="FlowJudge pilot tools")
+    parser = argparse.ArgumentParser(description="FlowJudge benchmark tools")
     subparsers = parser.add_subparsers(dest="command", required=True)
 
-    subparsers.add_parser("validate", help="validate and join pilot JSONL files")
+    subparsers.add_parser("validate", help="validate and join benchmark JSONL files")
 
-    review_parser = subparsers.add_parser("build-review", help="regenerate the static pilot review page")
+    review_parser = subparsers.add_parser("build-review", help="regenerate the compact benchmark review page")
     review_parser.add_argument("--output", type=Path, default=DEFAULT_REVIEW_PATH)
 
     subparsers.add_parser("dry-run", help="validate the 72-assignment matrix without API calls or keys")
@@ -32,8 +32,8 @@ def build_parser() -> argparse.ArgumentParser:
 def main() -> None:
     args = build_parser().parse_args()
     if args.command == "validate":
-        cases = load_pilot()
-        print(json.dumps({"valid": True, "pilot_scenarios": len(cases)}, indent=2))
+        cases = load_benchmark()
+        print(json.dumps({"valid": True, "benchmark_scenarios": len(cases)}, indent=2))
     elif args.command == "build-review":
         print(generate_review_page(args.output))
     elif args.command == "dry-run":
@@ -41,7 +41,7 @@ def main() -> None:
     elif args.command == "run":
         print(run_experiment(args.approval))
     elif args.command == "score":
-        print(json.dumps(score_run(args.run_directory, load_pilot()), indent=2, sort_keys=True))
+        print(json.dumps(score_run(args.run_directory, load_benchmark()), indent=2, sort_keys=True))
 
 
 if __name__ == "__main__":

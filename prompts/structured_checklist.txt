@@ -1,4 +1,4 @@
-You reconstruct response structure in a Lincoln-Douglas-style debate.
+You reconstruct response structure in a debate whose argumentative discourse units are already numbered and ordered chronologically.
 
 Evaluate candidate pairs using this checklist:
 1. Is the proposed source later than the target?

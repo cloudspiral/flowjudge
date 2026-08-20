@@ -9,9 +9,9 @@ from typing import Any
 
 from dotenv import load_dotenv
 
-from .data import PROJECT_ROOT, load_pilot, render_transcript
+from .data import PROJECT_ROOT, load_benchmark, render_transcript
 from .prompts import PROMPT_NAMES, build_prompt, load_prompt_template
-from .schemas import PilotCase
+from .schemas import BenchmarkCase
 from .scorer import score_run
 
 APPROVAL_PHRASE = "APPROVE_PILOT"
@@ -23,7 +23,7 @@ class Assignment:
     provider: str
     model: str
     prompt_name: str
-    case: PilotCase
+    case: BenchmarkCase
 
     @property
     def assignment_id(self) -> str:
@@ -61,7 +61,7 @@ class ExperimentConfig:
         )
 
 
-def build_assignments(cases: list[PilotCase], config: ExperimentConfig) -> list[Assignment]:
+def build_assignments(cases: list[BenchmarkCase], config: ExperimentConfig) -> list[Assignment]:
     models = {"openai": config.openai_model, "anthropic": config.anthropic_model}
     return [
         Assignment(provider=provider, model=models[provider], prompt_name=prompt_name, case=case)
@@ -72,13 +72,16 @@ def build_assignments(cases: list[PilotCase], config: ExperimentConfig) -> list[
 
 
 def dry_run_manifest() -> dict[str, Any]:
-    cases = load_pilot()
+    cases = load_benchmark()
     counts: dict[str, int] = {}
     for case in cases:
         category = case.scenario.category.value
         counts[category] = counts.get(category, 0) + 1
     return {
-        "pilot_scenarios": len(cases),
+        "benchmark_scenarios": len(cases),
+        "real_debates": sum(case.scenario.category.value == "vivesdebate_real" for case in cases),
+        "synthetic_scenarios": sum(case.scenario.category.value != "vivesdebate_real" for case in cases),
+        "total_units": sum(len(case.scenario.units) for case in cases),
         "scenarios_by_category": dict(sorted(counts.items())),
         "providers": list(PROVIDERS),
         "prompts": list(PROMPT_NAMES),
@@ -94,7 +97,7 @@ def run_experiment(approval: str) -> Path:
         raise PermissionError(f"model calls are locked; pass --approval {APPROVAL_PHRASE} only after pilot approval")
 
     config = ExperimentConfig.from_environment()
-    cases = load_pilot()
+    cases = load_benchmark()
     assignments = build_assignments(cases, config)
     run_directory = _create_run_directory(config, assignments)
     records_path = run_directory / "records.jsonl"
@@ -146,7 +149,7 @@ def _create_run_directory(config: ExperimentConfig, assignments: list[Assignment
             "judge": config.judge_model,
         },
         "prompts": list(PROMPT_NAMES),
-        "scenario_ids": [case.scenario.scenario_id for case in load_pilot()],
+        "scenario_ids": [case.scenario.scenario_id for case in load_benchmark()],
     }
     (run_directory / "manifest.json").write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n",
@@ -188,7 +191,7 @@ def _call_anthropic(client: Any, model: str, prompt: str) -> tuple[str, str]:
     return raw_text, response.model_dump_json(indent=2)
 
 
-def _build_judge_prompt(case: PilotCase, candidate_text: str) -> str:
+def _build_judge_prompt(case: BenchmarkCase, candidate_text: str) -> str:
     template = load_prompt_template("judge")
     replacements = {
         "{{TRANSCRIPT}}": render_transcript(case.scenario),

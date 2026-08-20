@@ -1,16 +1,15 @@
 from __future__ import annotations
 
-import json
 from pathlib import Path
 from typing import TypeVar
 
 from pydantic import BaseModel
 
-from .schemas import GoldBlueprint, PilotCase, Scenario, Side
+from .schemas import BenchmarkCase, GoldBlueprint, Scenario
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
-DEFAULT_SCENARIOS_PATH = PROJECT_ROOT / "data" / "pilot_scenarios.jsonl"
-DEFAULT_GOLD_PATH = PROJECT_ROOT / "data" / "pilot_gold.jsonl"
+DEFAULT_SCENARIOS_PATH = PROJECT_ROOT / "data" / "benchmark_scenarios.jsonl"
+DEFAULT_GOLD_PATH = PROJECT_ROOT / "data" / "benchmark_gold.jsonl"
 
 ModelT = TypeVar("ModelT", bound=BaseModel)
 
@@ -28,31 +27,31 @@ def _load_jsonl(path: Path, model: type[ModelT]) -> list[ModelT]:
     return rows
 
 
-def load_pilot(
+def load_benchmark(
     scenarios_path: Path = DEFAULT_SCENARIOS_PATH,
     gold_path: Path = DEFAULT_GOLD_PATH,
-) -> list[PilotCase]:
+) -> list[BenchmarkCase]:
     scenarios = _load_jsonl(scenarios_path, Scenario)
     blueprints = _load_jsonl(gold_path, GoldBlueprint)
     scenario_by_id = {scenario.scenario_id: scenario for scenario in scenarios}
     blueprint_by_id = {blueprint.scenario_id: blueprint for blueprint in blueprints}
 
     if len(scenario_by_id) != len(scenarios):
-        raise ValueError("duplicate scenario_id in pilot_scenarios.jsonl")
+        raise ValueError(f"duplicate scenario_id in {scenarios_path.name}")
     if len(blueprint_by_id) != len(blueprints):
-        raise ValueError("duplicate scenario_id in pilot_gold.jsonl")
+        raise ValueError(f"duplicate scenario_id in {gold_path.name}")
     if scenario_by_id.keys() != blueprint_by_id.keys():
         missing_gold = sorted(scenario_by_id.keys() - blueprint_by_id.keys())
         missing_scenarios = sorted(blueprint_by_id.keys() - scenario_by_id.keys())
-        raise ValueError(f"pilot files do not align: missing_gold={missing_gold}, missing_scenarios={missing_scenarios}")
+        raise ValueError(f"benchmark files do not align: missing_gold={missing_gold}, missing_scenarios={missing_scenarios}")
 
-    cases: list[PilotCase] = []
+    cases: list[BenchmarkCase] = []
     for scenario in scenarios:
         blueprint = blueprint_by_id[scenario.scenario_id]
         if scenario.category != blueprint.category:
             raise ValueError(f"category mismatch for {scenario.scenario_id}")
         _validate_annotations(scenario, blueprint)
-        cases.append(PilotCase(scenario=scenario, gold=blueprint))
+        cases.append(BenchmarkCase(scenario=scenario, gold=blueprint))
     return cases
 
 
@@ -66,9 +65,7 @@ def _validate_annotations(scenario: Scenario, blueprint: GoldBlueprint) -> None:
         seen_pairs.add(pair)
         if annotation.source not in unit_by_id or annotation.target not in unit_by_id:
             raise ValueError(f"unknown unit in annotated pair {pair} for {scenario.scenario_id}")
-        source_number = int(annotation.source[1:])
-        target_number = int(annotation.target[1:])
-        if source_number <= target_number:
+        if int(annotation.source[1:]) <= int(annotation.target[1:]):
             raise ValueError(f"response pair must point backward in {scenario.scenario_id}: {pair}")
 
     for edge in blueprint.gold_relations:

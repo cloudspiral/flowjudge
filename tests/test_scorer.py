@@ -1,6 +1,6 @@
 import json
 
-from flowjudge.data import load_pilot
+from flowjudge.data import load_benchmark
 from flowjudge.scorer import parse_prediction, score_records
 
 
@@ -19,7 +19,7 @@ def test_parse_prediction_is_strict_about_json_and_schema() -> None:
 
 
 def test_exact_gold_predictions_score_perfectly() -> None:
-    cases = load_pilot()
+    cases = load_benchmark()
     records = [
         _record(case, [edge.model_dump(exclude={"explanation"}) for edge in case.gold.gold_relations])
         for case in cases
@@ -32,27 +32,28 @@ def test_exact_gold_predictions_score_perfectly() -> None:
     assert summary["edge_precision"] == 1.0
     assert summary["edge_recall"] == 1.0
     assert summary["edge_f1"] == 1.0
-    assert summary["topical_nonresponse_false_positive_rate"] == 0.0
+    assert summary["annotated_hard_negative_false_positive_rate"] == 0.0
 
 
-def test_topical_nonresponse_false_positive_rate_is_assignment_level() -> None:
-    cases = [
-        case for case in load_pilot() if case.scenario.category.value == "topically_related_nonresponsive"
-    ]
+def test_annotated_hard_negative_false_positive_rate() -> None:
+    case = next(case for case in load_benchmark() if case.gold.hard_negatives)
+    hard_negative = case.gold.hard_negatives[0]
     records = [
-        _record(cases[0], [{"source": "U3", "target": "U1", "type": "responds_to"}]),
-        _record(cases[1], []),
+        _record(
+            case,
+            [{"source": hard_negative.source, "target": hard_negative.target, "type": "responds_to"}],
+        )
     ]
 
-    summary = score_records(cases, records)
+    summary = score_records([case], records)
 
-    assert summary["topical_nonresponse_false_positive_rate"] == 0.5
+    assert summary["annotated_hard_negative_false_positive_rate"] == 0.5
     assert summary["false_positive_edges"] == 1
-    assert summary["exact_graph_match_rate"] == 0.5
+    assert summary["exact_graph_match_rate"] == 0.0
 
 
 def test_invalid_output_counts_as_nonexact_and_misses_gold_edges() -> None:
-    case = next(case for case in load_pilot() if case.gold.gold_relations)
+    case = next(case for case in load_benchmark() if case.gold.gold_relations)
     records = [{"scenario_id": case.scenario.scenario_id, "raw_response": "not json"}]
 
     summary = score_records([case], records)
@@ -63,7 +64,7 @@ def test_invalid_output_counts_as_nonexact_and_misses_gold_edges() -> None:
 
 
 def test_model_prompt_and_fixed_judge_summaries_are_secondary() -> None:
-    case = load_pilot()[0]
+    case = load_benchmark()[0]
     record = _record(
         case,
         [edge.model_dump(exclude={"explanation"}) for edge in case.gold.gold_relations],

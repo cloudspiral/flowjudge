@@ -24,9 +24,16 @@ An edge exists only when a later, opposing-side unit directly answers, attacks,
 mitigates, or turns an earlier argument. Topical similarity, same-side
 extensions, repetition, and independent counterarguments are excluded.
 
-## Current status: revised benchmark review gate
+## Current status: pilot completed
 
-No model API calls have been made. The benchmark now contains:
+The approved pilot completed all 72 candidate assignments and 72 fixed-judge
+assessments. The primary exact graph-match rate was 2/72 (2.8%); no
+model/prompt combination exceeded 1/12. The full analysis and expansion
+recommendation are in [`docs/pilot_results.md`](docs/pilot_results.md). Every raw
+candidate response, judge response, and SDK envelope remains in the ignored
+local run directory `results/20260821T012454.328398Z/`.
+
+The benchmark contains:
 
 - one curated 6–12 ADU excerpt from each of Debates 1–10 in
   [VivesDebate version 3](https://doi.org/10.5281/zenodo.6531487), for 70 real
@@ -158,7 +165,7 @@ code fences, and invalid relation types. Deterministic scoring reports:
 Every approved run preserves its manifest, assignment records, candidate and
 judge text, complete SDK response envelopes, and summary under `results/`.
 
-## Decision rule
+## Decision rule and outcome
 
 If even a weak model/prompt combination gets at least 11 of 12 scenarios exactly
 correct with no recurring core failure, recommend killing the FlowJudge idea.
@@ -166,6 +173,12 @@ Otherwise, identify the repeated structural failure and decide whether it
 justifies training an SLM and expanding to a formal 30+ scenario ablation. This
 pilot supports a claim about beating inexpensive general-purpose baselines, not
 a claim that flagship frontier models are unreliable.
+
+The kill condition was not met. The observed recurring failures were temporal
+edge reversal, wrong target attachment, over-linking rephrases/extensions, and
+missing branching or cross-applied responses. The recommendation is to proceed
+to the 30+ scenario ablation while separating strict serialization compliance
+from normalized graph accuracy.
 
 ## Layout
 

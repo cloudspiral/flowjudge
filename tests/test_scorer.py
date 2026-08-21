@@ -90,5 +90,29 @@ def test_model_prompt_and_fixed_judge_summaries_are_secondary() -> None:
     combination = summary["by_model_prompt"]["openai:frontier-model:zero_shot"]
     assert combination["exact_graph_match_rate"] == 1.0
     assert summary["fixed_judge_valid_json_rate"] == 1.0
-    assert summary["fixed_judge_correct_rate"] == 1.0
+    assert summary["fixed_judge_assessed_correct_rate"] == 1.0
+    assert summary["fixed_judge_decision_agreement_rate"] == 1.0
+    assert summary["fixed_judge_edge_diagnosis_match_rate"] == 1.0
     assert summary["failure_cases"] == []
+
+
+def test_fixed_judge_agreement_is_not_the_same_as_saying_correct() -> None:
+    case = load_benchmark()[0]
+    record = _record(case, [])
+    record["raw_judge_response"] = json.dumps(
+        {
+            "assessment": "incorrect",
+            "missed_edges": [
+                {"source": edge.source, "target": edge.target}
+                for edge in case.gold.gold_relations
+            ],
+            "spurious_edges": [],
+            "brief_reason": "The candidate omits the gold response.",
+        }
+    )
+
+    summary = score_records([case], [record])
+
+    assert summary["fixed_judge_assessed_correct_rate"] == 0.0
+    assert summary["fixed_judge_decision_agreement_rate"] == 1.0
+    assert summary["fixed_judge_edge_diagnosis_match_rate"] == 1.0

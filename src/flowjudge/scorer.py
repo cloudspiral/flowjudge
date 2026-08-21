@@ -118,7 +118,9 @@ class _Accumulator:
         self.hard_negative_pairs = 0
         self.judge_assignments = 0
         self.judge_valid = 0
-        self.judge_correct = 0
+        self.judge_assessed_correct = 0
+        self.judge_decision_agreement = 0
+        self.judge_edge_diagnosis_match = 0
 
     def add(
         self,
@@ -141,7 +143,17 @@ class _Accumulator:
             self.judge_assignments += 1
         if judge is not None:
             self.judge_valid += 1
-            self.judge_correct += int(judge.assessment == "correct")
+            deterministic_correct = valid and predicted == gold
+            judge_says_correct = judge.assessment == "correct"
+            self.judge_assessed_correct += int(judge_says_correct)
+            self.judge_decision_agreement += int(judge_says_correct == deterministic_correct)
+            expected_missed = {(source, target) for source, target, _ in gold - predicted}
+            expected_spurious = {(source, target) for source, target, _ in predicted - gold}
+            judge_missed = {(pair.source, pair.target) for pair in judge.missed_edges}
+            judge_spurious = {(pair.source, pair.target) for pair in judge.spurious_edges}
+            self.judge_edge_diagnosis_match += int(
+                judge_missed == expected_missed and judge_spurious == expected_spurious
+            )
 
     def to_metrics(self) -> dict[str, int | float | None]:
         precision = _divide(self.tp, self.tp + self.fp)
@@ -164,7 +176,15 @@ class _Accumulator:
                 self.hard_negative_fp, self.hard_negative_pairs
             ),
             "fixed_judge_valid_json_rate": _divide(self.judge_valid, self.judge_assignments),
-            "fixed_judge_correct_rate": _divide(self.judge_correct, self.judge_assignments),
+            "fixed_judge_assessed_correct_rate": _divide(
+                self.judge_assessed_correct, self.judge_assignments
+            ),
+            "fixed_judge_decision_agreement_rate": _divide(
+                self.judge_decision_agreement, self.judge_assignments
+            ),
+            "fixed_judge_edge_diagnosis_match_rate": _divide(
+                self.judge_edge_diagnosis_match, self.judge_assignments
+            ),
         }
 
 

@@ -25,7 +25,7 @@ def generate_review_page(output_path: Path = DEFAULT_REVIEW_PATH) -> Path:
         _validation_row(name, value) for name, value in manifest["validation"].items()
     )
     debate_rows = "".join(_debate_row(item) for item in manifest["debates"])
-    examples = "".join(_example(case) for case in real_cases[:2])
+    examples = "".join(_example(case) for case in (real_cases[0], real_cases[7]))
     synthetic_rows = "".join(
         f"<tr><td>{_e(case.scenario.scenario_id)}</td><td>{_e(case.scenario.title)}</td>"
         f"<td>{len(case.scenario.units)}</td><td>{len(case.gold.gold_relations)}</td>"
@@ -56,29 +56,32 @@ def generate_review_page(output_path: Path = DEFAULT_REVIEW_PATH) -> Path:
     .stat {{ padding:.9rem; border-radius:9px; background:var(--wash); }} .stat strong {{ display:block; font-size:1.55rem; }}
     table {{ width:100%; border-collapse:collapse; font-size:.91rem; }} th,td {{ padding:.55rem; border:1px solid var(--line); text-align:left; vertical-align:top; }} th {{ background:var(--wash); }}
     .pass {{ background:var(--pass); }} .warn {{ background:var(--warn); }}
-    .examples {{ display:grid; grid-template-columns:1fr 1fr; gap:1rem; }} .example {{ padding:1rem; border:1px solid var(--line); border-radius:9px; }}
+    .examples {{ display:grid; grid-template-columns:1fr; gap:1rem; }} .example {{ padding:1rem; border:1px solid var(--line); border-radius:9px; }}
     .edge {{ margin:.7rem 0; padding:.7rem; border-left:4px solid #7a8792; background:var(--wash); }}
     .adu {{ margin:.3rem 0; padding:.55rem; border-radius:7px; }} .adu.aff {{ background:var(--aff); }} .adu.neg {{ background:var(--neg); }}
+    .adu details {{ margin-top:.35rem; color:var(--muted); }} .adu summary {{ cursor:pointer; }}
+    .check {{ padding:.8rem; border-left:5px solid #2f855a; background:var(--pass); }}
     code {{ font-family:ui-monospace,SFMono-Regular,monospace; }} a {{ color:#155d91; }}
-    @media(max-width:850px) {{ .stats,.examples {{ grid-template-columns:1fr 1fr; }} .wide {{ overflow-x:auto; }} }}
-    @media(max-width:560px) {{ .stats,.examples {{ grid-template-columns:1fr; }} }}
+    @media(max-width:850px) {{ .stats {{ grid-template-columns:1fr 1fr; }} .wide {{ overflow-x:auto; }} }}
+    @media(max-width:560px) {{ .stats {{ grid-template-columns:1fr; }} }}
   </style>
 </head>
 <body>
   <header>
     <h1>FlowJudge benchmark conversion review</h1>
-    <p>A compact provenance and validation report for 10 complete VivesDebate conversions plus two targeted synthetic cases. This page is not a case-by-case manual labeling queue.</p>
+    <p>A compact review of 10 readable VivesDebate excerpts plus two targeted synthetic cases. Original source IDs, annotations, multilingual ADUs, full relation graphs, and jury outcomes remain preserved.</p>
   </header>
   <main>
     <section>
-      <h2>What changed</h2>
+      <h2>What you need to check</h2>
+      <p class="check"><strong>Only spot-check the two examples below.</strong> Confirm that each excerpt is understandable as a short exchange and that each gold arrow is a genuine direct reply. You do not need to inspect all 10 debates or audit the source files.</p>
       <div class="stats">
         <div class="stat"><strong>{manifest['validation']['real_debate_count']}</strong>real debates</div>
-        <div class="stat"><strong>{manifest['validation']['source_adu_count']}</strong>preserved ADUs</div>
-        <div class="stat"><strong>{manifest['validation']['converted_source_relation_count']}</strong>valid source relations</div>
+        <div class="stat"><strong>{manifest['validation']['model_facing_real_unit_count']}</strong>readable excerpt ADUs</div>
+        <div class="stat"><strong>{manifest['validation']['converted_source_relation_count']}</strong>preserved source relations</div>
         <div class="stat"><strong>{manifest['validation']['gold_response_edge_count']}</strong>FlowJudge gold edges</div>
       </div>
-      <p class="muted">Source: <a href="https://doi.org/10.5281/zenodo.6531487">VivesDebate version 3 Zenodo release</a>, English machine-translation column <code>ADU_EN</code>, licensed CC BY-NC-SA 4.0. Jury results are preserved for every selected debate.</p>
+      <p class="muted">Source: <a href="https://doi.org/10.5281/zenodo.6531487">VivesDebate version 3 Zenodo release</a>, licensed CC BY-NC-SA 4.0. Model text is a curated English rendering from the clearer Spanish and Catalan fields. The original machine-translated English remains preserved and is visible under each example unit.</p>
     </section>
     <section>
       <h2>Explicit mapping rules</h2>
@@ -94,11 +97,11 @@ def generate_review_page(output_path: Path = DEFAULT_REVIEW_PATH) -> Path:
     </section>
     <section>
       <h2>Converted debate inventory</h2>
-      <div class="wide"><table><thead><tr><th>Debate</th><th>ADUs</th><th>RA / CA / MA</th><th>Issues</th><th>Gold responses</th><th>Jury winner</th></tr></thead><tbody>{debate_rows}</tbody></table></div>
+      <div class="wide"><table><thead><tr><th>Debate</th><th>Source / excerpt ADUs</th><th>Full RA / CA / MA</th><th>Internal relations</th><th>Gold responses</th><th>Jury winner</th></tr></thead><tbody>{debate_rows}</tbody></table></div>
     </section>
     <section>
-      <h2>Two representative converted examples</h2>
-      <p class="muted">Only a few mapped edges are shown here. The JSONL retains every ADU, all valid source relations, source issues, and complete jury metadata.</p>
+      <h2>Two representative complete excerpts</h2>
+      <p class="muted">These are exactly the topic labels and units the tested models receive. Each unit remains one original VivesDebate ADU; only its English rendering was repaired. Expand “Source text” only if you want to compare it with VivesDebate's Spanish and raw English.</p>
       <div class="examples">{examples}</div>
     </section>
     <section>
@@ -124,28 +127,37 @@ def _debate_row(item: dict[str, Any]) -> str:
     relations = item["source_relations_by_type"]
     relation_summary = f"{relations.get('inference', 0)} / {relations.get('conflict', 0)} / {relations.get('rephrase', 0)}"
     return (
-        f"<tr><td>{_e(item['debate_id'])}</td><td>{item['adu_count']}</td><td>{relation_summary}</td>"
-        f"<td>{item['source_annotation_issue_count']}</td><td>{item['flowjudge_response_edges']}</td>"
+        f"<tr><td>{_e(item['debate_id'])}</td><td>{item['source_adu_count']} / {item['excerpt_adu_count']}</td>"
+        f"<td>{relation_summary}</td><td>{item['excerpt_internal_source_relation_count']}</td>"
+        f"<td>{item['flowjudge_response_edges']}</td>"
         f"<td>{_e(item['jury_winner'])} (+{item['jury_margin']:.4f})</td></tr>"
     )
 
 
 def _example(case: Any) -> str:
     scenario = case.scenario
-    unit_by_id = {unit.id: unit for unit in scenario.units}
-    edges = case.gold.gold_relations[:3]
+    rendered_units = "".join(
+        f'<div class="adu {unit.side.value.lower()}"><strong>{_e(unit.id)} [{_e(unit.side.value)}]</strong> '
+        f'{_e(unit.text)}<details><summary>Source text</summary><div><strong>Spanish:</strong> {_e(unit.text_es)}</div>'
+        f'<div><strong>Raw ADU_EN:</strong> {_e(unit.text_en)}</div></details></div>'
+        for unit in scenario.units
+    )
     rendered_edges = "".join(
         f'<div class="edge"><strong>{_e(edge.source)} → {_e(edge.target)}</strong>'
-        f'<div class="adu {unit_by_id[edge.target].side.value.lower()}"><strong>{_e(edge.target)} [{_e(unit_by_id[edge.target].side.value)}]</strong> {_e(unit_by_id[edge.target].text)}</div>'
-        f'<div class="adu {unit_by_id[edge.source].side.value.lower()}"><strong>{_e(edge.source)} [{_e(unit_by_id[edge.source].side.value)}]</strong> {_e(unit_by_id[edge.source].text)}</div>'
-        f'<div class="muted">{_e(edge.explanation)}</div></div>'
-        for edge in edges
+        f'<div>{_e(edge.explanation)}</div></div>'
+        for edge in case.gold.gold_relations
+    )
+    rendered_negatives = "".join(
+        f'<li><strong>{_e(item.source)} → {_e(item.target)}</strong>: {_e(item.explanation)}</li>'
+        for item in case.gold.hard_negatives
     )
     jury = scenario.jury_outcome
     return (
         f'<article class="example"><h3>{_e(scenario.title)}</h3>'
-        f'<p>{len(scenario.units)} ADUs · {len(scenario.source_relations)} valid source relations · '
-        f'{len(scenario.source_annotation_issues)} source issues · jury: {_e(jury.winner)}</p>{rendered_edges}</article>'
+        f'<p>{len(scenario.units)} model-facing ADUs · complete source relation graph preserved · '
+        f'jury: {_e(jury.winner)}</p><h3>Complete transcript</h3>{rendered_units}'
+        f'<h3>Gold response arrows</h3>{rendered_edges}'
+        f'<h3>Important non-response pairs</h3><ul>{rendered_negatives}</ul></article>'
     )
 
 

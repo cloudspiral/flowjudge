@@ -1,0 +1,95 @@
+{
+  "method": "Curated English rendering from ADU_ES and ADU_CAT. Meaning and ADU boundaries are preserved; raw ADU_EN remains stored separately.",
+  "debates": {
+    "Debate1": {
+      "78": "That solidarity takes the form of an altruistic act.",
+      "79": "Its altruistic nature prevents any commercialization.",
+      "82": "Because the arrangement is altruistic, it does not violate anyone's dignity.",
+      "83": "Are you aware that founding a family is not the same as having descendants, especially when parents choose what those descendants will be like?",
+      "85": "But your side is opposing people's ability to found a family.",
+      "86": "People should be able to create a family through another route, such as surrogacy.",
+      "87": "Your position opposes individual freedom."
+    },
+    "Debate2": {
+      "144": "Don't you think legislation could create a more ethical arrangement?",
+      "145": "You still have not described any ethical arrangement.",
+      "146": "No contract can protect every woman.",
+      "147": "There has always been oppression based on gender, class, nationality, or social group.",
+      "148": "It is always wealthy people who travel to developing countries for these arrangements.",
+      "149": "Within developed countries, they turn to economically vulnerable people."
+    },
+    "Debate3": {
+      "145": "To ensure that women can access this practice freely, it must operate within a secure legal framework.",
+      "147": "Consider the analogy with organ donation.",
+      "148": "Rafael Matesanz, president of Spain's National Transplant Organization, also makes this analogy.",
+      "150": "Likewise, surrogacy can prohibit the buying and selling of babies while imposing strong safeguards.",
+      "151": "The arrangement can be guaranteed to be altruistic, as in the United Kingdom, Portugal, and Canada.",
+      "152": "How can a state that has lost sovereignty to globalization guarantee that the market will not swallow this practice?",
+      "153": "In a globalized world where states have lost sovereignty, how can they prevent the market from swallowing surrogacy?"
+    },
+    "Debate4": {
+      "93": "Prospective parents would not know the surrogate's personal characteristics.",
+      "94": "Should prospective parents' desire outweigh even the risk that one woman's dignity is violated?",
+      "95": "Her dignity would be protected by our public healthcare system.",
+      "96": "The current situation is what violates the rights of women in many countries.",
+      "97": "The earlier argument about abortion provides an analogy.",
+      "98": "After abortion was legalized, the number of abortions fell sharply."
+    },
+    "Debate5": {
+      "136": "You advocate regulating and legalizing surrogacy. Can you give examples of how to do it?",
+      "137": "Surrogacy should be legalized using models from Iceland, Canada, and South Africa.",
+      "138": "Iceland is the clearest example because its model reflects our principles.",
+      "139": "First, surrogacy should be legalized because it already exists.",
+      "140": "Without legalization, it can lead to human trafficking.",
+      "141": "Spain's Bioethics Committee and Deontology Committee provide guidelines for legalization.",
+      "142": "Isn't it dangerous to legalize every practice merely because it already exists?",
+      "143": "You are asking whether it is dangerous to legalize every existing practice."
+    },
+    "Debate6": {
+      "112": "Gammy is a child born through surrogacy in Thailand.",
+      "113": "Thailand is a country with no regulation of surrogacy.",
+      "114": "Gammy had a twin sister.",
+      "116": "Gammy was born with Down syndrome.",
+      "118": "The intended parents were from Australia and traveled to Thailand.",
+      "119": "When they saw that Gammy had Down syndrome, they took the baby born without a disability back to Australia.",
+      "120": "Gammy remained in Thailand with her surrogate mother.",
+      "130": "Thailand currently has no regulation, but it previously did and surrogacy was legal.",
+      "131": "That case is precisely why Thailand prohibited it.",
+      "132": "The information you are giving is completely false.",
+      "133": "We have evidence that Thailand has no regulation of surrogacy."
+    },
+    "Debate7": {
+      "76": "A state could educate people not to use drugs.",
+      "77": "Realistically, it could also teach them how to consume drugs more safely.",
+      "78": "During its public festivals, Bilbao promoted a harm-reduction campaign explaining how cocaine users could reduce nasal damage.",
+      "79": "Officials recognized an existing reality.",
+      "80": "Young people in the Basque Country, and many older people, were using cocaine.",
+      "81": "Education does not rule out prohibition.",
+      "82": "If the state legalizes the practice, it becomes complicit in this abuse."
+    },
+    "Debate8": {
+      "206": "Surrogacy should be legalized with limits and controls, and it should be altruistic and anonymous.",
+      "207": "This is our model, and it could be implemented immediately.",
+      "208": "Are you aware that altruistic surrogacy is not analogous to altruistic organ donation? Most organ donations come from people who consented while alive but are deceased when the donation occurs.",
+      "209": "Did you know that living organ donation also exists?",
+      "210": "We propose a workable model that preserves anonymity and prohibits profit.",
+      "211": "It therefore falls outside the market logic that concerns your side."
+    },
+    "Debate9": {
+      "195": "You have acknowledged that surrogacy would be commercial. Commercial arrangements impose obligations through a contract.",
+      "196": "Are you aware that adoption also involves a contract? Does that mean adoptive parents are buying a baby?",
+      "197": "We strongly support adoption.",
+      "198": "In a surrogacy contract, the obligation is transferred before the child is born.",
+      "199": "In other words, money is exchanged under a contract.",
+      "200": "That is not what happens in adoption."
+    },
+    "Debate10": {
+      "251": "You want to open another avenue through which women will be systematically mistreated by an exploitative system.",
+      "252": "Where would that exploitation occur under a rule-of-law system that guarantees women's dignity and physical integrity?",
+      "253": "I do not see how you can guarantee a woman's integrity through a system that exploits her.",
+      "256": "Wouldn't it be hypocritical to ban surrogacy in Spain while allowing people to obtain it under worse conditions abroad?",
+      "257": "Spain cannot regulate what happens outside its borders.",
+      "258": "We should not legalize in Spain everything that another country happens to permit."
+    }
+  }
+}

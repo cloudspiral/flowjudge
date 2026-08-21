@@ -1,0 +1,252 @@
+[
+  {
+    "debate_id": "Debate1",
+    "title": "Family formation and individual freedom",
+    "source_unit_ids": [78, 79, 82, 83, 85, 86, 87],
+    "gold_edges": [
+      {
+        "source_id": 85,
+        "target_id": 83,
+        "explanation": "U85 directly turns U83's distinction between founding a family and choosing descendants into a charge that the opposition is denying people the opportunity to form a family."
+      }
+    ],
+    "hard_negatives": [
+      {
+        "source_id": 83,
+        "target_id": 82,
+        "explanation": "U83 introduces a distinction about family formation and descendants; it does not answer U82's separate dignity claim."
+      }
+    ]
+  },
+  {
+    "debate_id": "Debate2",
+    "title": "Whether regulation can make surrogacy ethical",
+    "source_unit_ids": [144, 145, 146, 147, 148, 149],
+    "gold_edges": [
+      {
+        "source_id": 145,
+        "target_id": 144,
+        "explanation": "U145 directly rejects U144's suggestion that legislation can create an ethical arrangement by saying none has been described."
+      },
+      {
+        "source_id": 146,
+        "target_id": 144,
+        "explanation": "U146 directly attacks U144's proposed legislative solution by arguing that no contract can protect every woman."
+      }
+    ],
+    "hard_negatives": [
+      {
+        "source_id": 149,
+        "target_id": 148,
+        "explanation": "U149 continues U148's same-side point by adding economically vulnerable people within developed countries; it is not an opposing response."
+      }
+    ]
+  },
+  {
+    "debate_id": "Debate3",
+    "title": "Can legal safeguards resist global markets?",
+    "source_unit_ids": [145, 147, 148, 150, 151, 152, 153],
+    "gold_edges": [
+      {
+        "source_id": 152,
+        "target_id": 145,
+        "explanation": "U152 challenges whether the secure legal framework promised by U145 can work when global markets constrain state power."
+      },
+      {
+        "source_id": 152,
+        "target_id": 150,
+        "explanation": "U152 directly attacks U150's proposed ban and safeguards by asking how the state can prevent market capture."
+      },
+      {
+        "source_id": 152,
+        "target_id": 151,
+        "explanation": "U152 directly disputes U151's assurance of altruism by arguing that global market pressure may consume the practice."
+      }
+    ],
+    "hard_negatives": [
+      {
+        "source_id": 153,
+        "target_id": 152,
+        "explanation": "U153 rephrases the same-side challenge in U152; it does not answer it."
+      }
+    ]
+  },
+  {
+    "debate_id": "Debate4",
+    "title": "Protecting dignity through public regulation",
+    "source_unit_ids": [93, 94, 95, 96, 97, 98],
+    "gold_edges": [
+      {
+        "source_id": 95,
+        "target_id": 94,
+        "explanation": "U95 directly answers U94's dignity-risk objection by asserting that the public system would protect the surrogate's dignity."
+      },
+      {
+        "source_id": 96,
+        "target_id": 94,
+        "explanation": "U96 turns U94's dignity objection by arguing that the unregulated status quo is what violates women's rights."
+      }
+    ],
+    "hard_negatives": [
+      {
+        "source_id": 98,
+        "target_id": 97,
+        "explanation": "U98 is a same-side evidentiary extension of U97's abortion analogy, not a response."
+      }
+    ]
+  },
+  {
+    "debate_id": "Debate5",
+    "title": "Does an existing practice justify legalization?",
+    "source_unit_ids": [136, 137, 138, 139, 140, 141, 142, 143],
+    "gold_edges": [
+      {
+        "source_id": 142,
+        "target_id": 139,
+        "explanation": "U142 directly attacks U139's existence-based justification by asking whether every existing practice should therefore be legalized."
+      }
+    ],
+    "hard_negatives": [
+      {
+        "source_id": 143,
+        "target_id": 142,
+        "explanation": "U143 merely restates U142's question and supplies no answer or attack."
+      },
+      {
+        "source_id": 140,
+        "target_id": 139,
+        "explanation": "U140 is a same-side extension offering another reason for legalization, not a response to U139."
+      }
+    ]
+  },
+  {
+    "debate_id": "Debate6",
+    "title": "Disputing the evidence from Thailand",
+    "source_unit_ids": [112, 113, 114, 116, 118, 119, 120, 130, 131, 132, 133],
+    "gold_edges": [
+      {
+        "source_id": 130,
+        "target_id": 113,
+        "explanation": "U130 directly qualifies U113's claim that Thailand has no surrogacy regulation by explaining that the country previously allowed the practice under regulation."
+      },
+      {
+        "source_id": 132,
+        "target_id": 130,
+        "explanation": "U132 directly denies the factual account of Thailand given in U130."
+      },
+      {
+        "source_id": 132,
+        "target_id": 131,
+        "explanation": "U132 directly denies U131's claim that the cited case caused Thailand to prohibit surrogacy."
+      }
+    ],
+    "hard_negatives": [
+      {
+        "source_id": 133,
+        "target_id": 132,
+        "explanation": "U133 is a same-side elaboration of U132's factual denial, not a response to it."
+      }
+    ]
+  },
+  {
+    "debate_id": "Debate7",
+    "title": "Education, harm reduction, and prohibition",
+    "source_unit_ids": [76, 77, 78, 79, 80, 81, 82],
+    "gold_edges": [
+      {
+        "source_id": 81,
+        "target_id": 76,
+        "explanation": "U81 directly mitigates U76's education alternative by arguing that education and prohibition can coexist."
+      }
+    ],
+    "hard_negatives": [
+      {
+        "source_id": 77,
+        "target_id": 76,
+        "explanation": "U77 is a same-side harm-reduction extension of U76, not an opposing response."
+      }
+    ]
+  },
+  {
+    "debate_id": "Debate8",
+    "title": "The analogy between surrogacy and organ donation",
+    "source_unit_ids": [206, 207, 208, 209, 210, 211],
+    "gold_edges": [
+      {
+        "source_id": 208,
+        "target_id": 206,
+        "explanation": "U208 directly attacks U206's altruistic model by arguing that the organ-donation analogy does not apply."
+      },
+      {
+        "source_id": 209,
+        "target_id": 208,
+        "explanation": "U209 directly answers U208's deceased-donor distinction by pointing out that living organ donation also exists."
+      }
+    ],
+    "hard_negatives": [
+      {
+        "source_id": 207,
+        "target_id": 206,
+        "explanation": "U207 is a same-side assertion that the proposed model is feasible, not a response to U206."
+      }
+    ]
+  },
+  {
+    "debate_id": "Debate9",
+    "title": "Contracts in surrogacy and adoption",
+    "source_unit_ids": [195, 196, 197, 198, 199, 200],
+    "gold_edges": [
+      {
+        "source_id": 196,
+        "target_id": 195,
+        "explanation": "U196 directly challenges U195's contract argument by comparing it with adoption contracts."
+      },
+      {
+        "source_id": 200,
+        "target_id": 196,
+        "explanation": "U200 directly rejects U196's analogy by stating that adoption does not involve the same transaction."
+      }
+    ],
+    "hard_negatives": [
+      {
+        "source_id": 200,
+        "target_id": 199,
+        "explanation": "Although VivesDebate marks conflict, U199 and U200 belong to the same side, so U200 cannot be a FlowJudge response edge."
+      }
+    ]
+  },
+  {
+    "debate_id": "Debate10",
+    "title": "Exploitation at home and regulation abroad",
+    "source_unit_ids": [251, 252, 253, 256, 257, 258],
+    "gold_edges": [
+      {
+        "source_id": 252,
+        "target_id": 251,
+        "explanation": "U252 directly challenges U251's exploitation claim by asking where exploitation would occur under enforceable public safeguards."
+      },
+      {
+        "source_id": 253,
+        "target_id": 252,
+        "explanation": "U253 directly answers U252 by arguing that safeguards cannot preserve integrity within an inherently exploitative system."
+      },
+      {
+        "source_id": 257,
+        "target_id": 256,
+        "explanation": "U257 directly answers U256's hypocrisy objection by denying that Spain can regulate conduct outside its borders."
+      },
+      {
+        "source_id": 258,
+        "target_id": 256,
+        "explanation": "U258 directly attacks U256's cross-border argument by rejecting the principle that Spain should legalize everything allowed elsewhere."
+      }
+    ],
+    "hard_negatives": [
+      {
+        "source_id": 253,
+        "target_id": 251,
+        "explanation": "U253 extends U251's same-side exploitation position; it answers U252, not U251."
+      }
+    ]
+  }
+]

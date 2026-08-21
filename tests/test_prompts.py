@@ -8,6 +8,7 @@ def test_all_candidate_prompts_render_every_scenario() -> None:
             prompt = build_prompt(prompt_name, case.scenario)
             assert "{{TRANSCRIPT}}" not in prompt
             assert case.scenario.resolution in prompt
+            assert case.scenario.title in prompt
             assert case.scenario.units[-1].text in prompt
 
 

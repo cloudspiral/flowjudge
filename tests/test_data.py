@@ -24,7 +24,10 @@ def test_benchmark_has_ten_real_and_two_targeted_synthetic_scenarios() -> None:
         Category.SYNTHETIC_DROPPED: 1,
         Category.SYNTHETIC_CROSS_APPLICATION: 1,
     }
-    assert sum(len(case.scenario.units) for case in cases if case.scenario.category == Category.VIVESDEBATE) == 2932
+    real_cases = [case for case in cases if case.scenario.category == Category.VIVESDEBATE]
+    assert sum(len(case.scenario.units) for case in real_cases) == 70
+    assert all(6 <= len(case.scenario.units) <= 12 for case in real_cases)
+    assert all(case.gold.hard_negatives for case in real_cases)
 
 
 def test_source_manifest_checksums_match_unchanged_csvs() -> None:
@@ -37,23 +40,37 @@ def test_source_manifest_checksums_match_unchanged_csvs() -> None:
         assert digest == item["md5"]
 
 
-def test_every_vives_adu_preserves_source_id_order_stance_and_text() -> None:
+def test_every_selected_vives_adu_preserves_source_fields_and_uses_reviewed_english() -> None:
     source_dir = PROJECT_ROOT / "data" / "source" / "vivesdebate"
+    blueprints = json.loads(
+        (PROJECT_ROOT / "data" / "curation" / "vives_excerpt_blueprints.json").read_text(encoding="utf-8")
+    )
+    reviewed = json.loads(
+        (PROJECT_ROOT / "data" / "curation" / "vives_reviewed_english.json").read_text(encoding="utf-8")
+    )["debates"]
+    blueprint_by_debate = {item["debate_id"]: item for item in blueprints}
     real_cases = [case for case in load_benchmark() if case.scenario.category == Category.VIVESDEBATE]
 
     for case in real_cases:
         scenario = case.scenario
         with (source_dir / scenario.source.source_file).open(encoding="utf-8", newline="") as handle:
             rows = list(csv.DictReader(handle))
-        assert len(rows) == len(scenario.units)
-        for row, unit in zip(rows, scenario.units, strict=True):
+        rows_by_id = {int(row["ID (Chronological)"]): row for row in rows}
+        expected_ids = blueprint_by_debate[scenario.source.debate_id]["source_unit_ids"]
+        assert scenario.source.excerpt_source_ids == expected_ids
+        assert [unit.source_id for unit in scenario.units] == expected_ids
+        assert scenario.source.selected_language == "CURATED_EN"
+        assert scenario.source.model_text_method == "manually_curated_from_ADU_ES_and_ADU_CAT"
+        for unit in scenario.units:
+            row = rows_by_id[unit.source_id]
             source_id = int(row["ID (Chronological)"])
             stance = row["TEAM STANCE"].upper()
             assert unit.id == f"U{source_id}"
             assert unit.source_id == source_id
             assert unit.source_stance.value == stance
             assert unit.side == (Side.AFF if stance == "FAVOUR" else Side.NEG)
-            assert unit.text == row["ADU_EN"] == unit.text_en
+            assert unit.text == reviewed[scenario.source.debate_id][str(source_id)]
+            assert unit.text_en == row["ADU_EN"]
             assert unit.text_ca == row["ADU_CAT"]
             assert unit.text_es == row["ADU_ES"]
             assert unit.phase == (row["TYPE (Part + Person)"] or None)
@@ -68,6 +85,8 @@ def test_real_gold_is_exactly_opposite_stance_conflict_oriented_later_to_earlier
         expected = set()
         for relation in case.scenario.source_relations:
             if relation.type != SourceRelationType.CONFLICT:
+                continue
+            if relation.source not in unit_by_id or relation.target not in unit_by_id:
                 continue
             if unit_by_id[relation.source].side == unit_by_id[relation.target].side:
                 continue
@@ -87,7 +106,7 @@ def test_every_valid_raw_relation_target_is_preserved_and_malformed_slots_are_ex
             reader = csv.DictReader(handle)
             rows = list(reader)
             fieldnames = reader.fieldnames or []
-        unit_ids = {unit.id for unit in scenario.units}
+        unit_ids = {f'U{int(row["ID (Chronological)"])}' for row in rows}
         relation_slots = []
         for field in fieldnames:
             match = re.fullmatch(r"RELATED ID(?:\.([0-9]+))?", field)
@@ -146,11 +165,19 @@ def test_manifest_accounts_for_source_defects_without_imputation() -> None:
     manifest = json.loads((PROJECT_ROOT / "data" / "benchmark_manifest.json").read_text(encoding="utf-8"))
     validation = manifest["validation"]
 
-    assert validation["all_source_adus_preserved"] is True
+    assert validation["all_source_adus_preserved_in_raw_files"] is True
+    assert validation["all_selected_adus_preserve_raw_multilingual_text"] is True
+    assert validation["all_selected_adus_have_curated_english"] is True
+    assert validation["all_curation_json_keys_unique"] is True
+    assert validation["all_real_excerpts_have_6_to_12_adus"] is True
+    assert validation["all_real_excerpts_have_hard_negatives"] is True
+    assert validation["all_source_relations_preserved"] is True
     assert validation["all_source_relation_slots_accounted_for"] is True
     assert validation["all_gold_edges_later_and_cross_stance"] is True
     assert validation["all_jury_outcomes_present"] is True
     assert validation["source_annotation_issue_count"] == 1
+    assert validation["source_adu_count"] == 2932
+    assert validation["model_facing_real_unit_count"] == 70
     assert sum(
         len(case.scenario.source_annotation_issues)
         for case in load_benchmark()

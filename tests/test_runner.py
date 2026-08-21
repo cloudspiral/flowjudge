@@ -25,7 +25,7 @@ def test_offline_dry_run_requires_no_keys_and_plans_exact_matrix(monkeypatch) ->
     assert manifest["benchmark_scenarios"] == 12
     assert manifest["real_debates"] == 10
     assert manifest["synthetic_scenarios"] == 2
-    assert manifest["total_units"] == 2944
+    assert manifest["total_units"] == 82
     assert manifest["planned_primary_model_calls"] == 72
     assert manifest["planned_fixed_judge_calls"] == 72
     assert manifest["network_calls_made"] == 0

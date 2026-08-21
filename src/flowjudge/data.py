@@ -83,6 +83,6 @@ def eligible_response_pairs(scenario: Scenario) -> set[tuple[str, str]]:
 
 
 def render_transcript(scenario: Scenario) -> str:
-    lines = [f"Resolution: {scenario.resolution}"]
+    lines = [f"Resolution: {scenario.resolution}", f"Excerpt topic: {scenario.title}"]
     lines.extend(f"{unit.id} [{unit.side.value}]: {unit.text}" for unit in scenario.units)
     return "\n".join(lines)

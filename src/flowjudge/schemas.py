@@ -69,7 +69,17 @@ class SourceProvenance(StrictModel):
     source_md5: str = Field(pattern=r"^[0-9a-f]{32}$")
     source_doi: Literal["10.5281/zenodo.6531487"]
     license: Literal["CC BY-NC-SA 4.0"]
-    selected_language: Literal["ADU_EN"]
+    selected_language: Literal["CURATED_EN"]
+    model_text_method: Literal["manually_curated_from_ADU_ES_and_ADU_CAT"]
+    excerpt_source_ids: list[int] = Field(min_length=6, max_length=12)
+    blueprint_file: str = Field(min_length=1)
+    translation_file: str = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def validate_excerpt_ids(self) -> "SourceProvenance":
+        if self.excerpt_source_ids != sorted(set(self.excerpt_source_ids)):
+            raise ValueError("excerpt source IDs must be unique and chronological")
+        return self
 
 
 class JuryScore(StrictModel):
@@ -119,21 +129,18 @@ class Scenario(StrictModel):
         unit_numbers = [int(unit.id[1:]) for unit in self.units]
         if unit_numbers != sorted(set(unit_numbers)):
             raise ValueError("unit ids must be unique and strictly chronological")
-        unit_ids = {unit.id for unit in self.units}
-        for relation in self.source_relations:
-            if relation.source not in unit_ids or relation.target not in unit_ids:
-                raise ValueError(f"source relation references unknown unit: {relation.source}->{relation.target}")
-
         if self.category == Category.VIVESDEBATE:
             if self.source is None or self.jury_outcome is None:
                 raise ValueError("VivesDebate scenarios require source provenance and jury outcome")
+            if self.source.excerpt_source_ids != [unit.source_id for unit in self.units]:
+                raise ValueError("source excerpt IDs must exactly match the model-facing units")
             expected_side = {SourceStance.FAVOUR: Side.AFF, SourceStance.AGAINST: Side.NEG}
             for unit in self.units:
                 if unit.source_id != int(unit.id[1:]):
                     raise ValueError(f"source id mismatch for {unit.id}")
                 if unit.source_stance is None or unit.side != expected_side[unit.source_stance]:
                     raise ValueError(f"stance mapping mismatch for {unit.id}")
-                if unit.text != unit.text_en or not all((unit.text_ca, unit.text_es, unit.text_en)):
+                if not all((unit.text_ca, unit.text_es, unit.text_en)):
                     raise ValueError(f"VivesDebate text metadata is incomplete for {unit.id}")
         elif (
             self.source is not None

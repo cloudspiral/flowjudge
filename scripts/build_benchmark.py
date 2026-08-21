@@ -29,6 +29,9 @@ SOURCE_MANIFEST_PATH = SOURCE_DIR / "manifest.json"
 SCENARIOS_PATH = PROJECT_ROOT / "data" / "benchmark_scenarios.jsonl"
 GOLD_PATH = PROJECT_ROOT / "data" / "benchmark_gold.jsonl"
 BENCHMARK_MANIFEST_PATH = PROJECT_ROOT / "data" / "benchmark_manifest.json"
+CURATION_DIR = PROJECT_ROOT / "data" / "curation"
+EXCERPT_BLUEPRINTS_PATH = CURATION_DIR / "vives_excerpt_blueprints.json"
+REVIEWED_ENGLISH_PATH = CURATION_DIR / "vives_reviewed_english.json"
 
 RESOLUTION = "Should surrogacy be legalised?"
 RELATION_TYPES = {
@@ -40,7 +43,17 @@ SIDE_BY_STANCE = {SourceStance.FAVOUR: "AFF", SourceStance.AGAINST: "NEG"}
 
 
 def main() -> None:
-    source_manifest = json.loads(SOURCE_MANIFEST_PATH.read_text(encoding="utf-8"))
+    source_manifest = _load_json_without_duplicate_keys(SOURCE_MANIFEST_PATH)
+    excerpt_blueprints = _load_json_without_duplicate_keys(EXCERPT_BLUEPRINTS_PATH)
+    reviewed_english = _load_json_without_duplicate_keys(REVIEWED_ENGLISH_PATH)
+    blueprint_by_debate = {item["debate_id"]: item for item in excerpt_blueprints}
+    if len(blueprint_by_debate) != len(excerpt_blueprints):
+        raise ValueError("duplicate debate_id in excerpt blueprints")
+    expected_debates = {item["debate_id"] for item in source_manifest["selected_debates"]}
+    if set(blueprint_by_debate) != expected_debates:
+        raise ValueError("excerpt blueprints must cover exactly the selected debates")
+    if set(reviewed_english["debates"]) != expected_debates:
+        raise ValueError("reviewed English must cover exactly the selected debates")
     _verify_file(SOURCE_DIR / source_manifest["evaluation_file"]["file"], source_manifest["evaluation_file"]["md5"])
     jury_by_debate = _load_jury_outcomes(SOURCE_DIR / source_manifest["evaluation_file"]["file"])
 
@@ -55,6 +68,8 @@ def main() -> None:
             selection["debate_id"],
             selection["md5"],
             jury_by_debate[selection["debate_id"]],
+            blueprint_by_debate[selection["debate_id"]],
+            reviewed_english["debates"][selection["debate_id"]],
         )
         scenarios.append(scenario)
         blueprints.append(blueprint)
@@ -91,6 +106,8 @@ def _convert_debate(
     debate_id: str,
     source_md5: str,
     jury_outcome: JuryOutcome,
+    excerpt_blueprint: dict[str, Any],
+    reviewed_text: dict[str, str],
 ) -> tuple[Scenario, GoldBlueprint, dict[str, Any]]:
     with source_path.open(encoding="utf-8", newline="") as handle:
         reader = csv.DictReader(handle)
@@ -102,9 +119,21 @@ def _convert_debate(
     ids = [int(row["ID (Chronological)"]) for row in rows]
     if ids != sorted(set(ids)):
         raise ValueError(f"{source_path.name} IDs are not unique and chronological")
+    row_by_id = {int(row["ID (Chronological)"]): row for row in rows}
+    selected_ids = excerpt_blueprint["source_unit_ids"]
+    if not 6 <= len(selected_ids) <= 12:
+        raise ValueError(f"{debate_id} excerpt must contain 6-12 ADUs")
+    if selected_ids != sorted(set(selected_ids)):
+        raise ValueError(f"{debate_id} excerpt IDs must be unique and chronological")
+    if not set(selected_ids).issubset(row_by_id):
+        raise ValueError(f"{debate_id} excerpt references an unknown ADU")
+    if {int(source_id) for source_id in reviewed_text} != set(selected_ids):
+        raise ValueError(f"{debate_id} reviewed English must exactly match the excerpt IDs")
+
     relation_slots = _relation_slots(fieldnames)
     units: list[Unit] = []
-    for row in rows:
+    for source_id in selected_ids:
+        row = row_by_id[source_id]
         source_id = int(row["ID (Chronological)"])
         stance_raw = row["TEAM STANCE"]
         if not stance_raw:
@@ -114,7 +143,7 @@ def _convert_debate(
             Unit(
                 id=f"U{source_id}",
                 side=SIDE_BY_STANCE[stance],
-                text=row["ADU_EN"],
+                text=reviewed_text[str(source_id)],
                 source_id=source_id,
                 phase=row["TYPE (Part + Person)"] or None,
                 argument_number=row["ARGUMENT NUMBER"] or None,
@@ -125,7 +154,7 @@ def _convert_debate(
             )
         )
 
-    unit_by_id = {unit.id: unit for unit in units}
+    all_unit_ids = {f"U{source_id}" for source_id in ids}
     source_relations: list[SourceRelation] = []
     source_annotation_issues: list[SourceAnnotationIssue] = []
     relation_counts: Counter[str] = Counter()
@@ -166,7 +195,7 @@ def _convert_debate(
             related_ids = _parse_related_ids(related_raw)
             for related_id in related_ids:
                 target = f"U{related_id}"
-                if target not in unit_by_id:
+                if target not in all_unit_ids:
                     source_annotation_issues.append(
                         SourceAnnotationIssue(
                             source=source,
@@ -193,7 +222,7 @@ def _convert_debate(
     scenario = Scenario(
         scenario_id=f"vives_{debate_id.lower()}",
         category=Category.VIVESDEBATE,
-        title=f"VivesDebate {debate_id}",
+        title=f"VivesDebate {debate_id}: {excerpt_blueprint['title']}",
         resolution=RESOLUTION,
         units=units,
         source=SourceProvenance(
@@ -203,35 +232,55 @@ def _convert_debate(
             source_md5=source_md5,
             source_doi="10.5281/zenodo.6531487",
             license="CC BY-NC-SA 4.0",
-            selected_language="ADU_EN",
+            selected_language="CURATED_EN",
+            model_text_method="manually_curated_from_ADU_ES_and_ADU_CAT",
+            excerpt_source_ids=selected_ids,
+            blueprint_file=str(EXCERPT_BLUEPRINTS_PATH.relative_to(PROJECT_ROOT)),
+            translation_file=str(REVIEWED_ENGLISH_PATH.relative_to(PROJECT_ROOT)),
         ),
         source_relations=source_relations,
         source_annotation_issues=source_annotation_issues,
         jury_outcome=jury_outcome,
     )
-    blueprint = _derive_gold(scenario)
+    blueprint = _derive_gold(scenario, excerpt_blueprint)
+    unit_by_id = {unit.id: unit for unit in units}
+    excerpt_unit_ids = set(unit_by_id)
+    source_side_by_id = {
+        f"U{source_id}": SIDE_BY_STANCE[SourceStance(row_by_id[source_id]["TEAM STANCE"].upper())]
+        for source_id in ids
+    }
     source_id_set = set(ids)
     missing_ids = sorted(set(range(min(ids), max(ids) + 1)) - source_id_set)
     cross_conflicts = sum(
         relation.type == SourceRelationType.CONFLICT
-        and unit_by_id[relation.source].side != unit_by_id[relation.target].side
+        and source_side_by_id[relation.source] != source_side_by_id[relation.target]
         for relation in source_relations
     )
     same_conflicts = sum(
         relation.type == SourceRelationType.CONFLICT
-        and unit_by_id[relation.source].side == unit_by_id[relation.target].side
+        and source_side_by_id[relation.source] == source_side_by_id[relation.target]
         for relation in source_relations
     )
     stats = {
         "debate_id": debate_id,
         "source_file": source_path.name,
         "source_md5": source_md5,
-        "adu_count": len(units),
+        "adu_count": len(rows),
+        "source_adu_count": len(rows),
+        "excerpt_adu_count": len(units),
         "first_source_id": min(ids),
         "last_source_id": max(ids),
         "missing_source_ids": missing_ids,
         "missing_phase_annotations": sum(unit.phase is None for unit in units),
         "source_relation_count": len(source_relations),
+        "excerpt_internal_source_relation_count": sum(
+            relation.source in excerpt_unit_ids and relation.target in excerpt_unit_ids
+            for relation in source_relations
+        ),
+        "excerpt_boundary_source_relation_count": sum(
+            (relation.source in excerpt_unit_ids) != (relation.target in excerpt_unit_ids)
+            for relation in source_relations
+        ),
         "source_relation_slot_count": len(source_relation_slots),
         "source_relations_by_type": dict(sorted(relation_counts.items())),
         "source_annotation_issue_count": len(source_annotation_issues),
@@ -247,11 +296,13 @@ def _convert_debate(
     return scenario, blueprint, stats
 
 
-def _derive_gold(scenario: Scenario) -> GoldBlueprint:
+def _derive_gold(scenario: Scenario, excerpt_blueprint: dict[str, Any]) -> GoldBlueprint:
     unit_by_id = {unit.id: unit for unit in scenario.units}
     evidence: dict[tuple[str, str], list[SourceRelation]] = defaultdict(list)
     for relation in scenario.source_relations:
         if relation.type != SourceRelationType.CONFLICT:
+            continue
+        if relation.source not in unit_by_id or relation.target not in unit_by_id:
             continue
         if unit_by_id[relation.source].side == unit_by_id[relation.target].side:
             continue
@@ -261,10 +312,21 @@ def _derive_gold(scenario: Scenario) -> GoldBlueprint:
         earlier = relation.target if source_number > target_number else relation.source
         evidence[(later, earlier)].append(relation)
 
+    configured_edges = {
+        (f"U{item['source_id']}", f"U{item['target_id']}"): item["explanation"]
+        for item in excerpt_blueprint["gold_edges"]
+    }
+    if set(evidence) != set(configured_edges):
+        raise ValueError(
+            f"{scenario.source.debate_id} curated gold does not exactly match internal opposing CA annotations: "
+            f"configured={sorted(configured_edges)} derived={sorted(evidence)}"
+        )
+
     explained_edges = []
-    for (later, earlier), relations in sorted(
-        evidence.items(), key=lambda item: (int(item[0][0][1:]), int(item[0][1][1:]))
+    for (later, earlier), explanation in sorted(
+        configured_edges.items(), key=lambda item: (int(item[0][0][1:]), int(item[0][1][1:]))
     ):
+        relations = evidence[(later, earlier)]
         original = ", ".join(
             f"{relation.source_label} {relation.source}->{relation.target}"
             for relation in relations
@@ -274,22 +336,27 @@ def _derive_gold(scenario: Scenario) -> GoldBlueprint:
                 "source": later,
                 "target": earlier,
                 "type": "responds_to",
-                "explanation": (
-                    f"Mapped from VivesDebate conflict annotation(s) {original}. The linked ADUs have opposing "
-                    f"stances; the FlowJudge mapping treats CA as symmetric and orients the edge from later "
-                    f"{later} to earlier {earlier}."
-                ),
+                "explanation": f"{explanation} Source basis: {original}.",
             }
         )
+    hard_negatives = [
+        HardNegative(
+            source=f"U{item['source_id']}",
+            target=f"U{item['target_id']}",
+            explanation=item["explanation"],
+        )
+        for item in excerpt_blueprint["hard_negatives"]
+    ]
     return GoldBlueprint(
         scenario_id=scenario.scenario_id,
         category=scenario.category,
         design_intent=(
-            "Complete VivesDebate debate converted without excerpting; gold responses are derived only from "
-            "opposite-stance CA conflict annotations."
+            "A readable 6-12 ADU excerpt selected from the source annotations before English polishing. "
+            "Gold responses are exactly the internal opposite-stance CA conflicts; original multilingual ADUs "
+            "and the debate's complete relation graph remain preserved as provenance."
         ),
         gold_relations=explained_edges,
-        hard_negatives=[],
+        hard_negatives=hard_negatives,
     )
 
 
@@ -455,6 +522,18 @@ def _verify_file(path: Path, expected_md5: str) -> None:
         raise ValueError(f"checksum mismatch for {path.name}: expected {expected_md5}, got {actual}")
 
 
+def _load_json_without_duplicate_keys(path: Path) -> Any:
+    def reject_duplicates(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        result: dict[str, Any] = {}
+        for key, value in pairs:
+            if key in result:
+                raise ValueError(f"duplicate JSON key {key!r} in {path}")
+            result[key] = value
+        return result
+
+    return json.loads(path.read_text(encoding="utf-8"), object_pairs_hook=reject_duplicates)
+
+
 def _write_jsonl(path: Path, models: list[Any]) -> None:
     rows = [
         json.dumps(model.model_dump(mode="json"), ensure_ascii=False, separators=(",", ":"))
@@ -470,8 +549,8 @@ def _build_benchmark_manifest(
 ) -> dict[str, Any]:
     real_cases = [case for case in cases if case.scenario.category == Category.VIVESDEBATE]
     synthetic_cases = [case for case in cases if case.scenario.category != Category.VIVESDEBATE]
-    source_units = sum(item["adu_count"] for item in debate_stats)
-    converted_units = sum(len(case.scenario.units) for case in real_cases)
+    source_units = sum(item["source_adu_count"] for item in debate_stats)
+    model_facing_units = sum(len(case.scenario.units) for case in real_cases)
     source_relations = sum(item["source_relation_count"] for item in debate_stats)
     converted_relations = sum(len(case.scenario.source_relations) for case in real_cases)
     source_relation_slots = sum(item["source_relation_slot_count"] for item in debate_stats)
@@ -496,22 +575,31 @@ def _build_benchmark_manifest(
         for edge in case.gold.gold_relations
     )
     return {
-        "benchmark_version": 2,
+        "benchmark_version": 3,
         "source": {
             "corpus": "VivesDebate",
             "doi": source_manifest["doi"],
             "paper_doi": source_manifest["paper_doi"],
             "license": source_manifest["license"],
-            "selected_language": source_manifest["selected_language"],
+            "raw_english_field": source_manifest["selected_language"],
+            "model_facing_language": "CURATED_EN",
+            "model_text_method": "manually_curated_from_ADU_ES_and_ADU_CAT",
             "selection_rule": source_manifest["selection_rule"],
+            "excerpt_selection_rule": (
+                "One self-contained 6-12 ADU exchange per selected debate, fixed from source CA annotations "
+                "before curated English was written; all original CSVs and complete relation graphs remain preserved."
+            ),
             "selected_debates": [item["debate_id"] for item in source_manifest["selected_debates"]],
             "excluded_before_tenth_selection": source_manifest["excluded_before_tenth_selection"],
         },
         "mapping": {
             "FAVOUR": "AFF",
             "AGAINST": "NEG",
-            "ADU_EN": "unit.text",
+            "ADU_EN": "preserved verbatim as unit.text_en; not used directly as model input",
+            "ADU_ES_and_ADU_CAT": "curated English rendering in unit.text with ADU boundaries unchanged",
             "chronological_ID": "unit.id as U<source ID>; gaps are preserved",
+            "excerpt_selection": "6-12 source ADUs per debate; source IDs and chronological order are preserved",
+            "excerpt_topic": "a human-written topic label is included as shared context; it does not alter any ADU",
             "RA": "preserved as source_relations[type=inference]; not mapped to responds_to",
             "MA": "preserved as source_relations[type=rephrase]; not mapped to responds_to",
             "CA_same_stance": "preserved as source_relations[type=conflict]; not mapped to responds_to",
@@ -523,10 +611,20 @@ def _build_benchmark_manifest(
             "real_debate_count": len(real_cases),
             "synthetic_scenario_count": len(synthetic_cases),
             "source_adu_count": source_units,
-            "converted_real_unit_count": converted_units,
-            "all_source_adus_preserved": source_units == converted_units,
+            "model_facing_real_unit_count": model_facing_units,
+            "all_source_adus_preserved_in_raw_files": True,
+            "all_real_excerpts_have_6_to_12_adus": all(
+                6 <= len(case.scenario.units) <= 12 for case in real_cases
+            ),
+            "all_selected_adus_preserve_raw_multilingual_text": all(
+                all((unit.text_ca, unit.text_es, unit.text_en)) for case in real_cases for unit in case.scenario.units
+            ),
+            "all_selected_adus_have_curated_english": all(
+                bool(unit.text.strip()) for case in real_cases for unit in case.scenario.units
+            ),
             "source_relation_count": source_relations,
             "converted_source_relation_count": converted_relations,
+            "all_source_relations_preserved": source_relations == converted_relations,
             "source_relation_slot_count": source_relation_slots,
             "converted_relation_slot_count": converted_relation_slots,
             "all_source_relation_slots_accounted_for": source_relation_slots == converted_relation_slots,
@@ -534,10 +632,12 @@ def _build_benchmark_manifest(
                 len(case.scenario.source_annotation_issues) for case in real_cases
             ),
             "all_selected_checksums_verified": True,
+            "all_curation_json_keys_unique": True,
             "all_source_ids_chronological": True,
             "all_stances_present": True,
             "all_jury_outcomes_present": all(case.scenario.jury_outcome is not None for case in real_cases),
             "all_gold_edges_later_and_cross_stance": all_edges_valid,
+            "all_real_excerpts_have_hard_negatives": all(case.gold.hard_negatives for case in real_cases),
             "gold_response_edge_count": sum(len(case.gold.gold_relations) for case in cases),
         },
         "debates": debate_stats,

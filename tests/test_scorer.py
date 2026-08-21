@@ -36,7 +36,7 @@ def test_exact_gold_predictions_score_perfectly() -> None:
 
 
 def test_annotated_hard_negative_false_positive_rate() -> None:
-    case = next(case for case in load_benchmark() if case.gold.hard_negatives)
+    case = next(case for case in load_benchmark() if len(case.gold.hard_negatives) == 2)
     hard_negative = case.gold.hard_negatives[0]
     records = [
         _record(

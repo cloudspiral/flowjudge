@@ -5,86 +5,115 @@
 The real-data benchmark is derived from the official
 [VivesDebate version 3 Zenodo release](https://doi.org/10.5281/zenodo.6531487), described
 in [Ruiz-Dolz et al. (2021)](https://doi.org/10.3390/app11157160). The corpus
-contains complete competitive debates on the resolution “Should surrogacy be
+contains competitive debates on the resolution “Should surrogacy be
 legalised?” The source license is CC BY-NC-SA 4.0.
 
-FlowJudge selects Debates 1–10 from the pinned version 3 release. All 10 have
-jury outcomes and a non-empty stance annotation for every ADU. Pinning the
-record DOI, rather than only the concept DOI, prevents silent source drift.
+FlowJudge uses Debates 1–10 from the pinned version 3 release. The unchanged
+debate CSVs and jury-evaluation CSV remain under `data/source/vivesdebate/`;
+their official MD5 checksums are recorded in the source manifest.
 
-The raw selected CSVs and jury evaluation CSV are retained unchanged under
-`data/source/vivesdebate/`. `manifest.json` records official MD5 checksums and
-the retrieval date. The converted benchmark uses the corpus-provided `ADU_EN`
-machine translation for model input while also preserving `ADU_CAT` and
-`ADU_ES` on every unit.
+The model-facing benchmark does not send an entire 198–371 ADU debate to a
+model. It uses one self-contained 6–12 ADU exchange from each debate and gives
+the model a short human-written topic label. This restores the short,
+manually reviewable task shape and prevents the evaluation from becoming
+primarily a test of poor machine translation and very-long-context search.
+
+## Curation order and audit trail
+
+The curation is split into two files so that relation labels are fixed before
+the model-facing wording:
+
+1. `data/curation/vives_excerpt_blueprints.json` fixes each debate's source ADU
+   IDs, CA-derived gold pairs, content-specific edge explanations, and important
+   hard-negative pairs.
+2. `data/curation/vives_reviewed_english.json` supplies a curated English
+   rendering of those already-selected ADUs using the clearer `ADU_ES` and
+   `ADU_CAT` fields.
+
+The converter requires the configured gold pairs to equal all internal,
+opposite-stance VivesDebate `CA` relations exactly. Changing the English cannot
+add or remove a gold edge. ADU boundaries, source IDs, chronological order, and
+stance are unchanged.
 
 ## Field mapping
 
 | VivesDebate field | FlowJudge field | Rule |
 |---|---|---|
-| `ID (Chronological)` | `units[].id` and `units[].source_id` | `N` becomes `UN`. Original gaps are retained; units remain sorted by source ID. |
-| `TEAM STANCE=FAVOUR` | `units[].side=AFF` | Canonical stance is also preserved as `source_stance=FAVOUR`. |
-| `TEAM STANCE=AGAINST` | `units[].side=NEG` | Canonical stance is also preserved as `source_stance=AGAINST`. |
-| `ADU_EN` | `units[].text` and `units[].text_en` | English model input; text is not rewritten. |
-| `ADU_CAT`, `ADU_ES` | `units[].text_ca`, `units[].text_es` | Preserved source language and Spanish machine translation. |
-| `TYPE (Part + Person)` | `units[].phase` | Preserved exactly, including source casing; blank source values remain null. |
+| `ID (Chronological)` | `units[].id` and `units[].source_id` | `N` becomes `UN`. Selected units stay in source order; original gaps remain gaps. |
+| `TEAM STANCE=FAVOUR` | `units[].side=AFF` | The original value remains in `source_stance`. |
+| `TEAM STANCE=AGAINST` | `units[].side=NEG` | The original value remains in `source_stance`. |
+| Curated English | `units[].text` | Model-facing text rendered from `ADU_ES` and `ADU_CAT` without merging or splitting ADUs. |
+| `ADU_EN` | `units[].text_en` | Original corpus machine translation, preserved verbatim but not used as model input. |
+| `ADU_CAT`, `ADU_ES` | `units[].text_ca`, `units[].text_es` | Preserved verbatim for provenance and review. |
+| Excerpt blueprint title | Prompt `Excerpt topic` | Human-written shared context; it does not merge, split, or replace any ADU. |
+| `TYPE (Part + Person)` | `units[].phase` | Preserved exactly; blank values remain null. |
 | `ARGUMENT NUMBER` | `units[].argument_number` | Preserved exactly; blank values remain null. |
 | `RA` | `source_relations[].type=inference` | Preserved but never converted to `responds_to`. |
 | `MA` | `source_relations[].type=rephrase` | Preserved but never converted to `responds_to`. |
-| `CA` | `source_relations[].type=conflict` | Preserved in its original source direction and casing. |
+| `CA` | `source_relations[].type=conflict` | Preserved in original source direction and casing. |
 | Jury evaluation rows | `jury_outcome` | Both stance scores and component scores are preserved; winner and margin are derived deterministically. |
 
-Some CSVs have multiple `RELATED ID` / `ARGUMENTAL RELATION TYPE` column pairs.
-The converter reads every pair and expands semicolon-separated target IDs into
-individual `source_relations` while retaining the originating column and raw
-relation label.
+Each real scenario retains its debate's complete valid RA/CA/MA graph as
+provenance, including relations whose endpoints fall outside the model-facing
+excerpt. Only relations with both endpoints inside the excerpt are eligible for
+gold derivation. This keeps the source annotations auditable without exposing
+out-of-context ADUs to the tested model.
 
 ## Gold response derivation
 
-FlowJudge derives a `responds_to` edge only when a valid VivesDebate `CA`
-relation links ADUs with opposing stances. The later chronological ADU becomes
-the FlowJudge source and the earlier ADU becomes the target.
+A `responds_to` edge exists only when a valid VivesDebate `CA` relation:
 
-This is a benchmark conversion convention: conflict is treated as symmetric for
-the purpose of temporal orientation. The original source direction remains in
-`source_relations`. Same-stance conflicts remain preserved but do not become
-FlowJudge responses. Inference and rephrase relations also remain preserved but
-do not become responses.
+- has both endpoints in the selected excerpt;
+- connects opposing stances; and
+- matches the prewritten excerpt blueprint.
 
-This mapping is intentionally conservative. It captures corpus-annotated direct
-conflict and does not claim that every possible natural-language answer,
-mitigation, or turn was annotated as `CA` by VivesDebate.
+The later chronological ADU becomes the FlowJudge source and the earlier ADU
+becomes the target. Treating `CA` as symmetric is only a temporal-orientation
+convention; the original direction remains in `source_relations`.
+
+Same-side conflicts, inference links, rephrases, and relations crossing the
+excerpt boundary never become response edges. Each excerpt also contains one or
+more explicitly explained hard negatives covering repetition, same-side
+extension, or an independent argument.
+
+## Curated-English boundary
+
+The curated English fixes grammar and supplies omitted function words when the
+Spanish or Catalan makes them clear. It does not merge ADUs, add warrants, add
+relation language, or rewrite a unit to make its gold edge easier. Raw Catalan,
+Spanish, and `ADU_EN` remain attached to every selected unit and appear in
+expandable sections on the review page.
+
+This is a curation layer, not a claim that the English text is an official
+VivesDebate translation. The original CSV is always the authoritative source.
 
 ## Malformed source annotations
 
 The selected source files contain one malformed relation slot: Debate7 U25 has
-an `RA` type but no related ID. This slot is retained verbatim in
-`source_annotation_issues` with:
-
-- source ADU;
-- source and type column names;
-- raw related-ID and relation-type strings;
-- a deterministic reason (`incomplete_pair`, `unknown_relation_type`, or
-  `unknown_target`).
-
-Malformed slots do not create source relations or gold edges. The converter does
-not repair or guess them. The unchanged CSV remains the ultimate source record.
+an `RA` type but no related ID. It remains verbatim in
+`source_annotation_issues` and creates no relation or gold edge. The converter
+does not repair or guess malformed annotations.
 
 ## Validation contract
 
-`scripts/build_benchmark.py` fails on checksum drift, duplicate or unsorted ADU
-IDs, missing selected stances, missing text, unrecognised valid relation labels,
-or relations to unknown units that are not captured as source issues. The
-generated `data/benchmark_manifest.json` reports:
+`scripts/build_benchmark.py` fails on checksum drift, duplicate JSON keys,
+duplicate or unordered source IDs, missing stance or multilingual text,
+incomplete curation coverage, an excerpt outside the 6–12 ADU limit, or any
+disagreement between configured gold and internal opposite-stance CA
+annotations.
 
-- selected-file checksum verification;
-- source and converted ADU counts;
-- source relation-slot accounting;
-- valid RA/CA/MA counts and malformed-slot counts;
-- chronological ID and stance checks;
-- jury outcome presence;
-- the invariant that every gold edge is later-to-earlier and cross-stance.
+The generated manifest and tests verify:
 
-The compact `docs/pilot_review.html` presents these checks, the per-debate
-inventory, and two representative converted examples. It deliberately does not
-ask a reviewer to inspect all 2,932 real ADUs manually.
+- all 2,932 source ADUs remain in unchanged checksum-verified CSVs;
+- all 2,842 valid source relations and every relation slot remain accounted for;
+- all 70 selected real ADUs preserve source ID, order, stance, phase, argument
+  number, and raw Catalan/Spanish/English text;
+- every real excerpt has 6–12 ADUs and at least one hard negative;
+- every gold edge is later-to-earlier, cross-stance, and backed by an internal
+  `CA` annotation;
+- all jury outcomes are preserved.
+
+`docs/pilot_review.html` shows the mapping, these automated checks, the excerpt
+inventory, and two complete representative transcripts. Manual review is
+limited to deciding whether the displayed gold arrows represent direct
+responses in understandable context.

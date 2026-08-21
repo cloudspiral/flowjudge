@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import json
 import os
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -14,7 +14,7 @@ from .prompts import PROMPT_NAMES, build_prompt, load_prompt_template
 from .schemas import BenchmarkCase
 from .scorer import score_run
 
-APPROVAL_PHRASE = "APPROVE_ABLATION"
+APPROVAL_PHRASE = "APPROVE_FRONTIER_ABLATION"
 PROVIDERS = ("openai", "anthropic")
 
 
@@ -116,13 +116,25 @@ def dry_run_manifest() -> dict[str, Any]:
     }
 
 
-def run_experiment(approval: str) -> Path:
+def run_experiment(
+    approval: str,
+    *,
+    openai_model: str | None = None,
+    anthropic_model: str | None = None,
+    judge_model: str | None = None,
+) -> Path:
     if approval != APPROVAL_PHRASE:
         raise PermissionError(
             f"model calls are locked; pass --approval {APPROVAL_PHRASE} only after formal benchmark approval"
         )
 
     config = ExperimentConfig.from_environment()
+    config = replace(
+        config,
+        openai_model=openai_model or config.openai_model,
+        anthropic_model=anthropic_model or config.anthropic_model,
+        judge_model=judge_model or config.judge_model,
+    )
     cases = load_benchmark()
     assignments = build_assignments(cases, config)
     run_directory = _create_run_directory(config, assignments)
@@ -224,6 +236,10 @@ def _build_judge_prompt(case: BenchmarkCase, candidate_text: str) -> str:
     replacements = {
         "{{TRANSCRIPT}}": render_transcript(case.scenario),
         "{{GOLD_GRAPH}}": case.graph().model_dump_json(),
+        "{{HARD_NEGATIVES}}": json.dumps(
+            [pair.model_dump() for pair in case.gold.hard_negatives],
+            ensure_ascii=False,
+        ),
         "{{CANDIDATE_GRAPH}}": candidate_text,
     }
     for marker, value in replacements.items():

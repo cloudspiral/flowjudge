@@ -204,9 +204,17 @@ class JudgePair(StrictModel):
 
 class JudgeAssessment(StrictModel):
     assessment: Literal["correct", "incorrect"]
+    spec_adherence: int | None = Field(default=None, ge=0, le=4)
+    robustness: int | None = Field(default=None, ge=0, le=4)
     missed_edges: list[JudgePair]
     spurious_edges: list[JudgePair]
     brief_reason: str = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def validate_rubric_scores(self) -> "JudgeAssessment":
+        if (self.spec_adherence is None) != (self.robustness is None):
+            raise ValueError("judge rubric scores must either both be present or both be absent")
+        return self
 
 
 class ExplainedRelation(Relation):

@@ -23,6 +23,9 @@ def build_parser() -> argparse.ArgumentParser:
 
     run_parser = subparsers.add_parser("run", help="run the approved online experiment")
     run_parser.add_argument("--approval", required=True, help="exact formal benchmark approval phrase")
+    run_parser.add_argument("--openai-model", help="override OPENAI_MODEL without editing .env")
+    run_parser.add_argument("--anthropic-model", help="override ANTHROPIC_MODEL without editing .env")
+    run_parser.add_argument("--judge-model", help="override JUDGE_MODEL without editing .env")
 
     score_parser = subparsers.add_parser("score", help="recompute deterministic metrics for a run")
     score_parser.add_argument("run_directory", type=Path)
@@ -39,7 +42,14 @@ def main() -> None:
     elif args.command == "dry-run":
         print(json.dumps(dry_run_manifest(), indent=2, sort_keys=True))
     elif args.command == "run":
-        print(run_experiment(args.approval))
+        print(
+            run_experiment(
+                args.approval,
+                openai_model=args.openai_model,
+                anthropic_model=args.anthropic_model,
+                judge_model=args.judge_model,
+            )
+        )
     elif args.command == "score":
         print(json.dumps(score_run(args.run_directory, load_benchmark()), indent=2, sort_keys=True))
 

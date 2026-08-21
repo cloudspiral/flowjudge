@@ -197,6 +197,9 @@ class _Accumulator:
         self.judge_edge_diagnosis_match = 0
         self.judge_normalized_decision_agreement = 0
         self.judge_normalized_edge_diagnosis_match = 0
+        self.judge_rubric_scored = 0
+        self.judge_spec_adherence_total = 0
+        self.judge_robustness_total = 0
 
     def add(
         self,
@@ -233,6 +236,10 @@ class _Accumulator:
             self.judge_assignments += 1
         if judge is not None:
             self.judge_valid += 1
+            if judge.spec_adherence is not None and judge.robustness is not None:
+                self.judge_rubric_scored += 1
+                self.judge_spec_adherence_total += judge.spec_adherence
+                self.judge_robustness_total += judge.robustness
             deterministic_correct = valid and predicted == gold
             judge_says_correct = judge.assessment == "correct"
             self.judge_assessed_correct += int(judge_says_correct)
@@ -342,6 +349,15 @@ class _Accumulator:
                 HardNegativePhenomenon.TOPICAL_NONRESPONSE.value
             ),
             "fixed_judge_valid_json_rate": _divide(self.judge_valid, self.judge_assignments),
+            "fixed_judge_rubric_score_rate": _divide(
+                self.judge_rubric_scored, self.judge_assignments
+            ),
+            "mean_spec_adherence": _divide(
+                self.judge_spec_adherence_total, self.judge_rubric_scored
+            ),
+            "mean_robustness": _divide(
+                self.judge_robustness_total, self.judge_rubric_scored
+            ),
             "fixed_judge_assessed_correct_rate": _divide(
                 self.judge_assessed_correct, self.judge_assignments
             ),

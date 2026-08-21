@@ -1,10 +1,11 @@
-# FlowJudge real-data hypothesis benchmark
+# FlowJudge response-graph specialization experiment
 
 FlowJudge tests whether small, inexpensive general-purpose models reliably
 reconstruct direct debate-response structure from chronologically ordered
 argumentative discourse units (ADUs). The immediate hypothesis is whether a
-future specialized SLM could outperform these weak baselines. This repository
-is an evaluation harness, not a fine-tuning project.
+future specialized SLM could outperform general-purpose baselines. The current
+repository contains the completed weak-baseline study and the assignment-ready
+frontier prompt-ceiling harness; fine-tuning has not started.
 
 The required prediction shape remains:
 
@@ -24,7 +25,10 @@ An edge exists only when a later, opposing-side unit directly answers, attacks,
 mitigates, or turns an earlier argument. Topical similarity, same-side
 extensions, repetition, and independent counterarguments are excluded.
 
-## Current status: formal ablation completed
+The locked, falsifiable behavior and fixed 0–4 judge rubric are in
+[`docs/behavior_spec.md`](docs/behavior_spec.md).
+
+## Current status: weak-baseline ablation completed
 
 The approved pilot completed all 72 candidate assignments and 72 fixed-judge
 assessments. The primary exact graph-match rate was 2/72 (2.8%); no
@@ -136,29 +140,44 @@ The converter verifies source checksums and deterministically regenerates:
 requests. The formal matrix is 32 scenarios × 2 providers × 3 prompts = 192
 planned primary model calls, followed by 192 fixed-judge calls.
 
-## Configuration for a later approved experiment
+## Frontier prompt-ceiling rerun
 
-Copy `.env.example` to `.env` and fill values only after benchmark approval:
+The completed Nano/Haiku run is useful hypothesis evidence, but it does not
+satisfy the course requirement to test two frontier model families. The next
+assignment-critical run uses 32 scenarios × 2 frontier providers × 3 prompts,
+with the fixed judge now returning explicit Spec-adherence and Robustness
+scores. Recommended current candidates are `gpt-5.6-sol` and `claude-opus-5`;
+the fixed judge remains `gpt-5.6-sol`.
+
+Copy `.env.example` to `.env` and add keys if they are not already present:
 
 ```dotenv
 OPENAI_API_KEY=
 ANTHROPIC_API_KEY=
-OPENAI_MODEL=
-ANTHROPIC_MODEL=
-JUDGE_MODEL=
+OPENAI_MODEL=gpt-5.6-sol
+ANTHROPIC_MODEL=claude-opus-5
+JUDGE_MODEL=gpt-5.6-sol
 ```
 
 `.env` is ignored by Git. The runner never logs keys. `JUDGE_MODEL` is called
 through the OpenAI SDK and remains fixed across assignments; deterministic graph
 comparison is primary.
 
-Any intentional rerun still requires the exact gate:
+The new paid rerun requires a new, explicit gate because it changes the
+candidate models and makes 192 candidate plus 192 judge calls. Model names can
+be overridden on the command line without changing `.env`:
 
 ```bash
-uv run flowjudge run --approval APPROVE_ABLATION
+uv run flowjudge run \
+  --approval APPROVE_FRONTIER_ABLATION \
+  --openai-model gpt-5.6-sol \
+  --anthropic-model claude-opus-5 \
+  --judge-model gpt-5.6-sol
 ```
 
-Do not run that command during benchmark review.
+Do not run that command without the exact approval phrase. After this run, the
+next phase is a leakage-safe training-data split, generated/filtered examples,
+and the first QLoRA smoke run on Qwen3 0.6B Instruct.
 
 ## Prompts and scoring
 
@@ -181,6 +200,7 @@ field names, or graph content. Scoring reports:
 - results by source category, development/held-out split, structural phenomenon,
   and provider/model/prompt combination;
 - fixed-judge schema validity and secondary correctness;
+- mean fixed-judge Spec adherence and Robustness on the documented 0–4 rubric;
 - deterministic missed/spurious-edge details for failure analysis.
 
 Every approved run preserves its manifest, assignment records, candidate and

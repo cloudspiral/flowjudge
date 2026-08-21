@@ -127,6 +127,8 @@ def test_model_prompt_and_fixed_judge_summaries_are_secondary() -> None:
             "raw_judge_response": json.dumps(
                 {
                     "assessment": "correct",
+                    "spec_adherence": 4,
+                    "robustness": 4,
                     "missed_edges": [],
                     "spurious_edges": [],
                     "brief_reason": "The candidate matches the gold graph.",
@@ -140,6 +142,9 @@ def test_model_prompt_and_fixed_judge_summaries_are_secondary() -> None:
     combination = summary["by_model_prompt"]["openai:frontier-model:zero_shot"]
     assert combination["exact_graph_match_rate"] == 1.0
     assert summary["fixed_judge_valid_json_rate"] == 1.0
+    assert summary["fixed_judge_rubric_score_rate"] == 1.0
+    assert summary["mean_spec_adherence"] == 4.0
+    assert summary["mean_robustness"] == 4.0
     assert summary["fixed_judge_assessed_correct_rate"] == 1.0
     assert summary["fixed_judge_decision_agreement_rate"] == 1.0
     assert summary["fixed_judge_edge_diagnosis_match_rate"] == 1.0
@@ -152,6 +157,8 @@ def test_fixed_judge_agreement_is_not_the_same_as_saying_correct() -> None:
     record["raw_judge_response"] = json.dumps(
         {
             "assessment": "incorrect",
+            "spec_adherence": 3,
+            "robustness": 4,
             "missed_edges": [
                 {"source": edge.source, "target": edge.target}
                 for edge in case.gold.gold_relations
@@ -166,3 +173,26 @@ def test_fixed_judge_agreement_is_not_the_same_as_saying_correct() -> None:
     assert summary["fixed_judge_assessed_correct_rate"] == 0.0
     assert summary["fixed_judge_decision_agreement_rate"] == 1.0
     assert summary["fixed_judge_edge_diagnosis_match_rate"] == 1.0
+
+
+def test_legacy_judge_records_remain_rescorable_without_new_rubric_scores() -> None:
+    case = load_benchmark()[0]
+    record = _record(case, [])
+    record["raw_judge_response"] = json.dumps(
+        {
+            "assessment": "incorrect",
+            "missed_edges": [
+                {"source": edge.source, "target": edge.target}
+                for edge in case.gold.gold_relations
+            ],
+            "spurious_edges": [],
+            "brief_reason": "Legacy judge response.",
+        }
+    )
+
+    summary = score_records([case], [record])
+
+    assert summary["fixed_judge_valid_json_rate"] == 1.0
+    assert summary["fixed_judge_rubric_score_rate"] == 0.0
+    assert summary["mean_spec_adherence"] is None
+    assert summary["mean_robustness"] is None

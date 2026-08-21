@@ -4,6 +4,7 @@ from flowjudge.data import load_benchmark
 from flowjudge.runner import (
     APPROVAL_PHRASE,
     ExperimentConfig,
+    _build_judge_prompt,
     build_assignments,
     dry_run_manifest,
     run_experiment,
@@ -60,3 +61,13 @@ def test_online_runner_rejects_before_loading_keys_or_clients(monkeypatch) -> No
 
     with pytest.raises(PermissionError, match=APPROVAL_PHRASE):
         run_experiment("not-approved")
+
+
+def test_judge_prompt_contains_fixed_rubric_and_case_hard_negatives() -> None:
+    case = next(case for case in load_benchmark() if case.gold.hard_negatives)
+    prompt = _build_judge_prompt(case, '{"relations": []}')
+
+    assert "SPEC ADHERENCE (0–4)" in prompt
+    assert "ROBUSTNESS (0–4)" in prompt
+    assert case.gold.hard_negatives[0].explanation in prompt
+    assert "{{HARD_NEGATIVES}}" not in prompt

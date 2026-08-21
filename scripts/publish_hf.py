@@ -20,6 +20,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--model-dir", required=True, type=Path)
     parser.add_argument("--model-repo", required=True)
     parser.add_argument("--dataset-repo", required=True)
+    parser.add_argument("--space-repo", required=True)
     return parser
 
 
@@ -63,12 +64,33 @@ def main() -> None:
             commit_message=f"Publish FlowJudge dataset artifact {destination}",
         )
 
+    api.create_repo(
+        args.space_repo,
+        repo_type="space",
+        space_sdk="gradio",
+        private=False,
+        exist_ok=True,
+    )
+    space_commit = api.upload_folder(
+        repo_id=args.space_repo,
+        repo_type="space",
+        folder_path=PROJECT_ROOT / "space",
+        commit_message="Publish the FlowJudge Gradio inference demo",
+    )
+    api.add_space_variable(
+        repo_id=args.space_repo,
+        key="FLOWJUDGE_MODEL_ID",
+        value=args.model_repo,
+    )
+
     publication = {
         "published_at": datetime.now(UTC).isoformat(),
         "model_repo": args.model_repo,
         "model_commit": model_commit.oid,
         "dataset_repo": args.dataset_repo,
         "dataset_commit": dataset_commit.oid if dataset_commit else None,
+        "space_repo": args.space_repo,
+        "space_commit": space_commit.oid,
         "public": True,
     }
     output = PROJECT_ROOT / "docs" / "publication_manifest.json"
@@ -94,6 +116,12 @@ def _validate_inputs(model_dir: Path) -> None:
     missing_data = [name for name in required_data if not (dataset_dir / name).exists()]
     if missing_data:
         raise FileNotFoundError(f"dataset directory is missing: {', '.join(missing_data)}")
+    required_space = ["README.md", "app.py", "requirements.txt"]
+    missing_space = [
+        name for name in required_space if not (PROJECT_ROOT / "space" / name).exists()
+    ]
+    if missing_space:
+        raise FileNotFoundError(f"space directory is missing: {', '.join(missing_space)}")
 
 
 if __name__ == "__main__":

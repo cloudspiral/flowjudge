@@ -33,12 +33,14 @@ choose public repository IDs and run:
 uv run --group train python scripts/publish_hf.py \
   --model-dir artifacts/publish/flowjudge-qwen3-0.6b \
   --model-repo <your-hf-name>/flowjudge-qwen3-0.6b \
-  --dataset-repo <your-hf-name>/flowjudge-v1
+  --dataset-repo <your-hf-name>/flowjudge-v1 \
+  --space-repo <your-hf-name>/flowjudge-demo
 ```
 
-The script creates public repos, uploads the complete model plus the filtered
-dataset and efficiency slices, and writes exact final model and dataset commit
-hashes to `docs/publication_manifest.json`. It never prints the token.
+The script creates public model, dataset, and Gradio Space repos; uploads the
+complete model, filtered dataset, efficiency slices, and runnable demo; sets the
+Space's public model-ID variable; and writes all exact final commit hashes to
+`docs/publication_manifest.json`. It never prints the token.
 
 ## Other external blockers
 

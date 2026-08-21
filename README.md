@@ -24,7 +24,7 @@ An edge exists only when a later, opposing-side unit directly answers, attacks,
 mitigates, or turns an earlier argument. Topical similarity, same-side
 extensions, repetition, and independent counterarguments are excluded.
 
-## Current status: formal ablation ready for approval
+## Current status: formal ablation completed
 
 The approved pilot completed all 72 candidate assignments and 72 fixed-judge
 assessments. The primary exact graph-match rate was 2/72 (2.8%); no
@@ -32,6 +32,14 @@ model/prompt combination exceeded 1/12. The full analysis and expansion
 recommendation are in [`docs/pilot_results.md`](docs/pilot_results.md). Every raw
 candidate response, judge response, and SDK envelope remains in the ignored
 local run directory `results/20260821T012454.328398Z/`.
+
+The approved formal ablation then completed all 192 candidate assignments and
+192 fixed-judge assessments. Strict exact match was 4/192 (2.1%), while exact
+match after removing only a surrounding Markdown fence was 24/192 (12.5%). The
+best combination reached 8/32 overall and 2/8 held-out. Full results, recurring
+failure analysis, and the gold-validity warning are in
+[`docs/ablation_results.md`](docs/ablation_results.md). Raw artifacts remain in
+the ignored local directory `results/20260821T020430.050266Z/`.
 
 The pilot justified expansion, so the now-locked formal benchmark contains:
 
@@ -144,7 +152,7 @@ JUDGE_MODEL=
 through the OpenAI SDK and remains fixed across assignments; deterministic graph
 comparison is primary.
 
-Even with configured keys, online execution requires the exact gate:
+Any intentional rerun still requires the exact gate:
 
 ```bash
 uv run flowjudge run --approval APPROVE_ABLATION
@@ -180,13 +188,15 @@ judge text, complete SDK response envelopes, and summary under `results/`.
 
 ## Decision rule
 
-The pilot kill condition was not met. In the formal run, treat the held-out
-split and fence-normalized graph metrics as the primary reasoning diagnostic,
-while reporting strict compliance separately. Repeated structural errors must
-be identified by phenomenon before any SLM training is justified. This
-benchmark can support a claim about outperforming the chosen inexpensive
-general-purpose baselines; it does not establish that flagship frontier models
-are unreliable unless flagship models are separately tested.
+The pilot and formal kill conditions were not met. The weak baselines repeatedly
+failed on orientation, target attachment, long-distance responses, branching,
+and rephrase/response discrimination. Before SLM training, independently
+adjudicate the small set of consensus disagreements identified in the formal
+report; some may expose gaps between VivesDebate `CA` labels and FlowJudge's
+written response definition. This benchmark can support a claim about
+outperforming the chosen inexpensive general-purpose baselines; it does not
+establish that flagship frontier models are unreliable unless flagship models
+are separately tested.
 
 ## Layout
 

@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 
 from .data import load_benchmark
-from .distill import distill_training_data
+from .distill import distill_training_data, materialize_distillation_run
 from .review import DEFAULT_REVIEW_PATH, generate_review_page
 from .reporting import DEFAULT_PROMPT_CEILING_REPORT, generate_prompt_ceiling_report
 from .runner import dry_run_manifest, run_experiment
@@ -38,6 +38,14 @@ def build_parser() -> argparse.ArgumentParser:
     distill_parser.add_argument("--model")
     distill_parser.add_argument("--max-workers", type=int, default=4)
     distill_parser.add_argument("--required-examples", type=int, default=96)
+
+    materialize_parser = subparsers.add_parser(
+        "materialize-distillation-run",
+        help="rebuild dataset slices from a preserved teacher/filter run",
+    )
+    materialize_parser.add_argument("run_directory", type=Path)
+    materialize_parser.add_argument("--candidates", type=Path, default=None)
+    materialize_parser.add_argument("--required-examples", type=int, default=96)
 
     run_parser = subparsers.add_parser("run", help="run the approved online experiment")
     run_parser.add_argument("--approval", required=True, help="exact formal benchmark approval phrase")
@@ -76,6 +84,11 @@ def main() -> None:
         if args.candidates is not None:
             kwargs["candidates_path"] = args.candidates
         print(distill_training_data(**kwargs))
+    elif args.command == "materialize-distillation-run":
+        kwargs = {"required_examples": args.required_examples}
+        if args.candidates is not None:
+            kwargs["candidates_path"] = args.candidates
+        print(materialize_distillation_run(args.run_directory, **kwargs))
     elif args.command == "run":
         print(
             run_experiment(

@@ -135,6 +135,70 @@ def distill_training_data(
     return run_dir
 
 
+def materialize_distillation_run(
+    run_dir: Path,
+    candidates_path: Path = DEFAULT_CANDIDATES_PATH,
+    *,
+    required_examples: int = DATASET_SIZES[-1],
+) -> Path:
+    """Rebuild dataset slices from preserved accepted responses using current prompt code."""
+    candidates = load_training_candidates(candidates_path)
+    existing_manifest_path = run_dir / "manifest.json"
+    manifest = (
+        json.loads(existing_manifest_path.read_text(encoding="utf-8"))
+        if existing_manifest_path.exists()
+        else {}
+    )
+    teacher_model = str(manifest.get("teacher_model", "preserved-teacher"))
+    filter_model = str(manifest.get("filter_model", "preserved-filter"))
+    records = {
+        record["example_id"]: record
+        for record in (
+            json.loads(line)
+            for line in (run_dir / "records.jsonl").read_text(encoding="utf-8").splitlines()
+            if line
+        )
+    }
+    examples: list[TrainingExample] = []
+    for candidate in candidates:
+        record = records.get(candidate.example_id)
+        if not record or not record.get("accepted"):
+            continue
+        rewrite = TeacherRewrite.model_validate_json(record["teacher_response"])
+        quality = QualityAssessment.model_validate_json(record["filter_response"])
+        examples.append(
+            make_training_example(
+                candidate,
+                rewrite,
+                quality,
+                teacher_model=teacher_model,
+                filter_model=filter_model,
+            )
+        )
+    if len(examples) < required_examples:
+        raise RuntimeError(
+            f"preserved run contains {len(examples)} accepted examples; need {required_examples}"
+        )
+    examples = examples[:required_examples]
+    dataset_paths = write_dataset_slices(examples)
+    manifest.update(
+        {
+            "rematerialized_at": datetime.now(UTC).isoformat(),
+            "published_training_count": len(examples),
+            "dataset_sizes": [int(path.stem.removeprefix("v1_n")) for path in dataset_paths],
+            "dataset_paths": [str(path.relative_to(PROJECT_ROOT)) for path in dataset_paths],
+            "response_edge_label_leak_check": "training prompts omit source anchor-pair titles",
+        }
+    )
+    existing_manifest_path.write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    (PROJECT_ROOT / "data" / "training" / "v1_manifest.json").write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+    return existing_manifest_path
+
+
 def _distill_one(
     client: Any,
     model: str,

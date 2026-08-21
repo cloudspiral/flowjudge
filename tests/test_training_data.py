@@ -1,4 +1,6 @@
 from flowjudge.training_data import (
+    TeacherRewrite,
+    build_training_prompt,
     DATASET_SIZES,
     OWN_EVAL_DEBATES,
     TRAIN_DEBATES,
@@ -24,3 +26,16 @@ def test_candidate_generation_is_deterministic() -> None:
     assert [candidate.model_dump() for candidate in first] == [
         candidate.model_dump() for candidate in second
     ]
+
+
+def test_training_prompt_never_reveals_anchor_edge() -> None:
+    candidate = build_training_candidates(limit=1)[0]
+    rewrite = TeacherRewrite(
+        units=[unit.model_dump() for unit in candidate.units]
+    )
+
+    prompt = build_training_prompt(candidate, rewrite.units)
+
+    later, earlier = candidate.source_anchor_pair
+    assert "Source-derived response window" not in prompt
+    assert f"U{later} → U{earlier}" not in prompt

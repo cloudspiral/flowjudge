@@ -206,12 +206,11 @@ def load_eval_cases(path: Path) -> list[BenchmarkCase]:
 
 
 def build_training_prompt(candidate: TrainingCandidate, rewritten_units: list[RewrittenUnit]) -> str:
-    rewritten = candidate.model_copy(
-        update={
-            "units": [TrainingUnit(**unit.model_dump()) for unit in rewritten_units],
-        }
+    transcript_lines = [f"Resolution: {candidate.resolution}"]
+    transcript_lines.extend(
+        f"{unit.id} [{unit.side.value}]: {unit.text}" for unit in rewritten_units
     )
-    transcript = rewritten.transcript()
+    transcript = "\n".join(transcript_lines)
     return (
         "Identify every direct response edge in this debate excerpt. Return only one bare JSON object "
         "with a relations array. An edge must point from a later opposing-side unit to the earlier unit "

@@ -27,6 +27,11 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--judge-model", help="override JUDGE_MODEL")
     parser.add_argument("--max-new-tokens", type=int, default=512)
     parser.add_argument(
+        "--skip-judge",
+        action="store_true",
+        help="run local generation and deterministic scoring only; rubric rows remain pending",
+    )
+    parser.add_argument(
         "--backend",
         choices=("auto", "transformers", "mlx"),
         default="auto",
@@ -55,6 +60,7 @@ def main() -> None:
         compare_base=not args.skip_base,
         backend=args.backend,
         base_model_override=args.base_model,
+        skip_judge=args.skip_judge,
     )
     print(output_dir)
 
@@ -69,11 +75,12 @@ def run_hf_evaluation(
     compare_base: bool = True,
     backend: str = "auto",
     base_model_override: str | None = None,
+    skip_judge: bool = False,
 ) -> Path:
     load_dotenv(PROJECT_ROOT / ".env", override=False)
     api_key = os.getenv("OPENAI_API_KEY", "").strip()
     fixed_judge = (judge_model or os.getenv("JUDGE_MODEL", "")).strip()
-    if not api_key or not fixed_judge:
+    if not skip_judge and (not api_key or not fixed_judge):
         raise RuntimeError("OPENAI_API_KEY and JUDGE_MODEL are required for reproducible judging")
 
     cases = load_eval_cases(eval_set)
@@ -109,7 +116,7 @@ def run_hf_evaluation(
             if base_model
             else [("model", model_id, None)]
         )
-    judge_client = _openai_client(api_key)
+    judge_client = _openai_client(api_key) if not skip_judge else None
     all_summaries: dict[str, Any] = {}
 
     for label, target_model, adapter_path in targets:
@@ -129,8 +136,6 @@ def run_hf_evaluation(
             for case in cases:
                 prompt = build_prompt("zero_shot", case.scenario)
                 raw_response = generator.generate(prompt)
-                judge_prompt = _build_judge_prompt(case, raw_response)
-                raw_judge, judge_envelope = _call_openai(judge_client, fixed_judge, judge_prompt)
                 record = {
                     "assignment_id": f"{label}__{case.scenario.scenario_id}",
                     "scenario_id": case.scenario.scenario_id,
@@ -141,9 +146,17 @@ def run_hf_evaluation(
                     "model": model_id if adapter_path else target_model,
                     "prompt": "zero_shot",
                     "raw_response": raw_response,
-                    "judge_model": fixed_judge,
-                    "raw_judge_response": raw_judge,
+                    "judge_model": fixed_judge or None,
                 }
+                if skip_judge:
+                    raw_judge = None
+                    judge_envelope = None
+                else:
+                    judge_prompt = _build_judge_prompt(case, raw_response)
+                    raw_judge, judge_envelope = _call_openai(
+                        judge_client, fixed_judge, judge_prompt
+                    )
+                    record["raw_judge_response"] = raw_judge
                 records.append(record)
                 responses_file.write(
                     json.dumps(
@@ -158,18 +171,14 @@ def run_hf_evaluation(
                     + "\n"
                 )
                 responses_file.flush()
-                judgments_file.write(
-                    json.dumps(
-                        {
-                            "scenario_id": case.scenario.scenario_id,
-                            "judge_model": fixed_judge,
-                            "response": raw_judge,
-                            "envelope": json.loads(judge_envelope),
-                        },
-                        ensure_ascii=False,
-                    )
-                    + "\n"
-                )
+                judgment_record = {
+                    "scenario_id": case.scenario.scenario_id,
+                    "judge_model": fixed_judge or None,
+                    "status": "pending" if skip_judge else "complete",
+                    "response": raw_judge,
+                    "envelope": json.loads(judge_envelope) if judge_envelope else None,
+                }
+                judgments_file.write(json.dumps(judgment_record, ensure_ascii=False) + "\n")
                 judgments_file.flush()
                 print(f"evaluated {label} {case.scenario.scenario_id}", flush=True)
         all_summaries[label] = score_records(cases, records)
@@ -181,6 +190,7 @@ def run_hf_evaluation(
         "detected_base_model": base_model,
         "backend": resolved_backend,
         "judge_model": fixed_judge,
+        "judge_status": "pending" if skip_judge else "complete",
         "eval_set": str(eval_set),
         "eval_scenarios": len(cases),
         "prompt": "zero_shot",

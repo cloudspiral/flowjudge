@@ -15,6 +15,7 @@ def test_eval_cli_requires_prescribed_model_and_eval_set() -> None:
     assert args.model == "owner/model"
     assert str(args.eval_set) == "staff.jsonl"
     assert args.backend == "auto"
+    assert args.skip_judge is False
 
 
 def test_results_table_contains_required_behavior_metrics() -> None:

@@ -2,10 +2,9 @@
 
 FlowJudge tests whether small, inexpensive general-purpose models reliably
 reconstruct direct debate-response structure from chronologically ordered
-argumentative discourse units (ADUs). The immediate hypothesis is whether a
-future specialized SLM could outperform general-purpose baselines. The current
-repository contains the completed weak-baseline study and the assignment-ready
-frontier prompt-ceiling harness; fine-tuning has not started.
+argumentative discourse units (ADUs). The prompt-ceiling gate is complete; the
+repository now includes the leakage-safe data-generation, QLoRA, and
+base-versus-tuned evaluation pipeline for the specialized SLM phase.
 
 The required prediction shape remains:
 
@@ -28,7 +27,7 @@ extensions, repetition, and independent counterarguments are excluded.
 The locked, falsifiable behavior and fixed 0–4 judge rubric are in
 [`docs/behavior_spec.md`](docs/behavior_spec.md).
 
-## Current status: weak-baseline ablation completed
+## Current status: prompt ceiling completed
 
 The approved pilot completed all 72 candidate assignments and 72 fixed-judge
 assessments. The primary exact graph-match rate was 2/72 (2.8%); no
@@ -44,6 +43,14 @@ best combination reached 8/32 overall and 2/8 held-out. Full results, recurring
 failure analysis, and the gold-validity warning are in
 [`docs/ablation_results.md`](docs/ablation_results.md). Raw artifacts remain in
 the ignored local directory `results/20260821T020430.050266Z/`.
+
+The assignment prompt-ceiling rerun completed another 192 candidate calls and
+192 fixed-judge calls with GPT-5.4 Mini and Claude Haiku 4.5. The best cell
+reached only 58.6% mean Spec adherence, 69.5% mean Robustness, and 15.6%
+deterministic exact graph match, so the behavior survives the pre-registered
+95%/90% gate. See [`docs/prompt_ceiling_results.md`](docs/prompt_ceiling_results.md).
+The recurring best-cell failure is spurious response edges, especially on
+same-side extensions.
 
 The pilot justified expansion, so the now-locked formal benchmark contains:
 
@@ -142,14 +149,12 @@ planned primary model calls, followed by 192 fixed-judge calls.
 
 ## Frontier prompt-ceiling rerun
 
-The completed Nano/Haiku run is useful hypothesis evidence, but it does not
-satisfy the course requirement to test two frontier model families. The next
-assignment-critical run uses 32 scenarios × 2 frontier providers × 3 prompts,
-with the fixed judge now returning explicit Spec-adherence and Robustness
+The assignment-critical run used 32 scenarios × 2 frontier providers × 3
+prompts, with the fixed judge returning explicit Spec-adherence and Robustness
 scores. To match the pragmatic low-cost interpretation used by the companion
-Minesweeper assignment, the selected candidates are
+Minesweeper assignment, the selected candidates were
 `gpt-5.4-mini-2026-03-17` and `claude-haiku-4-5-20251001`. The fixed judge
-remains the stronger `gpt-5.6-sol` so measurement quality is not intentionally
+was the stronger `gpt-5.6-sol` so measurement quality was not intentionally
 weakened with the candidates.
 
 Copy `.env.example` to `.env` and add keys if they are not already present:
@@ -166,9 +171,7 @@ JUDGE_MODEL=gpt-5.6-sol
 through the OpenAI SDK and remains fixed across assignments; deterministic graph
 comparison is primary.
 
-The new paid rerun requires a new, explicit gate because it changes the
-candidate models and makes 192 candidate plus 192 judge calls. Model names can
-be overridden on the command line without changing `.env`:
+The exact rerun command is:
 
 ```bash
 uv run flowjudge run \
@@ -178,9 +181,36 @@ uv run flowjudge run \
   --judge-model gpt-5.6-sol
 ```
 
-Do not run that command without the exact approval phrase. After this run, the
-next phase is a leakage-safe training-data split, generated/filtered examples,
-and the first QLoRA smoke run on Qwen3 0.6B Instruct.
+Do not rerun that paid command without the exact approval phrase. Its raw
+artifacts are preserved locally in `results/20260821T055241.543347Z/`.
+
+## Distillation, training, and evaluation
+
+Training candidates come only from complete Debates 1–7; the own evaluation
+set comes only from Debates 8–10. A fixed strong teacher rewrites the noisy
+source-derived excerpts, and a separate strict call checks meaning, gold-edge
+support, absence of label cues, and contextual clarity. Dataset sizes 12, 24,
+48, and 96 are nested and deterministic.
+
+The canonical open base is `Qwen/Qwen3-0.6B`. On Apple Silicon the project uses
+the corresponding `mlx-community/Qwen3-0.6B-4bit` checkpoint and MLX-LM LoRA;
+training adapters over the quantized base is QLoRA. The CUDA path uses
+Transformers, PEFT, and bitsandbytes NF4. Both paths mask prompt tokens.
+
+```bash
+uv run flowjudge build-training-data --limit 115
+uv run flowjudge distill-training-data --max-workers 4 --required-examples 96
+uv sync --frozen --group mlx-train
+uv run --group mlx-train python scripts/run_efficiency_curve.py --backend mlx
+uv run python eval.py \
+  --model artifacts/efficiency/n12/adapter \
+  --eval-set data/eval/own_eval.jsonl
+```
+
+`eval.py` auto-detects local MLX-LM or PEFT adapters, evaluates the base and
+tuned model, and preserves raw generations plus one full judge JSON object per
+example. A grader can replace the eval path with staff-provided `BenchmarkCase`
+JSONL without changing the harness.
 
 ## Prompts and scoring
 

@@ -1,0 +1,31 @@
+{
+  "candidate_count": 115,
+  "candidate_path": "data/training/candidates.jsonl",
+  "network_calls_made": 0,
+  "own_eval_count": 9,
+  "own_eval_debates": [
+    "Debate8",
+    "Debate9",
+    "Debate10"
+  ],
+  "own_eval_path": "data/eval/own_eval.jsonl",
+  "planned_dataset_sizes": [
+    12,
+    24,
+    48,
+    96
+  ],
+  "seed": 20260821,
+  "source_license": "VivesDebate CC BY-NC-SA 4.0",
+  "spacing_justification": "approximately log2-spaced to expose the low-data learning curve while capping the first full sweep at 96 strictly filtered examples",
+  "staff_heldout_policy": "accepted at evaluation time as BenchmarkCase JSONL; never used for generation or training",
+  "train_debates": [
+    "Debate1",
+    "Debate2",
+    "Debate3",
+    "Debate4",
+    "Debate5",
+    "Debate6",
+    "Debate7"
+  ]
+}

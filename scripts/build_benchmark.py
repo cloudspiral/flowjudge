@@ -10,12 +10,15 @@ from typing import Any
 
 from flowjudge.data import PROJECT_ROOT, load_benchmark
 from flowjudge.schemas import (
+    BenchmarkSplit,
     Category,
     GoldBlueprint,
     HardNegative,
+    HardNegativePhenomenon,
     JuryOutcome,
     JuryScore,
     Scenario,
+    ScenarioPhenomenon,
     SourceAnnotationIssue,
     SourceProvenance,
     SourceRelation,
@@ -46,14 +49,24 @@ def main() -> None:
     source_manifest = _load_json_without_duplicate_keys(SOURCE_MANIFEST_PATH)
     excerpt_blueprints = _load_json_without_duplicate_keys(EXCERPT_BLUEPRINTS_PATH)
     reviewed_english = _load_json_without_duplicate_keys(REVIEWED_ENGLISH_PATH)
-    blueprint_by_debate = {item["debate_id"]: item for item in excerpt_blueprints}
-    if len(blueprint_by_debate) != len(excerpt_blueprints):
-        raise ValueError("duplicate debate_id in excerpt blueprints")
+    scenario_ids = [item["scenario_id"] for item in excerpt_blueprints]
+    if len(scenario_ids) != len(set(scenario_ids)):
+        raise ValueError("duplicate scenario_id in excerpt blueprints")
+    blueprints_by_debate: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for item in excerpt_blueprints:
+        blueprints_by_debate[item["debate_id"]].append(item)
     expected_debates = {item["debate_id"] for item in source_manifest["selected_debates"]}
-    if set(blueprint_by_debate) != expected_debates:
+    if set(blueprints_by_debate) != expected_debates:
         raise ValueError("excerpt blueprints must cover exactly the selected debates")
+    if any(len(items) != 3 for items in blueprints_by_debate.values()):
+        raise ValueError("formal ablation requires exactly three excerpts per selected debate")
     if set(reviewed_english["debates"]) != expected_debates:
-        raise ValueError("reviewed English must cover exactly the selected debates")
+        raise ValueError("curated English must cover exactly the selected debates")
+    for debate_id, items in blueprints_by_debate.items():
+        selected_ids = {source_id for item in items for source_id in item["source_unit_ids"]}
+        curated_ids = {int(source_id) for source_id in reviewed_english["debates"][debate_id]}
+        if curated_ids != selected_ids:
+            raise ValueError(f"{debate_id} curated English must exactly cover the union of excerpt IDs")
     _verify_file(SOURCE_DIR / source_manifest["evaluation_file"]["file"], source_manifest["evaluation_file"]["md5"])
     jury_by_debate = _load_jury_outcomes(SOURCE_DIR / source_manifest["evaluation_file"]["file"])
 
@@ -63,17 +76,18 @@ def main() -> None:
     for selection in source_manifest["selected_debates"]:
         source_path = SOURCE_DIR / selection["file"]
         _verify_file(source_path, selection["md5"])
-        scenario, blueprint, stats = _convert_debate(
-            source_path,
-            selection["debate_id"],
-            selection["md5"],
-            jury_by_debate[selection["debate_id"]],
-            blueprint_by_debate[selection["debate_id"]],
-            reviewed_english["debates"][selection["debate_id"]],
-        )
-        scenarios.append(scenario)
-        blueprints.append(blueprint)
-        debate_stats.append(stats)
+        for excerpt_blueprint in blueprints_by_debate[selection["debate_id"]]:
+            scenario, blueprint, stats = _convert_debate(
+                source_path,
+                selection["debate_id"],
+                selection["md5"],
+                jury_by_debate[selection["debate_id"]],
+                excerpt_blueprint,
+                reviewed_english["debates"][selection["debate_id"]],
+            )
+            scenarios.append(scenario)
+            blueprints.append(blueprint)
+            debate_stats.append(stats)
 
     synthetic = _synthetic_cases()
     scenarios.extend(case[0] for case in synthetic)
@@ -91,7 +105,16 @@ def main() -> None:
         json.dumps(
             {
                 "scenarios": len(cases),
-                "real_debates": sum(case.scenario.category == Category.VIVESDEBATE for case in cases),
+                "real_debates": len(
+                    {
+                        case.scenario.source.debate_id
+                        for case in cases
+                        if case.scenario.source is not None
+                    }
+                ),
+                "real_scenarios": sum(
+                    case.scenario.category == Category.VIVESDEBATE for case in cases
+                ),
                 "synthetic_scenarios": sum(case.scenario.category != Category.VIVESDEBATE for case in cases),
                 "converted_units": sum(len(case.scenario.units) for case in cases),
                 "gold_response_edges": sum(len(case.gold.gold_relations) for case in cases),
@@ -127,8 +150,9 @@ def _convert_debate(
         raise ValueError(f"{debate_id} excerpt IDs must be unique and chronological")
     if not set(selected_ids).issubset(row_by_id):
         raise ValueError(f"{debate_id} excerpt references an unknown ADU")
-    if {int(source_id) for source_id in reviewed_text} != set(selected_ids):
-        raise ValueError(f"{debate_id} reviewed English must exactly match the excerpt IDs")
+    missing_curated_ids = set(selected_ids) - {int(source_id) for source_id in reviewed_text}
+    if missing_curated_ids:
+        raise ValueError(f"{debate_id} is missing curated English for {sorted(missing_curated_ids)}")
 
     relation_slots = _relation_slots(fieldnames)
     units: list[Unit] = []
@@ -220,10 +244,12 @@ def _convert_debate(
                 relation_counts[relation_type.value] += 1
 
     scenario = Scenario(
-        scenario_id=f"vives_{debate_id.lower()}",
+        scenario_id=excerpt_blueprint["scenario_id"],
         category=Category.VIVESDEBATE,
         title=f"VivesDebate {debate_id}: {excerpt_blueprint['title']}",
         resolution=RESOLUTION,
+        split=BenchmarkSplit(excerpt_blueprint["split"]),
+        phenomena=[ScenarioPhenomenon(value) for value in excerpt_blueprint["phenomena"]],
         units=units,
         source=SourceProvenance(
             corpus="VivesDebate",
@@ -262,6 +288,9 @@ def _convert_debate(
         for relation in source_relations
     )
     stats = {
+        "scenario_id": scenario.scenario_id,
+        "split": scenario.split.value,
+        "phenomena": [phenomenon.value for phenomenon in scenario.phenomena],
         "debate_id": debate_id,
         "source_file": source_path.name,
         "source_md5": source_md5,
@@ -343,6 +372,7 @@ def _derive_gold(scenario: Scenario, excerpt_blueprint: dict[str, Any]) -> GoldB
         HardNegative(
             source=f"U{item['source_id']}",
             target=f"U{item['target_id']}",
+            phenomenon=HardNegativePhenomenon(item["phenomenon"]),
             explanation=item["explanation"],
         )
         for item in excerpt_blueprint["hard_negatives"]
@@ -366,6 +396,8 @@ def _synthetic_cases() -> list[tuple[Scenario, GoldBlueprint]]:
         category=Category.SYNTHETIC_DROPPED,
         title="Dropped affordability argument",
         resolution="A city ought to abolish minimum parking requirements for new housing.",
+        split=BenchmarkSplit.DEVELOPMENT,
+        phenomena=[ScenarioPhenomenon.DROPPED_ARGUMENT, ScenarioPhenomenon.TOPICAL_DISTRACTOR],
         units=[
             Unit(id="U1", side="AFF", text="Parking minimums raise rents because every tenant pays for mandated construction, even without owning a car."),
             Unit(id="U2", side="AFF", text="Frequent transit means many downtown residents can reach work without private vehicles."),
@@ -397,11 +429,13 @@ def _synthetic_cases() -> list[tuple[Scenario, GoldBlueprint]]:
             HardNegative(
                 source="U3",
                 target="U1",
+                phenomenon=HardNegativePhenomenon.TOPICAL_NONRESPONSE,
                 explanation="Cruising is an independent curb-space disadvantage, not an answer to U1's rent mechanism.",
             ),
             HardNegative(
                 source="U6",
                 target="U1",
+                phenomenon=HardNegativePhenomenon.INDEPENDENT_COUNTERARGUMENT,
                 explanation="Delivery access is another independent curb-use claim; the affordability argument remains dropped.",
             ),
         ],
@@ -412,6 +446,8 @@ def _synthetic_cases() -> list[tuple[Scenario, GoldBlueprint]]:
         category=Category.SYNTHETIC_CROSS_APPLICATION,
         title="One rebuttal cross-applied to two claims",
         resolution="Employers ought to adopt a four-day workweek without reducing pay.",
+        split=BenchmarkSplit.DEVELOPMENT,
+        phenomena=[ScenarioPhenomenon.CROSS_APPLICATION, ScenarioPhenomenon.BRANCHING],
         units=[
             Unit(id="U1", side="AFF", text="A shorter week reduces burnout because workers receive an additional recovery day."),
             Unit(id="U2", side="AFF", text="It also improves retention because employees value the additional recovery day."),
@@ -455,6 +491,7 @@ def _synthetic_cases() -> list[tuple[Scenario, GoldBlueprint]]:
             HardNegative(
                 source="U4",
                 target="U1",
+                phenomenon=HardNegativePhenomenon.INDEPENDENT_COUNTERARGUMENT,
                 explanation="Customer-support scheduling is an independent disadvantage, not a burnout response.",
             )
         ],
@@ -549,11 +586,23 @@ def _build_benchmark_manifest(
 ) -> dict[str, Any]:
     real_cases = [case for case in cases if case.scenario.category == Category.VIVESDEBATE]
     synthetic_cases = [case for case in cases if case.scenario.category != Category.VIVESDEBATE]
-    source_units = sum(item["source_adu_count"] for item in debate_stats)
+    representative_stats = {
+        item["debate_id"]: item
+        for item in debate_stats
+    }
+    representative_cases = {
+        case.scenario.source.debate_id: case
+        for case in real_cases
+    }
+    source_units = sum(item["source_adu_count"] for item in representative_stats.values())
     model_facing_units = sum(len(case.scenario.units) for case in real_cases)
-    source_relations = sum(item["source_relation_count"] for item in debate_stats)
-    converted_relations = sum(len(case.scenario.source_relations) for case in real_cases)
-    source_relation_slots = sum(item["source_relation_slot_count"] for item in debate_stats)
+    source_relations = sum(item["source_relation_count"] for item in representative_stats.values())
+    converted_relations = sum(
+        len(case.scenario.source_relations) for case in representative_cases.values()
+    )
+    source_relation_slots = sum(
+        item["source_relation_slot_count"] for item in representative_stats.values()
+    )
     converted_relation_slots = sum(
         len(
             {
@@ -565,7 +614,7 @@ def _build_benchmark_manifest(
                 for issue in case.scenario.source_annotation_issues
             }
         )
-        for case in real_cases
+        for case in representative_cases.values()
     )
     all_edges_valid = all(
         int(edge.source[1:]) > int(edge.target[1:])
@@ -575,7 +624,7 @@ def _build_benchmark_manifest(
         for edge in case.gold.gold_relations
     )
     return {
-        "benchmark_version": 3,
+        "benchmark_version": 4,
         "source": {
             "corpus": "VivesDebate",
             "doi": source_manifest["doi"],
@@ -586,8 +635,9 @@ def _build_benchmark_manifest(
             "model_text_method": "manually_curated_from_ADU_ES_and_ADU_CAT",
             "selection_rule": source_manifest["selection_rule"],
             "excerpt_selection_rule": (
-                "One self-contained 6-12 ADU exchange per selected debate, fixed from source CA annotations "
-                "before curated English was written; all original CSVs and complete relation graphs remain preserved."
+                "Three self-contained 6-12 ADU exchanges per selected debate, fixed from source CA annotations "
+                "before curated English was written; the original pilot excerpt remains development data and eight "
+                "previously unseen excerpts form the held-out test split."
             ),
             "selected_debates": [item["debate_id"] for item in source_manifest["selected_debates"]],
             "excluded_before_tenth_selection": source_manifest["excluded_before_tenth_selection"],
@@ -598,7 +648,9 @@ def _build_benchmark_manifest(
             "ADU_EN": "preserved verbatim as unit.text_en; not used directly as model input",
             "ADU_ES_and_ADU_CAT": "curated English rendering in unit.text with ADU boundaries unchanged",
             "chronological_ID": "unit.id as U<source ID>; gaps are preserved",
-            "excerpt_selection": "6-12 source ADUs per debate; source IDs and chronological order are preserved",
+            "excerpt_selection": "three 6-12 ADU excerpts per debate; source IDs and chronological order are preserved",
+            "split": "24 development scenarios and 8 held-out-test scenarios; every held-out scenario is real VivesDebate data",
+            "phenomena": "scenario-level structural tags are fixed in the pre-text blueprint; hard-negative pairs carry a negative-type tag",
             "excerpt_topic": "a human-written topic label is included as shared context; it does not alter any ADU",
             "RA": "preserved as source_relations[type=inference]; not mapped to responds_to",
             "MA": "preserved as source_relations[type=rephrase]; not mapped to responds_to",
@@ -608,8 +660,33 @@ def _build_benchmark_manifest(
         },
         "validation": {
             "scenario_count": len(cases),
-            "real_debate_count": len(real_cases),
+            "real_debate_count": len(representative_cases),
+            "real_scenario_count": len(real_cases),
             "synthetic_scenario_count": len(synthetic_cases),
+            "development_scenario_count": sum(
+                case.scenario.split == BenchmarkSplit.DEVELOPMENT for case in cases
+            ),
+            "heldout_test_scenario_count": sum(
+                case.scenario.split == BenchmarkSplit.HELDOUT_TEST for case in cases
+            ),
+            "scenarios_by_phenomenon": dict(
+                sorted(
+                    Counter(
+                        phenomenon.value
+                        for case in cases
+                        for phenomenon in case.scenario.phenomena
+                    ).items()
+                )
+            ),
+            "hard_negatives_by_phenomenon": dict(
+                sorted(
+                    Counter(
+                        pair.phenomenon.value
+                        for case in cases
+                        for pair in case.gold.hard_negatives
+                    ).items()
+                )
+            ),
             "source_adu_count": source_units,
             "model_facing_real_unit_count": model_facing_units,
             "all_source_adus_preserved_in_raw_files": True,
@@ -624,12 +701,24 @@ def _build_benchmark_manifest(
             ),
             "source_relation_count": source_relations,
             "converted_source_relation_count": converted_relations,
-            "all_source_relations_preserved": source_relations == converted_relations,
+            "all_source_relations_preserved": (
+                source_relations == converted_relations
+                and all(
+                    len(case.scenario.source_relations)
+                    == next(
+                        item["source_relation_count"]
+                        for item in debate_stats
+                        if item["scenario_id"] == case.scenario.scenario_id
+                    )
+                    for case in real_cases
+                )
+            ),
             "source_relation_slot_count": source_relation_slots,
             "converted_relation_slot_count": converted_relation_slots,
             "all_source_relation_slots_accounted_for": source_relation_slots == converted_relation_slots,
             "source_annotation_issue_count": sum(
-                len(case.scenario.source_annotation_issues) for case in real_cases
+                len(case.scenario.source_annotation_issues)
+                for case in representative_cases.values()
             ),
             "all_selected_checksums_verified": True,
             "all_curation_json_keys_unique": True,

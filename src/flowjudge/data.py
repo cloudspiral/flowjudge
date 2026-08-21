@@ -5,7 +5,7 @@ from typing import TypeVar
 
 from pydantic import BaseModel
 
-from .schemas import BenchmarkCase, GoldBlueprint, Scenario
+from .schemas import BenchmarkCase, GoldBlueprint, HardNegativePhenomenon, Scenario
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_SCENARIOS_PATH = PROJECT_ROOT / "data" / "benchmark_scenarios.jsonl"
@@ -71,6 +71,21 @@ def _validate_annotations(scenario: Scenario, blueprint: GoldBlueprint) -> None:
     for edge in blueprint.gold_relations:
         if unit_by_id[edge.source].side == unit_by_id[edge.target].side:
             raise ValueError(f"gold response must cross sides in {scenario.scenario_id}: {edge.source}->{edge.target}")
+    for pair in blueprint.hard_negatives:
+        same_side = unit_by_id[pair.source].side == unit_by_id[pair.target].side
+        if pair.phenomenon == HardNegativePhenomenon.SAME_SIDE_EXTENSION and not same_side:
+            raise ValueError(
+                f"same-side extension must stay on one side in {scenario.scenario_id}: "
+                f"{pair.source}->{pair.target}"
+            )
+        if pair.phenomenon in {
+            HardNegativePhenomenon.TOPICAL_NONRESPONSE,
+            HardNegativePhenomenon.INDEPENDENT_COUNTERARGUMENT,
+        } and same_side:
+            raise ValueError(
+                f"opposing-side hard negative cannot stay on one side in {scenario.scenario_id}: "
+                f"{pair.source}->{pair.target}"
+            )
 
 
 def eligible_response_pairs(scenario: Scenario) -> set[tuple[str, str]]:

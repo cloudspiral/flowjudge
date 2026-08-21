@@ -26,6 +26,30 @@ class Category(StrEnum):
     SYNTHETIC_CROSS_APPLICATION = "synthetic_cross_application"
 
 
+class BenchmarkSplit(StrEnum):
+    DEVELOPMENT = "development"
+    HELDOUT_TEST = "heldout_test"
+
+
+class ScenarioPhenomenon(StrEnum):
+    LOCAL_DIRECT = "local_direct"
+    LONG_DISTANCE = "long_distance"
+    BRANCHING = "branching"
+    RESPONSE_CHAIN = "response_chain"
+    REPHRASE_TRAP = "rephrase_trap"
+    SAME_SIDE_EXTENSION_TRAP = "same_side_extension_trap"
+    TOPICAL_DISTRACTOR = "topical_distractor"
+    DROPPED_ARGUMENT = "dropped_argument"
+    CROSS_APPLICATION = "cross_application"
+
+
+class HardNegativePhenomenon(StrEnum):
+    TOPICAL_NONRESPONSE = "topical_nonresponse"
+    SAME_SIDE_EXTENSION = "same_side_extension"
+    REPETITION_OR_REPHRASE = "repetition_or_rephrase"
+    INDEPENDENT_COUNTERARGUMENT = "independent_counterargument"
+
+
 class SourceRelationType(StrEnum):
     INFERENCE = "inference"
     CONFLICT = "conflict"
@@ -118,6 +142,8 @@ class Scenario(StrictModel):
     category: Category
     title: str
     resolution: str
+    split: BenchmarkSplit
+    phenomena: list[ScenarioPhenomenon] = Field(min_length=1)
     units: list[Unit] = Field(min_length=6)
     source: SourceProvenance | None = None
     source_relations: list[SourceRelation] = Field(default_factory=list)
@@ -129,6 +155,8 @@ class Scenario(StrictModel):
         unit_numbers = [int(unit.id[1:]) for unit in self.units]
         if unit_numbers != sorted(set(unit_numbers)):
             raise ValueError("unit ids must be unique and strictly chronological")
+        if len(self.phenomena) != len(set(self.phenomena)):
+            raise ValueError("scenario phenomena must be unique")
         if self.category == Category.VIVESDEBATE:
             if self.source is None or self.jury_outcome is None:
                 raise ValueError("VivesDebate scenarios require source provenance and jury outcome")
@@ -188,6 +216,7 @@ class ExplainedRelation(Relation):
 class HardNegative(StrictModel):
     source: str = Field(pattern=r"^U[1-9][0-9]*$")
     target: str = Field(pattern=r"^U[1-9][0-9]*$")
+    phenomenon: HardNegativePhenomenon
     explanation: str = Field(min_length=1)
 
 

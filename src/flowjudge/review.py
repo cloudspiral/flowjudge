@@ -24,10 +24,15 @@ def generate_review_page(output_path: Path = DEFAULT_REVIEW_PATH) -> Path:
     validation_rows = "".join(
         _validation_row(name, value) for name, value in manifest["validation"].items()
     )
-    debate_rows = "".join(_debate_row(item) for item in manifest["debates"])
-    examples = "".join(_example(case) for case in (real_cases[0], real_cases[7]))
+    excerpt_rows = "".join(_excerpt_row(item) for item in manifest["debates"])
+    cases_by_id = {case.scenario.scenario_id: case for case in real_cases}
+    examples = "".join(
+        _example(cases_by_id[scenario_id])
+        for scenario_id in ("vives_debate1", "vives_debate8")
+    )
     synthetic_rows = "".join(
         f"<tr><td>{_e(case.scenario.scenario_id)}</td><td>{_e(case.scenario.title)}</td>"
+        f"<td>{_e(', '.join(item.value for item in case.scenario.phenomena))}</td>"
         f"<td>{len(case.scenario.units)}</td><td>{len(case.gold.gold_relations)}</td>"
         f"<td>{_e(case.gold.design_intent)}</td></tr>"
         for case in synthetic_cases
@@ -52,7 +57,7 @@ def generate_review_page(output_path: Path = DEFAULT_REVIEW_PATH) -> Path:
     section {{ margin:0 0 1.4rem; padding:1.25rem; border:1px solid var(--line); border-radius:12px; background:var(--paper); }}
     h2 {{ margin:0 0 .7rem; font-size:1.3rem; }} h3 {{ margin:1rem 0 .5rem; font-size:1rem; }}
     p {{ margin:.4rem 0 .8rem; }} .muted {{ color:var(--muted); }}
-    .stats {{ display:grid; grid-template-columns:repeat(4,1fr); gap:.75rem; }}
+    .stats {{ display:grid; grid-template-columns:repeat(5,1fr); gap:.75rem; }}
     .stat {{ padding:.9rem; border-radius:9px; background:var(--wash); }} .stat strong {{ display:block; font-size:1.55rem; }}
     table {{ width:100%; border-collapse:collapse; font-size:.91rem; }} th,td {{ padding:.55rem; border:1px solid var(--line); text-align:left; vertical-align:top; }} th {{ background:var(--wash); }}
     .pass {{ background:var(--pass); }} .warn {{ background:var(--warn); }}
@@ -69,16 +74,17 @@ def generate_review_page(output_path: Path = DEFAULT_REVIEW_PATH) -> Path:
 <body>
   <header>
     <h1>FlowJudge benchmark conversion review</h1>
-    <p>A compact review of 10 readable VivesDebate excerpts plus two targeted synthetic cases. Original source IDs, annotations, multilingual ADUs, full relation graphs, and jury outcomes remain preserved.</p>
+    <p>A compact review of 30 readable VivesDebate excerpts plus two targeted synthetic cases. Original source IDs, annotations, multilingual ADUs, full relation graphs, and jury outcomes remain preserved.</p>
   </header>
   <main>
     <section>
       <h2>What you need to check</h2>
-      <p class="check"><strong>Only spot-check the two examples below.</strong> Confirm that each excerpt is understandable as a short exchange and that each gold arrow is a genuine direct reply. You do not need to inspect all 10 debates or audit the source files.</p>
+      <p class="check"><strong>No full manual audit is required.</strong> The mapping and source checks below are automatic. The two complete examples are included only as a readability and conversion spot-check.</p>
       <div class="stats">
         <div class="stat"><strong>{manifest['validation']['real_debate_count']}</strong>real debates</div>
+        <div class="stat"><strong>{manifest['validation']['real_scenario_count']}</strong>real excerpts</div>
+        <div class="stat"><strong>{manifest['validation']['heldout_test_scenario_count']}</strong>held-out cases</div>
         <div class="stat"><strong>{manifest['validation']['model_facing_real_unit_count']}</strong>readable excerpt ADUs</div>
-        <div class="stat"><strong>{manifest['validation']['converted_source_relation_count']}</strong>preserved source relations</div>
         <div class="stat"><strong>{manifest['validation']['gold_response_edge_count']}</strong>FlowJudge gold edges</div>
       </div>
       <p class="muted">Source: <a href="https://doi.org/10.5281/zenodo.6531487">VivesDebate version 3 Zenodo release</a>, licensed CC BY-NC-SA 4.0. Model text is a curated English rendering from the clearer Spanish and Catalan fields. The original machine-translated English remains preserved and is visible under each example unit.</p>
@@ -96,8 +102,8 @@ def generate_review_page(output_path: Path = DEFAULT_REVIEW_PATH) -> Path:
       <ul>{skipped}</ul>
     </section>
     <section>
-      <h2>Converted debate inventory</h2>
-      <div class="wide"><table><thead><tr><th>Debate</th><th>Source / excerpt ADUs</th><th>Full RA / CA / MA</th><th>Internal relations</th><th>Gold responses</th><th>Jury winner</th></tr></thead><tbody>{debate_rows}</tbody></table></div>
+      <h2>Converted excerpt inventory</h2>
+      <div class="wide"><table><thead><tr><th>Scenario</th><th>Debate</th><th>Split</th><th>Phenomena</th><th>Source / excerpt ADUs</th><th>Internal relations</th><th>Gold responses</th><th>Jury winner</th></tr></thead><tbody>{excerpt_rows}</tbody></table></div>
     </section>
     <section>
       <h2>Two representative complete excerpts</h2>
@@ -106,7 +112,7 @@ def generate_review_page(output_path: Path = DEFAULT_REVIEW_PATH) -> Path:
     </section>
     <section>
       <h2>Two retained synthetic cases</h2>
-      <div class="wide"><table><thead><tr><th>ID</th><th>Phenomenon</th><th>Units</th><th>Gold edges</th><th>Purpose</th></tr></thead><tbody>{synthetic_rows}</tbody></table></div>
+      <div class="wide"><table><thead><tr><th>ID</th><th>Title</th><th>Phenomena</th><th>Units</th><th>Gold edges</th><th>Purpose</th></tr></thead><tbody>{synthetic_rows}</tbody></table></div>
     </section>
   </main>
 </body>
@@ -123,12 +129,12 @@ def _validation_row(name: str, value: Any) -> str:
     return f'<tr><th>{_e(name.replace("_", " "))}</th><td class="{status_class}">{_e(shown)}</td></tr>'
 
 
-def _debate_row(item: dict[str, Any]) -> str:
-    relations = item["source_relations_by_type"]
-    relation_summary = f"{relations.get('inference', 0)} / {relations.get('conflict', 0)} / {relations.get('rephrase', 0)}"
+def _excerpt_row(item: dict[str, Any]) -> str:
     return (
-        f"<tr><td>{_e(item['debate_id'])}</td><td>{item['source_adu_count']} / {item['excerpt_adu_count']}</td>"
-        f"<td>{relation_summary}</td><td>{item['excerpt_internal_source_relation_count']}</td>"
+        f"<tr><td>{_e(item['scenario_id'])}</td><td>{_e(item['debate_id'])}</td>"
+        f"<td>{_e(item['split'])}</td><td>{_e(', '.join(item['phenomena']))}</td>"
+        f"<td>{item['source_adu_count']} / {item['excerpt_adu_count']}</td>"
+        f"<td>{item['excerpt_internal_source_relation_count']}</td>"
         f"<td>{item['flowjudge_response_edges']}</td>"
         f"<td>{_e(item['jury_winner'])} (+{item['jury_margin']:.4f})</td></tr>"
     )
@@ -148,13 +154,16 @@ def _example(case: Any) -> str:
         for edge in case.gold.gold_relations
     )
     rendered_negatives = "".join(
-        f'<li><strong>{_e(item.source)} → {_e(item.target)}</strong>: {_e(item.explanation)}</li>'
+        f'<li><strong>{_e(item.source)} → {_e(item.target)}</strong> '
+        f'({_e(item.phenomenon.value)}): {_e(item.explanation)}</li>'
         for item in case.gold.hard_negatives
     )
     jury = scenario.jury_outcome
     return (
         f'<article class="example"><h3>{_e(scenario.title)}</h3>'
         f'<p>{len(scenario.units)} model-facing ADUs · complete source relation graph preserved · '
+        f'split: {_e(scenario.split.value)} · phenomena: '
+        f'{_e(", ".join(item.value for item in scenario.phenomena))} · '
         f'jury: {_e(jury.winner)}</p><h3>Complete transcript</h3>{rendered_units}'
         f'<h3>Gold response arrows</h3>{rendered_edges}'
         f'<h3>Important non-response pairs</h3><ul>{rendered_negatives}</ul></article>'

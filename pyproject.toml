@@ -1,7 +1,7 @@
 [project]
 name = "flowjudge"
 version = "0.1.0"
-description = "Offline-first pilot for debate response-graph reconstruction"
+description = "Offline-first benchmark for debate response-graph reconstruction"
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [

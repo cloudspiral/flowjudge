@@ -5,7 +5,14 @@ import re
 from collections import Counter
 
 from flowjudge.data import PROJECT_ROOT, load_benchmark
-from flowjudge.schemas import Category, Side, SourceRelationType
+from flowjudge.schemas import (
+    BenchmarkSplit,
+    Category,
+    HardNegativePhenomenon,
+    ScenarioPhenomenon,
+    Side,
+    SourceRelationType,
+)
 
 RELATION_TYPE_BY_LABEL = {
     "RA": SourceRelationType.INFERENCE,
@@ -14,20 +21,48 @@ RELATION_TYPE_BY_LABEL = {
 }
 
 
-def test_benchmark_has_ten_real_and_two_targeted_synthetic_scenarios() -> None:
+def test_benchmark_has_thirty_real_and_two_targeted_synthetic_scenarios() -> None:
     cases = load_benchmark()
     categories = Counter(case.scenario.category for case in cases)
 
-    assert len(cases) == 12
+    assert len(cases) == 32
     assert categories == {
-        Category.VIVESDEBATE: 10,
+        Category.VIVESDEBATE: 30,
         Category.SYNTHETIC_DROPPED: 1,
         Category.SYNTHETIC_CROSS_APPLICATION: 1,
     }
     real_cases = [case for case in cases if case.scenario.category == Category.VIVESDEBATE]
-    assert sum(len(case.scenario.units) for case in real_cases) == 70
+    assert sum(len(case.scenario.units) for case in real_cases) == 210
     assert all(6 <= len(case.scenario.units) <= 12 for case in real_cases)
     assert all(case.gold.hard_negatives for case in real_cases)
+    assert Counter(case.scenario.source.debate_id for case in real_cases) == {
+        f"Debate{number}": 3 for number in range(1, 11)
+    }
+    assert Counter(case.scenario.split for case in cases) == {
+        BenchmarkSplit.DEVELOPMENT: 24,
+        BenchmarkSplit.HELDOUT_TEST: 8,
+    }
+    assert all(
+        case.scenario.category == Category.VIVESDEBATE
+        for case in cases
+        if case.scenario.split == BenchmarkSplit.HELDOUT_TEST
+    )
+    covered_phenomena = {
+        phenomenon
+        for case in cases
+        for phenomenon in case.scenario.phenomena
+    }
+    assert covered_phenomena == set(ScenarioPhenomenon)
+    topical_cases = [
+        case
+        for case in cases
+        if any(
+            pair.phenomenon == HardNegativePhenomenon.TOPICAL_NONRESPONSE
+            for pair in case.gold.hard_negatives
+        )
+    ]
+    assert len(topical_cases) == 8
+    assert {case.scenario.split for case in topical_cases} == set(BenchmarkSplit)
 
 
 def test_source_manifest_checksums_match_unchanged_csvs() -> None:
@@ -48,7 +83,7 @@ def test_every_selected_vives_adu_preserves_source_fields_and_uses_reviewed_engl
     reviewed = json.loads(
         (PROJECT_ROOT / "data" / "curation" / "vives_reviewed_english.json").read_text(encoding="utf-8")
     )["debates"]
-    blueprint_by_debate = {item["debate_id"]: item for item in blueprints}
+    blueprint_by_scenario = {item["scenario_id"]: item for item in blueprints}
     real_cases = [case for case in load_benchmark() if case.scenario.category == Category.VIVESDEBATE]
 
     for case in real_cases:
@@ -56,7 +91,7 @@ def test_every_selected_vives_adu_preserves_source_fields_and_uses_reviewed_engl
         with (source_dir / scenario.source.source_file).open(encoding="utf-8", newline="") as handle:
             rows = list(csv.DictReader(handle))
         rows_by_id = {int(row["ID (Chronological)"]): row for row in rows}
-        expected_ids = blueprint_by_debate[scenario.source.debate_id]["source_unit_ids"]
+        expected_ids = blueprint_by_scenario[scenario.scenario_id]["source_unit_ids"]
         assert scenario.source.excerpt_source_ids == expected_ids
         assert [unit.source_id for unit in scenario.units] == expected_ids
         assert scenario.source.selected_language == "CURATED_EN"
@@ -177,11 +212,19 @@ def test_manifest_accounts_for_source_defects_without_imputation() -> None:
     assert validation["all_jury_outcomes_present"] is True
     assert validation["source_annotation_issue_count"] == 1
     assert validation["source_adu_count"] == 2932
-    assert validation["model_facing_real_unit_count"] == 70
+    assert validation["real_debate_count"] == 10
+    assert validation["real_scenario_count"] == 30
+    assert validation["development_scenario_count"] == 24
+    assert validation["heldout_test_scenario_count"] == 8
+    assert validation["hard_negatives_by_phenomenon"]["topical_nonresponse"] == 8
+    assert validation["model_facing_real_unit_count"] == 210
+    representative_by_debate = {}
+    for case in load_benchmark():
+        if case.scenario.category == Category.VIVESDEBATE:
+            representative_by_debate[case.scenario.source.debate_id] = case
     assert sum(
         len(case.scenario.source_annotation_issues)
-        for case in load_benchmark()
-        if case.scenario.category == Category.VIVESDEBATE
+        for case in representative_by_debate.values()
     ) == 1
 
 

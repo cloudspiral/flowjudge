@@ -14,7 +14,7 @@ from .prompts import PROMPT_NAMES, build_prompt, load_prompt_template
 from .schemas import BenchmarkCase
 from .scorer import score_run
 
-APPROVAL_PHRASE = "APPROVE_PILOT"
+APPROVAL_PHRASE = "APPROVE_ABLATION"
 PROVIDERS = ("openai", "anthropic")
 
 
@@ -79,10 +79,34 @@ def dry_run_manifest() -> dict[str, Any]:
         counts[category] = counts.get(category, 0) + 1
     return {
         "benchmark_scenarios": len(cases),
-        "real_debates": sum(case.scenario.category.value == "vivesdebate_real" for case in cases),
+        "real_debates": len(
+            {
+                case.scenario.source.debate_id
+                for case in cases
+                if case.scenario.source is not None
+            }
+        ),
+        "real_scenarios": sum(case.scenario.category.value == "vivesdebate_real" for case in cases),
         "synthetic_scenarios": sum(case.scenario.category.value != "vivesdebate_real" for case in cases),
         "total_units": sum(len(case.scenario.units) for case in cases),
         "scenarios_by_category": dict(sorted(counts.items())),
+        "scenarios_by_split": {
+            split: sum(case.scenario.split.value == split for case in cases)
+            for split in sorted({case.scenario.split.value for case in cases})
+        },
+        "scenarios_by_phenomenon": {
+            phenomenon: sum(
+                phenomenon in {item.value for item in case.scenario.phenomena}
+                for case in cases
+            )
+            for phenomenon in sorted(
+                {
+                    item.value
+                    for case in cases
+                    for item in case.scenario.phenomena
+                }
+            )
+        },
         "providers": list(PROVIDERS),
         "prompts": list(PROMPT_NAMES),
         "planned_primary_model_calls": len(cases) * len(PROVIDERS) * len(PROMPT_NAMES),
@@ -94,7 +118,9 @@ def dry_run_manifest() -> dict[str, Any]:
 
 def run_experiment(approval: str) -> Path:
     if approval != APPROVAL_PHRASE:
-        raise PermissionError(f"model calls are locked; pass --approval {APPROVAL_PHRASE} only after pilot approval")
+        raise PermissionError(
+            f"model calls are locked; pass --approval {APPROVAL_PHRASE} only after formal benchmark approval"
+        )
 
     config = ExperimentConfig.from_environment()
     cases = load_benchmark()
@@ -120,6 +146,8 @@ def run_experiment(approval: str) -> Path:
                 "assignment_id": assignment.assignment_id,
                 "scenario_id": assignment.case.scenario.scenario_id,
                 "category": assignment.case.scenario.category.value,
+                "split": assignment.case.scenario.split.value,
+                "phenomena": [item.value for item in assignment.case.scenario.phenomena],
                 "provider": assignment.provider,
                 "model": assignment.model,
                 "prompt": assignment.prompt_name,

@@ -1,252 +1,464 @@
 [
   {
+    "scenario_id": "vives_debate1",
     "debate_id": "Debate1",
     "title": "Family formation and individual freedom",
+    "split": "development",
+    "phenomena": ["local_direct", "same_side_extension_trap", "topical_distractor"],
     "source_unit_ids": [78, 79, 82, 83, 85, 86, 87],
     "gold_edges": [
-      {
-        "source_id": 85,
-        "target_id": 83,
-        "explanation": "U85 directly turns U83's distinction between founding a family and choosing descendants into a charge that the opposition is denying people the opportunity to form a family."
-      }
+      {"source_id": 85, "target_id": 83, "explanation": "U85 turns U83's distinction between founding a family and choosing descendants into a charge that the opposition is denying people the opportunity to form a family."}
     ],
     "hard_negatives": [
-      {
-        "source_id": 83,
-        "target_id": 82,
-        "explanation": "U83 introduces a distinction about family formation and descendants; it does not answer U82's separate dignity claim."
-      }
+      {"source_id": 83, "target_id": 82, "phenomenon": "topical_nonresponse", "explanation": "U83 introduces a distinction about family formation and descendants; it does not answer U82's separate dignity claim."}
     ]
   },
   {
+    "scenario_id": "vives_debate1_b",
+    "debate_id": "Debate1",
+    "title": "Can residency rules prevent genetic tourism?",
+    "split": "development",
+    "phenomena": ["local_direct", "same_side_extension_trap"],
+    "source_unit_ids": [160, 161, 162, 163, 164, 165, 166],
+    "gold_edges": [
+      {"source_id": 165, "target_id": 164, "explanation": "U165 directly mitigates U164's genetic-tourism objection by limiting eligibility to Spanish nationals or residents."}
+    ],
+    "hard_negatives": [
+      {"source_id": 166, "target_id": 165, "phenomenon": "same_side_extension", "explanation": "U166 is a same-side consequence of U165's residency restriction, not an opposing response."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate1_c",
+    "debate_id": "Debate1",
+    "title": "Is public surrogacy legislation only for elites?",
+    "split": "heldout_test",
+    "phenomena": ["long_distance", "same_side_extension_trap", "topical_distractor"],
+    "source_unit_ids": [18, 20, 21, 22, 23, 166, 167, 168],
+    "gold_edges": [
+      {"source_id": 167, "target_id": 23, "explanation": "U167 directly denies U23's claim that the proposed law serves wealthy elites."}
+    ],
+    "hard_negatives": [
+      {"source_id": 168, "target_id": 167, "phenomenon": "same_side_extension", "explanation": "U168 extends U167 by proposing public-healthcare access; it does not answer an opposing unit."},
+      {"source_id": 166, "target_id": 18, "phenomenon": "topical_nonresponse", "explanation": "U166's residency restriction concerns access by foreigners; it does not answer U18's separate claim that surrogacy conflicts with the meaning of motherhood."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate2",
     "debate_id": "Debate2",
     "title": "Whether regulation can make surrogacy ethical",
+    "split": "development",
+    "phenomena": ["branching", "same_side_extension_trap"],
     "source_unit_ids": [144, 145, 146, 147, 148, 149],
     "gold_edges": [
-      {
-        "source_id": 145,
-        "target_id": 144,
-        "explanation": "U145 directly rejects U144's suggestion that legislation can create an ethical arrangement by saying none has been described."
-      },
-      {
-        "source_id": 146,
-        "target_id": 144,
-        "explanation": "U146 directly attacks U144's proposed legislative solution by arguing that no contract can protect every woman."
-      }
+      {"source_id": 145, "target_id": 144, "explanation": "U145 rejects U144's suggestion that legislation can create an ethical arrangement by saying none has been described."},
+      {"source_id": 146, "target_id": 144, "explanation": "U146 attacks U144's proposed legislative solution by arguing that no contract can protect every woman."}
     ],
     "hard_negatives": [
-      {
-        "source_id": 149,
-        "target_id": 148,
-        "explanation": "U149 continues U148's same-side point by adding economically vulnerable people within developed countries; it is not an opposing response."
-      }
+      {"source_id": 149, "target_id": 148, "phenomenon": "same_side_extension", "explanation": "U149 continues U148's same-side point by adding economically vulnerable people within developed countries."}
     ]
   },
   {
+    "scenario_id": "vives_debate2_b",
+    "debate_id": "Debate2",
+    "title": "Can legalization control what prohibition cannot?",
+    "split": "development",
+    "phenomena": ["long_distance", "branching", "response_chain", "same_side_extension_trap"],
+    "source_unit_ids": [54, 169, 170, 185, 186, 194],
+    "gold_edges": [
+      {"source_id": 185, "target_id": 54, "explanation": "U185 attacks U54's claim that legalization can contain surrogacy by calling that position inconsistent."},
+      {"source_id": 185, "target_id": 169, "explanation": "U185 directly challenges U169's claim that prohibition guarantees nothing."},
+      {"source_id": 186, "target_id": 185, "explanation": "U186 directly denies U185's charge of inconsistency."},
+      {"source_id": 194, "target_id": 185, "explanation": "U194 answers U185 by asserting that legalization is the mechanism that enables control."}
+    ],
+    "hard_negatives": [
+      {"source_id": 170, "target_id": 169, "phenomenon": "same_side_extension", "explanation": "U170 gives a same-side reason for U169's claim about ineffective prohibition."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate2_c",
+    "debate_id": "Debate2",
+    "title": "Answering accusations of cynicism and hypocrisy",
+    "split": "heldout_test",
+    "phenomena": ["long_distance", "branching", "rephrase_trap"],
+    "source_unit_ids": [242, 243, 244, 245, 304, 305],
+    "gold_edges": [
+      {"source_id": 304, "target_id": 242, "explanation": "U304 directly denies the accusation of cynicism introduced in U242."},
+      {"source_id": 304, "target_id": 243, "explanation": "U304 rejects U243's demand for cynicism."},
+      {"source_id": 304, "target_id": 244, "explanation": "U304 rejects U244's qualification that cynicism may be suitable for an intellectual."},
+      {"source_id": 305, "target_id": 243, "explanation": "U305 directly denies U243's associated accusation of hypocrisy."}
+    ],
+    "hard_negatives": [
+      {"source_id": 245, "target_id": 243, "phenomenon": "same_side_extension", "explanation": "Although VivesDebate marks conflict, U245 and U243 share a stance; U245 extends the critique rather than answering an opponent."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate3",
     "debate_id": "Debate3",
     "title": "Can legal safeguards resist global markets?",
+    "split": "development",
+    "phenomena": ["branching", "rephrase_trap"],
     "source_unit_ids": [145, 147, 148, 150, 151, 152, 153],
     "gold_edges": [
-      {
-        "source_id": 152,
-        "target_id": 145,
-        "explanation": "U152 challenges whether the secure legal framework promised by U145 can work when global markets constrain state power."
-      },
-      {
-        "source_id": 152,
-        "target_id": 150,
-        "explanation": "U152 directly attacks U150's proposed ban and safeguards by asking how the state can prevent market capture."
-      },
-      {
-        "source_id": 152,
-        "target_id": 151,
-        "explanation": "U152 directly disputes U151's assurance of altruism by arguing that global market pressure may consume the practice."
-      }
+      {"source_id": 152, "target_id": 145, "explanation": "U152 challenges whether the secure legal framework promised by U145 can work when global markets constrain state power."},
+      {"source_id": 152, "target_id": 150, "explanation": "U152 attacks U150's proposed safeguards by asking how the state can prevent market capture."},
+      {"source_id": 152, "target_id": 151, "explanation": "U152 disputes U151's assurance of altruism under global market pressure."}
     ],
     "hard_negatives": [
-      {
-        "source_id": 153,
-        "target_id": 152,
-        "explanation": "U153 rephrases the same-side challenge in U152; it does not answer it."
-      }
+      {"source_id": 153, "target_id": 152, "phenomenon": "repetition_or_rephrase", "explanation": "U153 rephrases the same-side challenge in U152; it does not answer it."}
     ]
   },
   {
+    "scenario_id": "vives_debate3_b",
+    "debate_id": "Debate3",
+    "title": "Desire, bodily autonomy, and organ sales",
+    "split": "development",
+    "phenomena": ["local_direct", "response_chain", "same_side_extension_trap"],
+    "source_unit_ids": [188, 189, 190, 197, 198, 199],
+    "gold_edges": [
+      {"source_id": 197, "target_id": 188, "explanation": "U197 turns U188's framing of parenthood as a desire by distinguishing bodily autonomy as a right."},
+      {"source_id": 198, "target_id": 197, "explanation": "U198 directly rejects U197's rights claim using the prohibition on selling a kidney."}
+    ],
+    "hard_negatives": [
+      {"source_id": 190, "target_id": 188, "phenomenon": "same_side_extension", "explanation": "U190 elaborates U188's same-side claim by specifying the desire to continue a lineage."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate3_c",
+    "debate_id": "Debate3",
+    "title": "Is Canada's model still altruistic?",
+    "split": "heldout_test",
+    "phenomena": ["long_distance", "branching", "response_chain", "same_side_extension_trap"],
+    "source_unit_ids": [238, 239, 240, 241, 242, 243, 244, 257, 259],
+    "gold_edges": [
+      {"source_id": 239, "target_id": 238, "explanation": "U239 challenges U238's reliance on the Canadian model by claiming that it ceased to be altruistic."},
+      {"source_id": 257, "target_id": 239, "explanation": "U257 attacks U239's evidence by saying it rests only on one politician's proposal."},
+      {"source_id": 259, "target_id": 239, "explanation": "U259 directly denies U239 by asserting that Canada remains altruistic."},
+      {"source_id": 259, "target_id": 240, "explanation": "U259 rejects U240's claim that commercialization is already on the table."},
+      {"source_id": 259, "target_id": 241, "explanation": "U259 disputes U241's suggestion that payments undermine altruism."},
+      {"source_id": 259, "target_id": 242, "explanation": "U259 denies that the cited woman received commercial payment."},
+      {"source_id": 259, "target_id": 243, "explanation": "U259 treats maintenance payments in U243 as compatible with an altruistic model."},
+      {"source_id": 259, "target_id": 244, "explanation": "U259 rejects U244's use of pregnancy-duration payments as evidence of commercialization."}
+    ],
+    "hard_negatives": [
+      {"source_id": 259, "target_id": 257, "phenomenon": "same_side_extension", "explanation": "VivesDebate marks conflict, but U259 and U257 share a stance; U259 strengthens rather than opposes U257's reply."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate4",
     "debate_id": "Debate4",
     "title": "Protecting dignity through public regulation",
+    "split": "development",
+    "phenomena": ["branching", "same_side_extension_trap"],
     "source_unit_ids": [93, 94, 95, 96, 97, 98],
     "gold_edges": [
-      {
-        "source_id": 95,
-        "target_id": 94,
-        "explanation": "U95 directly answers U94's dignity-risk objection by asserting that the public system would protect the surrogate's dignity."
-      },
-      {
-        "source_id": 96,
-        "target_id": 94,
-        "explanation": "U96 turns U94's dignity objection by arguing that the unregulated status quo is what violates women's rights."
-      }
+      {"source_id": 95, "target_id": 94, "explanation": "U95 answers U94's dignity-risk objection by asserting that the public system would protect the surrogate's dignity."},
+      {"source_id": 96, "target_id": 94, "explanation": "U96 turns U94's dignity objection by arguing that the unregulated status quo violates women's rights."}
     ],
     "hard_negatives": [
-      {
-        "source_id": 98,
-        "target_id": 97,
-        "explanation": "U98 is a same-side evidentiary extension of U97's abortion analogy, not a response."
-      }
+      {"source_id": 98, "target_id": 97, "phenomenon": "same_side_extension", "explanation": "U98 is a same-side evidentiary extension of U97's abortion analogy."}
     ]
   },
   {
+    "scenario_id": "vives_debate4_b",
+    "debate_id": "Debate4",
+    "title": "Can intermediaries be removed from the system?",
+    "split": "development",
+    "phenomena": ["local_direct", "rephrase_trap", "same_side_extension_trap"],
+    "source_unit_ids": [142, 143, 144, 145, 146, 147, 148],
+    "gold_edges": [
+      {"source_id": 147, "target_id": 146, "explanation": "U147 directly denies U146's premise that companies can be removed from the system."}
+    ],
+    "hard_negatives": [
+      {"source_id": 143, "target_id": 142, "phenomenon": "repetition_or_rephrase", "explanation": "U143 rephrases U142's same-side example of consumers choosing among agencies."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate4_c",
+    "debate_id": "Debate4",
+    "title": "Is prohibition paternalistic?",
+    "split": "heldout_test",
+    "phenomena": ["branching", "rephrase_trap", "topical_distractor"],
+    "source_unit_ids": [273, 274, 275, 276, 277, 278],
+    "gold_edges": [
+      {"source_id": 276, "target_id": 275, "explanation": "U276 turns U275's paternalism objection by arguing that the state prevents a choice that would surrender freedom itself."},
+      {"source_id": 278, "target_id": 275, "explanation": "U278 directly denies that prohibition is paternalistic and frames it as protection from bodily subjection."}
+    ],
+    "hard_negatives": [
+      {"source_id": 277, "target_id": 276, "phenomenon": "repetition_or_rephrase", "explanation": "U277 rephrases and elaborates U276's same-side account of state protection."},
+      {"source_id": 275, "target_id": 273, "phenomenon": "topical_nonresponse", "explanation": "U275 introduces a paternalism objection to prohibition; it does not answer U273's distinct claim about private providers exploiting desperate patients."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate5",
     "debate_id": "Debate5",
     "title": "Does an existing practice justify legalization?",
+    "split": "development",
+    "phenomena": ["local_direct", "rephrase_trap", "same_side_extension_trap"],
     "source_unit_ids": [136, 137, 138, 139, 140, 141, 142, 143],
     "gold_edges": [
-      {
-        "source_id": 142,
-        "target_id": 139,
-        "explanation": "U142 directly attacks U139's existence-based justification by asking whether every existing practice should therefore be legalized."
-      }
+      {"source_id": 142, "target_id": 139, "explanation": "U142 attacks U139's existence-based justification by asking whether every existing practice should be legalized."}
     ],
     "hard_negatives": [
-      {
-        "source_id": 143,
-        "target_id": 142,
-        "explanation": "U143 merely restates U142's question and supplies no answer or attack."
-      },
-      {
-        "source_id": 140,
-        "target_id": 139,
-        "explanation": "U140 is a same-side extension offering another reason for legalization, not a response to U139."
-      }
+      {"source_id": 143, "target_id": 142, "phenomenon": "repetition_or_rephrase", "explanation": "U143 merely restates U142's question and supplies no answer."},
+      {"source_id": 140, "target_id": 139, "phenomenon": "same_side_extension", "explanation": "U140 offers another same-side reason for legalization rather than answering U139."}
     ]
   },
   {
+    "scenario_id": "vives_debate5_b",
+    "debate_id": "Debate5",
+    "title": "Can altruistic surrogacy exist in practice?",
+    "split": "development",
+    "phenomena": ["long_distance", "branching", "response_chain", "rephrase_trap"],
+    "source_unit_ids": [73, 96, 174, 175, 176, 177, 178],
+    "gold_edges": [
+      {"source_id": 177, "target_id": 73, "explanation": "U177 challenges U73's claim that altruistic surrogacy is unrealistic by citing countries that have adopted it."},
+      {"source_id": 177, "target_id": 96, "explanation": "U177 applies the same country evidence directly against U96's repeated realism objection."},
+      {"source_id": 178, "target_id": 177, "explanation": "U178 answers U177 by arguing that legal adoption elsewhere does not prove a sufficiently real practice."}
+    ],
+    "hard_negatives": [
+      {"source_id": 175, "target_id": 96, "phenomenon": "repetition_or_rephrase", "explanation": "U175 is another same-side rephrasing of U96's realism objection."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate5_c",
+    "debate_id": "Debate5",
+    "title": "Rights, desires, and altruistic collaboration",
+    "split": "heldout_test",
+    "phenomena": ["branching", "response_chain", "same_side_extension_trap"],
+    "source_unit_ids": [247, 248, 249, 250, 251, 252],
+    "gold_edges": [
+      {"source_id": 249, "target_id": 247, "explanation": "U249 attacks U247's rights framing by arguing that becoming a parent is not itself a right."},
+      {"source_id": 250, "target_id": 249, "explanation": "U250 directly qualifies U249 by recasting parenthood as a desire."},
+      {"source_id": 251, "target_id": 249, "explanation": "U251 turns U249 by locating the relevant right in voluntary altruistic collaboration rather than parenthood."}
+    ],
+    "hard_negatives": [
+      {"source_id": 251, "target_id": 250, "phenomenon": "same_side_extension", "explanation": "Although the source marks conflict, U251 and U250 share a stance; U251 extends the reply rather than opposing U250."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate6",
     "debate_id": "Debate6",
     "title": "Disputing the evidence from Thailand",
+    "split": "development",
+    "phenomena": ["long_distance", "response_chain", "rephrase_trap"],
     "source_unit_ids": [112, 113, 114, 116, 118, 119, 120, 130, 131, 132, 133],
     "gold_edges": [
-      {
-        "source_id": 130,
-        "target_id": 113,
-        "explanation": "U130 directly qualifies U113's claim that Thailand has no surrogacy regulation by explaining that the country previously allowed the practice under regulation."
-      },
-      {
-        "source_id": 132,
-        "target_id": 130,
-        "explanation": "U132 directly denies the factual account of Thailand given in U130."
-      },
-      {
-        "source_id": 132,
-        "target_id": 131,
-        "explanation": "U132 directly denies U131's claim that the cited case caused Thailand to prohibit surrogacy."
-      }
+      {"source_id": 130, "target_id": 113, "explanation": "U130 qualifies U113's claim that Thailand has no regulation by explaining that it previously allowed surrogacy under regulation."},
+      {"source_id": 132, "target_id": 130, "explanation": "U132 directly denies U130's factual account of Thailand."},
+      {"source_id": 132, "target_id": 131, "explanation": "U132 directly denies U131's claim that the cited case caused Thailand to prohibit surrogacy."}
     ],
     "hard_negatives": [
-      {
-        "source_id": 133,
-        "target_id": 132,
-        "explanation": "U133 is a same-side elaboration of U132's factual denial, not a response to it."
-      }
+      {"source_id": 133, "target_id": 132, "phenomenon": "same_side_extension", "explanation": "U133 is a same-side elaboration of U132's factual denial."}
     ]
   },
   {
+    "scenario_id": "vives_debate6_b",
+    "debate_id": "Debate6",
+    "title": "Individual freedom and the state's limits",
+    "split": "development",
+    "phenomena": ["long_distance", "same_side_extension_trap"],
+    "source_unit_ids": [165, 166, 167, 168, 183, 184, 185],
+    "gold_edges": [
+      {"source_id": 185, "target_id": 168, "explanation": "U185 directly answers U168's anti-coercion question by defining the state as the institution that limits one person's freedom where another's begins."}
+    ],
+    "hard_negatives": [
+      {"source_id": 167, "target_id": 166, "phenomenon": "same_side_extension", "explanation": "U167 applies U166's same-side freedom principle to a volunteer's emotional benefit."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate6_c",
+    "debate_id": "Debate6",
+    "title": "The welfare state and deaths in the Mediterranean",
+    "split": "heldout_test",
+    "phenomena": ["branching", "response_chain", "same_side_extension_trap", "topical_distractor"],
+    "source_unit_ids": [186, 187, 188, 189, 190, 191, 193, 194],
+    "gold_edges": [
+      {"source_id": 191, "target_id": 186, "explanation": "U191 attacks U186's appeal to the welfare state by pointing to deaths it currently permits in the Mediterranean."},
+      {"source_id": 193, "target_id": 191, "explanation": "U193 answers U191 by pointing to groups actively working to prevent those deaths."},
+      {"source_id": 194, "target_id": 191, "explanation": "U194 directly rejects any acceptance of the deaths cited in U191."}
+    ],
+    "hard_negatives": [
+      {"source_id": 194, "target_id": 193, "phenomenon": "same_side_extension", "explanation": "U194 reinforces U193's same-side position; it does not answer it."},
+      {"source_id": 191, "target_id": 190, "phenomenon": "topical_nonresponse", "explanation": "U191 criticizes the welfare state's record in the Mediterranean; it does not answer U190's separate claim about protecting women from economic pressure."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate7",
     "debate_id": "Debate7",
     "title": "Education, harm reduction, and prohibition",
+    "split": "development",
+    "phenomena": ["local_direct", "same_side_extension_trap"],
     "source_unit_ids": [76, 77, 78, 79, 80, 81, 82],
     "gold_edges": [
-      {
-        "source_id": 81,
-        "target_id": 76,
-        "explanation": "U81 directly mitigates U76's education alternative by arguing that education and prohibition can coexist."
-      }
+      {"source_id": 81, "target_id": 76, "explanation": "U81 mitigates U76's education alternative by arguing that education and prohibition can coexist."}
     ],
     "hard_negatives": [
-      {
-        "source_id": 77,
-        "target_id": 76,
-        "explanation": "U77 is a same-side harm-reduction extension of U76, not an opposing response."
-      }
+      {"source_id": 77, "target_id": 76, "phenomenon": "same_side_extension", "explanation": "U77 is a same-side harm-reduction extension of U76."}
     ]
   },
   {
+    "scenario_id": "vives_debate7_b",
+    "debate_id": "Debate7",
+    "title": "Can public healthcare make the practice ethical?",
+    "split": "development",
+    "phenomena": ["local_direct", "topical_distractor", "same_side_extension_trap"],
+    "source_unit_ids": [139, 140, 141, 142, 143, 144, 145],
+    "gold_edges": [
+      {"source_id": 144, "target_id": 143, "explanation": "U144 directly rejects U143's suggestion that a public-healthcare model would guarantee an ethical practice."}
+    ],
+    "hard_negatives": [
+      {"source_id": 142, "target_id": 141, "phenomenon": "same_side_extension", "explanation": "U142 extends U141's adoption point with examples of children needing homes."},
+      {"source_id": 143, "target_id": 139, "phenomenon": "topical_nonresponse", "explanation": "U143 asks whether public healthcare can make surrogacy ethical; it does not answer U139's separate objection to pronatalist policy."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate7_c",
+    "debate_id": "Debate7",
+    "title": "Autonomy and the paternalism objection",
+    "split": "heldout_test",
+    "phenomena": ["local_direct", "same_side_extension_trap"],
+    "source_unit_ids": [271, 272, 273, 274, 275, 276],
+    "gold_edges": [
+      {"source_id": 275, "target_id": 273, "explanation": "U275 directly rejects the paternalism objection raised in U273."}
+    ],
+    "hard_negatives": [
+      {"source_id": 274, "target_id": 273, "phenomenon": "same_side_extension", "explanation": "U274 is a same-side extension that develops U273's paternalism objection through an autonomy question."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate8",
     "debate_id": "Debate8",
     "title": "The analogy between surrogacy and organ donation",
+    "split": "development",
+    "phenomena": ["response_chain", "same_side_extension_trap"],
     "source_unit_ids": [206, 207, 208, 209, 210, 211],
     "gold_edges": [
-      {
-        "source_id": 208,
-        "target_id": 206,
-        "explanation": "U208 directly attacks U206's altruistic model by arguing that the organ-donation analogy does not apply."
-      },
-      {
-        "source_id": 209,
-        "target_id": 208,
-        "explanation": "U209 directly answers U208's deceased-donor distinction by pointing out that living organ donation also exists."
-      }
+      {"source_id": 208, "target_id": 206, "explanation": "U208 attacks U206's altruistic model by arguing that the organ-donation analogy does not apply."},
+      {"source_id": 209, "target_id": 208, "explanation": "U209 answers U208's deceased-donor distinction by pointing out that living organ donation also exists."}
     ],
     "hard_negatives": [
-      {
-        "source_id": 207,
-        "target_id": 206,
-        "explanation": "U207 is a same-side assertion that the proposed model is feasible, not a response to U206."
-      }
+      {"source_id": 207, "target_id": 206, "phenomenon": "same_side_extension", "explanation": "U207 is a same-side assertion that the proposed model is feasible."}
     ]
   },
   {
+    "scenario_id": "vives_debate8_b",
+    "debate_id": "Debate8",
+    "title": "Is the proposed model really the British model?",
+    "split": "development",
+    "phenomena": ["long_distance", "same_side_extension_trap", "topical_distractor"],
+    "source_unit_ids": [165, 166, 167, 168, 179, 180, 181, 182],
+    "gold_edges": [
+      {"source_id": 181, "target_id": 165, "explanation": "U181 directly denies U165's claim that the affirmative proposal resembles the United Kingdom's model."}
+    ],
+    "hard_negatives": [
+      {"source_id": 180, "target_id": 179, "phenomenon": "same_side_extension", "explanation": "U180 extends U179's same-side comparison by distinguishing Ukraine from the United States."},
+      {"source_id": 179, "target_id": 168, "phenomenon": "topical_nonresponse", "explanation": "U179 describes post-birth parentage adjudication in the United States; it does not answer U168's separate concern about paying a surrogate's living expenses."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate8_c",
+    "debate_id": "Debate8",
+    "title": "Does legalization necessarily objectify women?",
+    "split": "heldout_test",
+    "phenomena": ["long_distance", "same_side_extension_trap"],
+    "source_unit_ids": [150, 151, 152, 183, 184, 185, 186],
+    "gold_edges": [
+      {"source_id": 186, "target_id": 150, "explanation": "U186 directly attacks U150's ethical objection that legal surrogacy necessarily objectifies women."}
+    ],
+    "hard_negatives": [
+      {"source_id": 185, "target_id": 184, "phenomenon": "same_side_extension", "explanation": "U185 extends U184's same-side autonomy claim rather than answering it."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate9",
     "debate_id": "Debate9",
     "title": "Contracts in surrogacy and adoption",
+    "split": "development",
+    "phenomena": ["response_chain", "same_side_extension_trap"],
     "source_unit_ids": [195, 196, 197, 198, 199, 200],
     "gold_edges": [
-      {
-        "source_id": 196,
-        "target_id": 195,
-        "explanation": "U196 directly challenges U195's contract argument by comparing it with adoption contracts."
-      },
-      {
-        "source_id": 200,
-        "target_id": 196,
-        "explanation": "U200 directly rejects U196's analogy by stating that adoption does not involve the same transaction."
-      }
+      {"source_id": 196, "target_id": 195, "explanation": "U196 challenges U195's contract argument by comparing it with adoption contracts."},
+      {"source_id": 200, "target_id": 196, "explanation": "U200 rejects U196's analogy by stating that adoption does not involve the same transaction."}
     ],
     "hard_negatives": [
-      {
-        "source_id": 200,
-        "target_id": 199,
-        "explanation": "Although VivesDebate marks conflict, U199 and U200 belong to the same side, so U200 cannot be a FlowJudge response edge."
-      }
+      {"source_id": 200, "target_id": 199, "phenomenon": "same_side_extension", "explanation": "Although VivesDebate marks conflict, U199 and U200 belong to the same side."}
     ]
   },
   {
-    "debate_id": "Debate10",
-    "title": "Exploitation at home and regulation abroad",
-    "source_unit_ids": [251, 252, 253, 256, 257, 258],
+    "scenario_id": "vives_debate9_b",
+    "debate_id": "Debate9",
+    "title": "Freedom under exploitation and feminized poverty",
+    "split": "development",
+    "phenomena": ["long_distance", "branching", "same_side_extension_trap"],
+    "source_unit_ids": [27, 156, 157, 158, 159, 160, 161, 162, 163],
     "gold_edges": [
-      {
-        "source_id": 252,
-        "target_id": 251,
-        "explanation": "U252 directly challenges U251's exploitation claim by asking where exploitation would occur under enforceable public safeguards."
-      },
-      {
-        "source_id": 253,
-        "target_id": 252,
-        "explanation": "U253 directly answers U252 by arguing that safeguards cannot preserve integrity within an inherently exploitative system."
-      },
-      {
-        "source_id": 257,
-        "target_id": 256,
-        "explanation": "U257 directly answers U256's hypocrisy objection by denying that Spain can regulate conduct outside its borders."
-      },
-      {
-        "source_id": 258,
-        "target_id": 256,
-        "explanation": "U258 directly attacks U256's cross-border argument by rejecting the principle that Spain should legalize everything allowed elsewhere."
-      }
+      {"source_id": 159, "target_id": 27, "explanation": "U159 attacks the freedom claim in U27 by arguing that commercial surrogacy exploits women while calling that exploitation empowering."},
+      {"source_id": 163, "target_id": 27, "explanation": "U163 directly challenges whether a choice can be free under feminized poverty."}
     ],
     "hard_negatives": [
-      {
-        "source_id": 253,
-        "target_id": 251,
-        "explanation": "U253 extends U251's same-side exploitation position; it answers U252, not U251."
-      }
+      {"source_id": 160, "target_id": 159, "phenomenon": "same_side_extension", "explanation": "U160 adds a same-side objectification claim after U159; it does not answer U159."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate9_c",
+    "debate_id": "Debate9",
+    "title": "Is the child the product of a contract?",
+    "split": "development",
+    "phenomena": ["long_distance", "branching", "rephrase_trap", "same_side_extension_trap"],
+    "source_unit_ids": [65, 246, 247, 248, 249, 250, 251, 252],
+    "gold_edges": [
+      {"source_id": 250, "target_id": 65, "explanation": "U250 directly denies U65's claim that the child is the product of a sales contract."},
+      {"source_id": 252, "target_id": 65, "explanation": "U252 rejects U65 by asserting that the proposed procedure never treats the child as an object."}
+    ],
+    "hard_negatives": [
+      {"source_id": 248, "target_id": 65, "phenomenon": "repetition_or_rephrase", "explanation": "U248 restates the opponent's product framing before it is answered; it does not itself rebut U65."},
+      {"source_id": 251, "target_id": 250, "phenomenon": "same_side_extension", "explanation": "U251 rephrases and extends U250's same-side denial."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate10",
+    "debate_id": "Debate10",
+    "title": "Exploitation at home and regulation abroad",
+    "split": "development",
+    "phenomena": ["branching", "response_chain", "same_side_extension_trap"],
+    "source_unit_ids": [251, 252, 253, 256, 257, 258],
+    "gold_edges": [
+      {"source_id": 252, "target_id": 251, "explanation": "U252 challenges U251's exploitation claim by asking where exploitation would occur under public safeguards."},
+      {"source_id": 253, "target_id": 252, "explanation": "U253 answers U252 by arguing that safeguards cannot preserve integrity within an exploitative system."},
+      {"source_id": 257, "target_id": 256, "explanation": "U257 answers U256's hypocrisy objection by denying that Spain can regulate conduct outside its borders."},
+      {"source_id": 258, "target_id": 256, "explanation": "U258 attacks U256's argument by rejecting the principle that Spain should legalize everything allowed elsewhere."}
+    ],
+    "hard_negatives": [
+      {"source_id": 253, "target_id": 251, "phenomenon": "same_side_extension", "explanation": "U253 extends U251's same-side exploitation position; it answers U252, not U251."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate10_b",
+    "debate_id": "Debate10",
+    "title": "Parenthood as a desire or an opportunity",
+    "split": "development",
+    "phenomena": ["long_distance", "same_side_extension_trap", "topical_distractor"],
+    "source_unit_ids": [83, 100, 101, 102, 103, 104],
+    "gold_edges": [
+      {"source_id": 104, "target_id": 83, "explanation": "U104 answers U83's claim that parenthood is not a right by framing the proposal as an opportunity for people unable to have biological children."}
+    ],
+    "hard_negatives": [
+      {"source_id": 103, "target_id": 102, "phenomenon": "same_side_extension", "explanation": "U103 gives the same-side altruism warrant for U102's claim that financial need would disappear."},
+      {"source_id": 100, "target_id": 83, "phenomenon": "topical_nonresponse", "explanation": "U100 proposes judicial oversight; it does not answer U83's distinct claim that parenthood is not a right."}
+    ]
+  },
+  {
+    "scenario_id": "vives_debate10_c",
+    "debate_id": "Debate10",
+    "title": "Is altruism being offered as a universal solution?",
+    "split": "development",
+    "phenomena": ["local_direct", "rephrase_trap", "same_side_extension_trap"],
+    "source_unit_ids": [108, 109, 110, 111, 112, 113],
+    "gold_edges": [
+      {"source_id": 110, "target_id": 108, "explanation": "U110 directly denies U108's characterization of altruism as a solution to every problem."}
+    ],
+    "hard_negatives": [
+      {"source_id": 109, "target_id": 108, "phenomenon": "repetition_or_rephrase", "explanation": "U109 is a same-side rhetorical rephrasing of U108's utopianism objection."}
     ]
   }
 ]

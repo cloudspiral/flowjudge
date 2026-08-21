@@ -19,10 +19,10 @@ def build_parser() -> argparse.ArgumentParser:
     review_parser = subparsers.add_parser("build-review", help="regenerate the compact benchmark review page")
     review_parser.add_argument("--output", type=Path, default=DEFAULT_REVIEW_PATH)
 
-    subparsers.add_parser("dry-run", help="validate the 72-assignment matrix without API calls or keys")
+    subparsers.add_parser("dry-run", help="validate the 192-assignment matrix without API calls or keys")
 
     run_parser = subparsers.add_parser("run", help="run the approved online experiment")
-    run_parser.add_argument("--approval", required=True, help="exact pilot approval phrase")
+    run_parser.add_argument("--approval", required=True, help="exact formal benchmark approval phrase")
 
     score_parser = subparsers.add_parser("score", help="recompute deterministic metrics for a run")
     score_parser.add_argument("run_directory", type=Path)

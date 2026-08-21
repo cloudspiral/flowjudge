@@ -22,22 +22,24 @@ def test_offline_dry_run_requires_no_keys_and_plans_exact_matrix(monkeypatch) ->
 
     manifest = dry_run_manifest()
 
-    assert manifest["benchmark_scenarios"] == 12
+    assert manifest["benchmark_scenarios"] == 32
     assert manifest["real_debates"] == 10
+    assert manifest["real_scenarios"] == 30
     assert manifest["synthetic_scenarios"] == 2
-    assert manifest["total_units"] == 82
-    assert manifest["planned_primary_model_calls"] == 72
-    assert manifest["planned_fixed_judge_calls"] == 72
+    assert manifest["total_units"] == 222
+    assert manifest["scenarios_by_split"] == {"development": 24, "heldout_test": 8}
+    assert manifest["planned_primary_model_calls"] == 192
+    assert manifest["planned_fixed_judge_calls"] == 192
     assert manifest["network_calls_made"] == 0
     assert manifest["approval_required"] == APPROVAL_PHRASE
 
 
-def test_assignment_matrix_is_two_providers_by_three_prompts_by_twelve_cases() -> None:
+def test_assignment_matrix_is_two_providers_by_three_prompts_by_thirty_two_cases() -> None:
     config = ExperimentConfig("openai-key", "anthropic-key", "openai-model", "anthropic-model", "judge-model")
     assignments = build_assignments(load_benchmark(), config)
 
-    assert len(assignments) == 72
-    assert len({assignment.assignment_id for assignment in assignments}) == 72
+    assert len(assignments) == 192
+    assert len({assignment.assignment_id for assignment in assignments}) == 192
     assert {assignment.provider for assignment in assignments} == {"openai", "anthropic"}
     assert {assignment.prompt_name for assignment in assignments} == {
         "zero_shot",

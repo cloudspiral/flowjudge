@@ -1,7 +1,8 @@
 import json
 
 from flowjudge.data import load_benchmark
-from flowjudge.scorer import parse_prediction, score_records
+from flowjudge.schemas import HardNegativePhenomenon
+from flowjudge.scorer import parse_prediction, parse_prediction_normalized, score_records
 
 
 def _record(case, relations) -> dict[str, str]:
@@ -16,6 +17,8 @@ def test_parse_prediction_is_strict_about_json_and_schema() -> None:
     assert not parse_prediction('{"relations": [], "commentary": "done"}').valid_json
     assert not parse_prediction('{"relations": [{"source":"U2","target":"U1","type":"supports"}]}').valid_json
     assert parse_prediction('{"relations": []}').valid_json
+    assert parse_prediction_normalized("```json\n{\"relations\": []}\n```").valid_json
+    assert not parse_prediction_normalized("Here you go:\n```json\n{\"relations\": []}\n```").valid_json
 
 
 def test_exact_gold_predictions_score_perfectly() -> None:
@@ -29,10 +32,14 @@ def test_exact_gold_predictions_score_perfectly() -> None:
 
     assert summary["valid_json_rate"] == 1.0
     assert summary["exact_graph_match_rate"] == 1.0
+    assert summary["normalized_exact_graph_match_rate"] == 1.0
     assert summary["edge_precision"] == 1.0
     assert summary["edge_recall"] == 1.0
     assert summary["edge_f1"] == 1.0
     assert summary["annotated_hard_negative_false_positive_rate"] == 0.0
+    assert summary["normalized_annotated_hard_negative_false_positive_rate"] == 0.0
+    assert set(summary["by_split"]) == {"development", "heldout_test"}
+    assert summary["by_phenomenon"]
 
 
 def test_annotated_hard_negative_false_positive_rate() -> None:
@@ -60,7 +67,50 @@ def test_invalid_output_counts_as_nonexact_and_misses_gold_edges() -> None:
 
     assert summary["valid_json_rate"] == 0.0
     assert summary["exact_graph_match_rate"] == 0.0
+    assert summary["normalized_exact_graph_match_rate"] == 0.0
     assert summary["false_negative_edges"] == len(case.gold.gold_relations)
+
+
+def test_fenced_graph_is_strict_failure_but_normalized_exact() -> None:
+    case = load_benchmark()[0]
+    relations = [edge.model_dump(exclude={"explanation"}) for edge in case.gold.gold_relations]
+    records = [
+        {
+            "scenario_id": case.scenario.scenario_id,
+            "raw_response": f"```json\n{json.dumps({'relations': relations})}\n```",
+        }
+    ]
+
+    summary = score_records([case], records)
+
+    assert summary["valid_json_rate"] == 0.0
+    assert summary["exact_graph_match_rate"] == 0.0
+    assert summary["normalized_valid_json_rate"] == 1.0
+    assert summary["normalized_exact_graph_match_rate"] == 1.0
+    assert summary["failure_cases"] == []
+    assert len(summary["formatting_only_failures"]) == 1
+
+
+def test_topical_nonresponse_false_positive_rate_is_reported_separately() -> None:
+    case = next(
+        case
+        for case in load_benchmark()
+        if any(
+            pair.phenomenon == HardNegativePhenomenon.TOPICAL_NONRESPONSE
+            for pair in case.gold.hard_negatives
+        )
+    )
+    pair = next(
+        pair
+        for pair in case.gold.hard_negatives
+        if pair.phenomenon == HardNegativePhenomenon.TOPICAL_NONRESPONSE
+    )
+    summary = score_records(
+        [case],
+        [_record(case, [{"source": pair.source, "target": pair.target, "type": "responds_to"}])],
+    )
+
+    assert summary["false_positive_rate_on_topically_related_nonresponses"] == 1.0
 
 
 def test_model_prompt_and_fixed_judge_summaries_are_secondary() -> None:

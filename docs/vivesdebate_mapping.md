@@ -13,7 +13,7 @@ debate CSVs and jury-evaluation CSV remain under `data/source/vivesdebate/`;
 their official MD5 checksums are recorded in the source manifest.
 
 The model-facing benchmark does not send an entire 198–371 ADU debate to a
-model. It uses one self-contained 6–12 ADU exchange from each debate and gives
+model. It uses three self-contained 6–12 ADU exchanges from each debate and gives
 the model a short human-written topic label. This restores the short,
 manually reviewable task shape and prevents the evaluation from becoming
 primarily a test of poor machine translation and very-long-context search.
@@ -23,9 +23,9 @@ primarily a test of poor machine translation and very-long-context search.
 The curation is split into two files so that relation labels are fixed before
 the model-facing wording:
 
-1. `data/curation/vives_excerpt_blueprints.json` fixes each debate's source ADU
-   IDs, CA-derived gold pairs, content-specific edge explanations, and important
-   hard-negative pairs.
+1. `data/curation/vives_excerpt_blueprints.json` fixes each excerpt's source ADU
+   IDs, development or held-out split, structural phenomenon tags, CA-derived
+   gold pairs, content-specific edge explanations, and typed hard-negative pairs.
 2. `data/curation/vives_reviewed_english.json` supplies a curated English
    rendering of those already-selected ADUs using the clearer `ADU_ES` and
    `ADU_CAT` fields.
@@ -73,8 +73,28 @@ convention; the original direction remains in `source_relations`.
 
 Same-side conflicts, inference links, rephrases, and relations crossing the
 excerpt boundary never become response edges. Each excerpt also contains one or
-more explicitly explained hard negatives covering repetition, same-side
-extension, or an independent argument.
+more explicitly explained hard negatives tagged as topical nonresponse,
+same-side extension, repetition/rephrase, or independent counterargument.
+
+## Split and ablation design
+
+The ten excerpts used in the completed pilot stay in the development split. Two
+additional excerpts per debate broaden the structural coverage. Eight new real
+excerpts—one each from Debates 1–8—form a held-out test split that was not used
+in the pilot; the remaining real and synthetic cases are development data. This
+produces 24 development scenarios and 8 held-out scenarios without placing a
+synthetic case in the held-out score.
+
+This is a held-out split for the prompt-only baseline ablation, not a future
+fine-tuning split: excerpts from the same source debate can occur in both
+partitions. Before training any SLM, create a debate-level split that prevents
+source-debate leakage.
+
+Scenario tags identify the intended structural stressors: local direct replies,
+long-distance replies, branching, response chains, rephrase traps, same-side
+extension traps, and topical distractors. The two synthetic development cases
+add dropped arguments and cross-application because those phenomena are not
+cleanly isolated in the selected VivesDebate excerpts.
 
 ## Curated-English boundary
 
@@ -106,14 +126,13 @@ The generated manifest and tests verify:
 
 - all 2,932 source ADUs remain in unchanged checksum-verified CSVs;
 - all 2,842 valid source relations and every relation slot remain accounted for;
-- all 70 selected real ADUs preserve source ID, order, stance, phase, argument
+- all 210 selected real ADUs preserve source ID, order, stance, phase, argument
   number, and raw Catalan/Spanish/English text;
 - every real excerpt has 6–12 ADUs and at least one hard negative;
 - every gold edge is later-to-earlier, cross-stance, and backed by an internal
   `CA` annotation;
 - all jury outcomes are preserved.
 
-`docs/pilot_review.html` shows the mapping, these automated checks, the excerpt
-inventory, and two complete representative transcripts. Manual review is
-limited to deciding whether the displayed gold arrows represent direct
-responses in understandable context.
+`docs/pilot_review.html` shows the mapping, these automated checks, the 30-excerpt
+inventory, and two complete representative transcripts. It is a compact audit
+report, not a request to manually review all cases.

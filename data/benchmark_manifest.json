@@ -1,5 +1,5 @@
 {
-  "benchmark_version": 3,
+  "benchmark_version": 4,
   "debates": [
     {
       "adu_count": 198,
@@ -15,7 +15,13 @@
       "last_source_id": 198,
       "missing_phase_annotations": 0,
       "missing_source_ids": [],
+      "phenomena": [
+        "local_direct",
+        "same_side_extension_trap",
+        "topical_distractor"
+      ],
       "same_stance_conflicts_preserved_not_mapped": 0,
+      "scenario_id": "vives_debate1",
       "source_adu_count": 198,
       "source_annotation_issue_count": 0,
       "source_annotation_issues_by_reason": {},
@@ -27,7 +33,77 @@
         "conflict": 3,
         "inference": 144,
         "rephrase": 25
-      }
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 198,
+      "cross_stance_conflicts": 3,
+      "debate_id": "Debate1",
+      "excerpt_adu_count": 7,
+      "excerpt_boundary_source_relation_count": 3,
+      "excerpt_internal_source_relation_count": 5,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 1,
+      "jury_margin": 0.0235,
+      "jury_winner": "FAVOUR",
+      "last_source_id": 198,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [],
+      "phenomena": [
+        "local_direct",
+        "same_side_extension_trap"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 0,
+      "scenario_id": "vives_debate1_b",
+      "source_adu_count": 198,
+      "source_annotation_issue_count": 0,
+      "source_annotation_issues_by_reason": {},
+      "source_file": "Debate1.csv",
+      "source_md5": "45158cfc30c10c4665070fd97e9b7864",
+      "source_relation_count": 172,
+      "source_relation_slot_count": 165,
+      "source_relations_by_type": {
+        "conflict": 3,
+        "inference": 144,
+        "rephrase": 25
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 198,
+      "cross_stance_conflicts": 3,
+      "debate_id": "Debate1",
+      "excerpt_adu_count": 8,
+      "excerpt_boundary_source_relation_count": 6,
+      "excerpt_internal_source_relation_count": 5,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 1,
+      "jury_margin": 0.0235,
+      "jury_winner": "FAVOUR",
+      "last_source_id": 198,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [],
+      "phenomena": [
+        "long_distance",
+        "same_side_extension_trap",
+        "topical_distractor"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 0,
+      "scenario_id": "vives_debate1_c",
+      "source_adu_count": 198,
+      "source_annotation_issue_count": 0,
+      "source_annotation_issues_by_reason": {},
+      "source_file": "Debate1.csv",
+      "source_md5": "45158cfc30c10c4665070fd97e9b7864",
+      "source_relation_count": 172,
+      "source_relation_slot_count": 165,
+      "source_relations_by_type": {
+        "conflict": 3,
+        "inference": 144,
+        "rephrase": 25
+      },
+      "split": "heldout_test"
     },
     {
       "adu_count": 371,
@@ -49,7 +125,12 @@
         316,
         317
       ],
+      "phenomena": [
+        "branching",
+        "same_side_extension_trap"
+      ],
       "same_stance_conflicts_preserved_not_mapped": 17,
+      "scenario_id": "vives_debate2",
       "source_adu_count": 371,
       "source_annotation_issue_count": 0,
       "source_annotation_issues_by_reason": {},
@@ -61,7 +142,91 @@
         "conflict": 45,
         "inference": 264,
         "rephrase": 34
-      }
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 371,
+      "cross_stance_conflicts": 28,
+      "debate_id": "Debate2",
+      "excerpt_adu_count": 6,
+      "excerpt_boundary_source_relation_count": 24,
+      "excerpt_internal_source_relation_count": 5,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 4,
+      "jury_margin": 0.02,
+      "jury_winner": "AGAINST",
+      "last_source_id": 376,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [
+        280,
+        309,
+        315,
+        316,
+        317
+      ],
+      "phenomena": [
+        "long_distance",
+        "branching",
+        "response_chain",
+        "same_side_extension_trap"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 17,
+      "scenario_id": "vives_debate2_b",
+      "source_adu_count": 371,
+      "source_annotation_issue_count": 0,
+      "source_annotation_issues_by_reason": {},
+      "source_file": "Debate2.csv",
+      "source_md5": "5a4d0bd7169ffba9818831d92bf19613",
+      "source_relation_count": 343,
+      "source_relation_slot_count": 264,
+      "source_relations_by_type": {
+        "conflict": 45,
+        "inference": 264,
+        "rephrase": 34
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 371,
+      "cross_stance_conflicts": 28,
+      "debate_id": "Debate2",
+      "excerpt_adu_count": 6,
+      "excerpt_boundary_source_relation_count": 5,
+      "excerpt_internal_source_relation_count": 7,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 4,
+      "jury_margin": 0.02,
+      "jury_winner": "AGAINST",
+      "last_source_id": 376,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [
+        280,
+        309,
+        315,
+        316,
+        317
+      ],
+      "phenomena": [
+        "long_distance",
+        "branching",
+        "rephrase_trap"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 17,
+      "scenario_id": "vives_debate2_c",
+      "source_adu_count": 371,
+      "source_annotation_issue_count": 0,
+      "source_annotation_issues_by_reason": {},
+      "source_file": "Debate2.csv",
+      "source_md5": "5a4d0bd7169ffba9818831d92bf19613",
+      "source_relation_count": 343,
+      "source_relation_slot_count": 264,
+      "source_relations_by_type": {
+        "conflict": 45,
+        "inference": 264,
+        "rephrase": 34
+      },
+      "split": "heldout_test"
     },
     {
       "adu_count": 311,
@@ -77,7 +242,12 @@
       "last_source_id": 311,
       "missing_phase_annotations": 0,
       "missing_source_ids": [],
+      "phenomena": [
+        "branching",
+        "rephrase_trap"
+      ],
       "same_stance_conflicts_preserved_not_mapped": 6,
+      "scenario_id": "vives_debate3",
       "source_adu_count": 311,
       "source_annotation_issue_count": 0,
       "source_annotation_issues_by_reason": {},
@@ -89,7 +259,79 @@
         "conflict": 44,
         "inference": 293,
         "rephrase": 30
-      }
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 311,
+      "cross_stance_conflicts": 38,
+      "debate_id": "Debate3",
+      "excerpt_adu_count": 6,
+      "excerpt_boundary_source_relation_count": 4,
+      "excerpt_internal_source_relation_count": 5,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 2,
+      "jury_margin": 0.0875,
+      "jury_winner": "FAVOUR",
+      "last_source_id": 311,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [],
+      "phenomena": [
+        "local_direct",
+        "response_chain",
+        "same_side_extension_trap"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 6,
+      "scenario_id": "vives_debate3_b",
+      "source_adu_count": 311,
+      "source_annotation_issue_count": 0,
+      "source_annotation_issues_by_reason": {},
+      "source_file": "Debate3.csv",
+      "source_md5": "324212d836827341c7479e3a09c8556c",
+      "source_relation_count": 367,
+      "source_relation_slot_count": 234,
+      "source_relations_by_type": {
+        "conflict": 44,
+        "inference": 293,
+        "rephrase": 30
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 311,
+      "cross_stance_conflicts": 38,
+      "debate_id": "Debate3",
+      "excerpt_adu_count": 9,
+      "excerpt_boundary_source_relation_count": 3,
+      "excerpt_internal_source_relation_count": 13,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 8,
+      "jury_margin": 0.0875,
+      "jury_winner": "FAVOUR",
+      "last_source_id": 311,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [],
+      "phenomena": [
+        "long_distance",
+        "branching",
+        "response_chain",
+        "same_side_extension_trap"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 6,
+      "scenario_id": "vives_debate3_c",
+      "source_adu_count": 311,
+      "source_annotation_issue_count": 0,
+      "source_annotation_issues_by_reason": {},
+      "source_file": "Debate3.csv",
+      "source_md5": "324212d836827341c7479e3a09c8556c",
+      "source_relation_count": 367,
+      "source_relation_slot_count": 234,
+      "source_relations_by_type": {
+        "conflict": 44,
+        "inference": 293,
+        "rephrase": 30
+      },
+      "split": "heldout_test"
     },
     {
       "adu_count": 308,
@@ -105,7 +347,12 @@
       "last_source_id": 308,
       "missing_phase_annotations": 0,
       "missing_source_ids": [],
+      "phenomena": [
+        "branching",
+        "same_side_extension_trap"
+      ],
       "same_stance_conflicts_preserved_not_mapped": 1,
+      "scenario_id": "vives_debate4",
       "source_adu_count": 308,
       "source_annotation_issue_count": 0,
       "source_annotation_issues_by_reason": {},
@@ -117,7 +364,78 @@
         "conflict": 9,
         "inference": 217,
         "rephrase": 40
-      }
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 308,
+      "cross_stance_conflicts": 8,
+      "debate_id": "Debate4",
+      "excerpt_adu_count": 7,
+      "excerpt_boundary_source_relation_count": 3,
+      "excerpt_internal_source_relation_count": 6,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 1,
+      "jury_margin": 0.143,
+      "jury_winner": "AGAINST",
+      "last_source_id": 308,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [],
+      "phenomena": [
+        "local_direct",
+        "rephrase_trap",
+        "same_side_extension_trap"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 1,
+      "scenario_id": "vives_debate4_b",
+      "source_adu_count": 308,
+      "source_annotation_issue_count": 0,
+      "source_annotation_issues_by_reason": {},
+      "source_file": "Debate4.csv",
+      "source_md5": "1288185a6f40fe60abd0e75d4afafc84",
+      "source_relation_count": 266,
+      "source_relation_slot_count": 249,
+      "source_relations_by_type": {
+        "conflict": 9,
+        "inference": 217,
+        "rephrase": 40
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 308,
+      "cross_stance_conflicts": 8,
+      "debate_id": "Debate4",
+      "excerpt_adu_count": 6,
+      "excerpt_boundary_source_relation_count": 2,
+      "excerpt_internal_source_relation_count": 3,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 2,
+      "jury_margin": 0.143,
+      "jury_winner": "AGAINST",
+      "last_source_id": 308,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [],
+      "phenomena": [
+        "branching",
+        "rephrase_trap",
+        "topical_distractor"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 1,
+      "scenario_id": "vives_debate4_c",
+      "source_adu_count": 308,
+      "source_annotation_issue_count": 0,
+      "source_annotation_issues_by_reason": {},
+      "source_file": "Debate4.csv",
+      "source_md5": "1288185a6f40fe60abd0e75d4afafc84",
+      "source_relation_count": 266,
+      "source_relation_slot_count": 249,
+      "source_relations_by_type": {
+        "conflict": 9,
+        "inference": 217,
+        "rephrase": 40
+      },
+      "split": "heldout_test"
     },
     {
       "adu_count": 270,
@@ -133,7 +451,13 @@
       "last_source_id": 270,
       "missing_phase_annotations": 0,
       "missing_source_ids": [],
+      "phenomena": [
+        "local_direct",
+        "rephrase_trap",
+        "same_side_extension_trap"
+      ],
       "same_stance_conflicts_preserved_not_mapped": 9,
+      "scenario_id": "vives_debate5",
       "source_adu_count": 270,
       "source_annotation_issue_count": 0,
       "source_annotation_issues_by_reason": {},
@@ -145,7 +469,79 @@
         "conflict": 35,
         "inference": 383,
         "rephrase": 55
-      }
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 270,
+      "cross_stance_conflicts": 26,
+      "debate_id": "Debate5",
+      "excerpt_adu_count": 7,
+      "excerpt_boundary_source_relation_count": 29,
+      "excerpt_internal_source_relation_count": 10,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 3,
+      "jury_margin": 1.095,
+      "jury_winner": "FAVOUR",
+      "last_source_id": 270,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [],
+      "phenomena": [
+        "long_distance",
+        "branching",
+        "response_chain",
+        "rephrase_trap"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 9,
+      "scenario_id": "vives_debate5_b",
+      "source_adu_count": 270,
+      "source_annotation_issue_count": 0,
+      "source_annotation_issues_by_reason": {},
+      "source_file": "Debate5.csv",
+      "source_md5": "6a77347fec666bcea03da3ff7b494853",
+      "source_relation_count": 473,
+      "source_relation_slot_count": 214,
+      "source_relations_by_type": {
+        "conflict": 35,
+        "inference": 383,
+        "rephrase": 55
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 270,
+      "cross_stance_conflicts": 26,
+      "debate_id": "Debate5",
+      "excerpt_adu_count": 6,
+      "excerpt_boundary_source_relation_count": 7,
+      "excerpt_internal_source_relation_count": 5,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 3,
+      "jury_margin": 1.095,
+      "jury_winner": "FAVOUR",
+      "last_source_id": 270,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [],
+      "phenomena": [
+        "branching",
+        "response_chain",
+        "same_side_extension_trap"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 9,
+      "scenario_id": "vives_debate5_c",
+      "source_adu_count": 270,
+      "source_annotation_issue_count": 0,
+      "source_annotation_issues_by_reason": {},
+      "source_file": "Debate5.csv",
+      "source_md5": "6a77347fec666bcea03da3ff7b494853",
+      "source_relation_count": 473,
+      "source_relation_slot_count": 214,
+      "source_relations_by_type": {
+        "conflict": 35,
+        "inference": 383,
+        "rephrase": 55
+      },
+      "split": "heldout_test"
     },
     {
       "adu_count": 324,
@@ -161,7 +557,13 @@
       "last_source_id": 324,
       "missing_phase_annotations": 0,
       "missing_source_ids": [],
+      "phenomena": [
+        "long_distance",
+        "response_chain",
+        "rephrase_trap"
+      ],
       "same_stance_conflicts_preserved_not_mapped": 7,
+      "scenario_id": "vives_debate6",
       "source_adu_count": 324,
       "source_annotation_issue_count": 0,
       "source_annotation_issues_by_reason": {},
@@ -173,7 +575,78 @@
         "conflict": 19,
         "inference": 192,
         "rephrase": 40
-      }
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 324,
+      "cross_stance_conflicts": 12,
+      "debate_id": "Debate6",
+      "excerpt_adu_count": 7,
+      "excerpt_boundary_source_relation_count": 2,
+      "excerpt_internal_source_relation_count": 2,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 1,
+      "jury_margin": 0.0725,
+      "jury_winner": "AGAINST",
+      "last_source_id": 324,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [],
+      "phenomena": [
+        "long_distance",
+        "same_side_extension_trap"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 7,
+      "scenario_id": "vives_debate6_b",
+      "source_adu_count": 324,
+      "source_annotation_issue_count": 0,
+      "source_annotation_issues_by_reason": {},
+      "source_file": "Debate6.csv",
+      "source_md5": "76979e7f68d7678e271f075ce828c1d2",
+      "source_relation_count": 251,
+      "source_relation_slot_count": 217,
+      "source_relations_by_type": {
+        "conflict": 19,
+        "inference": 192,
+        "rephrase": 40
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 324,
+      "cross_stance_conflicts": 12,
+      "debate_id": "Debate6",
+      "excerpt_adu_count": 8,
+      "excerpt_boundary_source_relation_count": 7,
+      "excerpt_internal_source_relation_count": 4,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 3,
+      "jury_margin": 0.0725,
+      "jury_winner": "AGAINST",
+      "last_source_id": 324,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [],
+      "phenomena": [
+        "branching",
+        "response_chain",
+        "same_side_extension_trap",
+        "topical_distractor"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 7,
+      "scenario_id": "vives_debate6_c",
+      "source_adu_count": 324,
+      "source_annotation_issue_count": 0,
+      "source_annotation_issues_by_reason": {},
+      "source_file": "Debate6.csv",
+      "source_md5": "76979e7f68d7678e271f075ce828c1d2",
+      "source_relation_count": 251,
+      "source_relation_slot_count": 217,
+      "source_relations_by_type": {
+        "conflict": 19,
+        "inference": 192,
+        "rephrase": 40
+      },
+      "split": "heldout_test"
     },
     {
       "adu_count": 299,
@@ -189,7 +662,12 @@
       "last_source_id": 299,
       "missing_phase_annotations": 0,
       "missing_source_ids": [],
+      "phenomena": [
+        "local_direct",
+        "same_side_extension_trap"
+      ],
       "same_stance_conflicts_preserved_not_mapped": 3,
+      "scenario_id": "vives_debate7",
       "source_adu_count": 299,
       "source_annotation_issue_count": 1,
       "source_annotation_issues_by_reason": {
@@ -203,7 +681,81 @@
         "conflict": 7,
         "inference": 203,
         "rephrase": 23
-      }
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 299,
+      "cross_stance_conflicts": 4,
+      "debate_id": "Debate7",
+      "excerpt_adu_count": 7,
+      "excerpt_boundary_source_relation_count": 4,
+      "excerpt_internal_source_relation_count": 3,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 1,
+      "jury_margin": 0.1865,
+      "jury_winner": "FAVOUR",
+      "last_source_id": 299,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [],
+      "phenomena": [
+        "local_direct",
+        "topical_distractor",
+        "same_side_extension_trap"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 3,
+      "scenario_id": "vives_debate7_b",
+      "source_adu_count": 299,
+      "source_annotation_issue_count": 1,
+      "source_annotation_issues_by_reason": {
+        "incomplete_pair": 1
+      },
+      "source_file": "Debate7.csv",
+      "source_md5": "8ddf3035222e468b586cbb6a3fff2d29",
+      "source_relation_count": 233,
+      "source_relation_slot_count": 224,
+      "source_relations_by_type": {
+        "conflict": 7,
+        "inference": 203,
+        "rephrase": 23
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 299,
+      "cross_stance_conflicts": 4,
+      "debate_id": "Debate7",
+      "excerpt_adu_count": 6,
+      "excerpt_boundary_source_relation_count": 2,
+      "excerpt_internal_source_relation_count": 2,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 1,
+      "jury_margin": 0.1865,
+      "jury_winner": "FAVOUR",
+      "last_source_id": 299,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [],
+      "phenomena": [
+        "local_direct",
+        "same_side_extension_trap"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 3,
+      "scenario_id": "vives_debate7_c",
+      "source_adu_count": 299,
+      "source_annotation_issue_count": 1,
+      "source_annotation_issues_by_reason": {
+        "incomplete_pair": 1
+      },
+      "source_file": "Debate7.csv",
+      "source_md5": "8ddf3035222e468b586cbb6a3fff2d29",
+      "source_relation_count": 233,
+      "source_relation_slot_count": 224,
+      "source_relations_by_type": {
+        "conflict": 7,
+        "inference": 203,
+        "rephrase": 23
+      },
+      "split": "heldout_test"
     },
     {
       "adu_count": 220,
@@ -219,7 +771,12 @@
       "last_source_id": 220,
       "missing_phase_annotations": 0,
       "missing_source_ids": [],
+      "phenomena": [
+        "response_chain",
+        "same_side_extension_trap"
+      ],
       "same_stance_conflicts_preserved_not_mapped": 1,
+      "scenario_id": "vives_debate8",
       "source_adu_count": 220,
       "source_annotation_issue_count": 0,
       "source_annotation_issues_by_reason": {},
@@ -231,7 +788,77 @@
         "conflict": 7,
         "inference": 155,
         "rephrase": 19
-      }
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 220,
+      "cross_stance_conflicts": 6,
+      "debate_id": "Debate8",
+      "excerpt_adu_count": 8,
+      "excerpt_boundary_source_relation_count": 5,
+      "excerpt_internal_source_relation_count": 5,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 1,
+      "jury_margin": 0.608,
+      "jury_winner": "AGAINST",
+      "last_source_id": 220,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [],
+      "phenomena": [
+        "long_distance",
+        "same_side_extension_trap",
+        "topical_distractor"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 1,
+      "scenario_id": "vives_debate8_b",
+      "source_adu_count": 220,
+      "source_annotation_issue_count": 0,
+      "source_annotation_issues_by_reason": {},
+      "source_file": "Debate8.csv",
+      "source_md5": "bd2a38ea2e39b744a88186a27ec4f8ea",
+      "source_relation_count": 181,
+      "source_relation_slot_count": 161,
+      "source_relations_by_type": {
+        "conflict": 7,
+        "inference": 155,
+        "rephrase": 19
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 220,
+      "cross_stance_conflicts": 6,
+      "debate_id": "Debate8",
+      "excerpt_adu_count": 7,
+      "excerpt_boundary_source_relation_count": 8,
+      "excerpt_internal_source_relation_count": 3,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 1,
+      "jury_margin": 0.608,
+      "jury_winner": "AGAINST",
+      "last_source_id": 220,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [],
+      "phenomena": [
+        "long_distance",
+        "same_side_extension_trap"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 1,
+      "scenario_id": "vives_debate8_c",
+      "source_adu_count": 220,
+      "source_annotation_issue_count": 0,
+      "source_annotation_issues_by_reason": {},
+      "source_file": "Debate8.csv",
+      "source_md5": "bd2a38ea2e39b744a88186a27ec4f8ea",
+      "source_relation_count": 181,
+      "source_relation_slot_count": 161,
+      "source_relations_by_type": {
+        "conflict": 7,
+        "inference": 155,
+        "rephrase": 19
+      },
+      "split": "heldout_test"
     },
     {
       "adu_count": 352,
@@ -247,7 +874,12 @@
       "last_source_id": 352,
       "missing_phase_annotations": 0,
       "missing_source_ids": [],
+      "phenomena": [
+        "response_chain",
+        "same_side_extension_trap"
+      ],
       "same_stance_conflicts_preserved_not_mapped": 11,
+      "scenario_id": "vives_debate9",
       "source_adu_count": 352,
       "source_annotation_issue_count": 0,
       "source_annotation_issues_by_reason": {},
@@ -259,7 +891,79 @@
         "conflict": 28,
         "inference": 270,
         "rephrase": 20
-      }
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 352,
+      "cross_stance_conflicts": 17,
+      "debate_id": "Debate9",
+      "excerpt_adu_count": 9,
+      "excerpt_boundary_source_relation_count": 20,
+      "excerpt_internal_source_relation_count": 2,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 2,
+      "jury_margin": 0.0895,
+      "jury_winner": "AGAINST",
+      "last_source_id": 352,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [],
+      "phenomena": [
+        "long_distance",
+        "branching",
+        "same_side_extension_trap"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 11,
+      "scenario_id": "vives_debate9_b",
+      "source_adu_count": 352,
+      "source_annotation_issue_count": 0,
+      "source_annotation_issues_by_reason": {},
+      "source_file": "Debate9.csv",
+      "source_md5": "47082b3602a30c7c72da185f92beaf00",
+      "source_relation_count": 318,
+      "source_relation_slot_count": 244,
+      "source_relations_by_type": {
+        "conflict": 28,
+        "inference": 270,
+        "rephrase": 20
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 352,
+      "cross_stance_conflicts": 17,
+      "debate_id": "Debate9",
+      "excerpt_adu_count": 8,
+      "excerpt_boundary_source_relation_count": 9,
+      "excerpt_internal_source_relation_count": 6,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 2,
+      "jury_margin": 0.0895,
+      "jury_winner": "AGAINST",
+      "last_source_id": 352,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [],
+      "phenomena": [
+        "long_distance",
+        "branching",
+        "rephrase_trap",
+        "same_side_extension_trap"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 11,
+      "scenario_id": "vives_debate9_c",
+      "source_adu_count": 352,
+      "source_annotation_issue_count": 0,
+      "source_annotation_issues_by_reason": {},
+      "source_file": "Debate9.csv",
+      "source_md5": "47082b3602a30c7c72da185f92beaf00",
+      "source_relation_count": 318,
+      "source_relation_slot_count": 244,
+      "source_relations_by_type": {
+        "conflict": 28,
+        "inference": 270,
+        "rephrase": 20
+      },
+      "split": "development"
     },
     {
       "adu_count": 279,
@@ -275,7 +979,13 @@
       "last_source_id": 279,
       "missing_phase_annotations": 0,
       "missing_source_ids": [],
+      "phenomena": [
+        "branching",
+        "response_chain",
+        "same_side_extension_trap"
+      ],
       "same_stance_conflicts_preserved_not_mapped": 1,
+      "scenario_id": "vives_debate10",
       "source_adu_count": 279,
       "source_annotation_issue_count": 0,
       "source_annotation_issues_by_reason": {},
@@ -287,7 +997,78 @@
         "conflict": 11,
         "inference": 188,
         "rephrase": 39
-      }
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 279,
+      "cross_stance_conflicts": 10,
+      "debate_id": "Debate10",
+      "excerpt_adu_count": 6,
+      "excerpt_boundary_source_relation_count": 4,
+      "excerpt_internal_source_relation_count": 3,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 1,
+      "jury_margin": 0.9285,
+      "jury_winner": "FAVOUR",
+      "last_source_id": 279,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [],
+      "phenomena": [
+        "long_distance",
+        "same_side_extension_trap",
+        "topical_distractor"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 1,
+      "scenario_id": "vives_debate10_b",
+      "source_adu_count": 279,
+      "source_annotation_issue_count": 0,
+      "source_annotation_issues_by_reason": {},
+      "source_file": "Debate10.csv",
+      "source_md5": "789081eb05f6afbb1b27d734e965acba",
+      "source_relation_count": 238,
+      "source_relation_slot_count": 219,
+      "source_relations_by_type": {
+        "conflict": 11,
+        "inference": 188,
+        "rephrase": 39
+      },
+      "split": "development"
+    },
+    {
+      "adu_count": 279,
+      "cross_stance_conflicts": 10,
+      "debate_id": "Debate10",
+      "excerpt_adu_count": 6,
+      "excerpt_boundary_source_relation_count": 2,
+      "excerpt_internal_source_relation_count": 5,
+      "first_source_id": 1,
+      "flowjudge_response_edges": 1,
+      "jury_margin": 0.9285,
+      "jury_winner": "FAVOUR",
+      "last_source_id": 279,
+      "missing_phase_annotations": 0,
+      "missing_source_ids": [],
+      "phenomena": [
+        "local_direct",
+        "rephrase_trap",
+        "same_side_extension_trap"
+      ],
+      "same_stance_conflicts_preserved_not_mapped": 1,
+      "scenario_id": "vives_debate10_c",
+      "source_adu_count": 279,
+      "source_annotation_issue_count": 0,
+      "source_annotation_issues_by_reason": {},
+      "source_file": "Debate10.csv",
+      "source_md5": "789081eb05f6afbb1b27d734e965acba",
+      "source_relation_count": 238,
+      "source_relation_slot_count": 219,
+      "source_relations_by_type": {
+        "conflict": 11,
+        "inference": 188,
+        "rephrase": 39
+      },
+      "split": "development"
     }
   ],
   "mapping": {
@@ -300,14 +1081,16 @@
     "MA": "preserved as source_relations[type=rephrase]; not mapped to responds_to",
     "RA": "preserved as source_relations[type=inference]; not mapped to responds_to",
     "chronological_ID": "unit.id as U<source ID>; gaps are preserved",
-    "excerpt_selection": "6-12 source ADUs per debate; source IDs and chronological order are preserved",
+    "excerpt_selection": "three 6-12 ADU excerpts per debate; source IDs and chronological order are preserved",
     "excerpt_topic": "a human-written topic label is included as shared context; it does not alter any ADU",
-    "jury_scores": "preserved with winner and score margin"
+    "jury_scores": "preserved with winner and score margin",
+    "phenomena": "scenario-level structural tags are fixed in the pre-text blueprint; hard-negative pairs carry a negative-type tag",
+    "split": "24 development scenarios and 8 held-out-test scenarios; every held-out scenario is real VivesDebate data"
   },
   "source": {
     "corpus": "VivesDebate",
     "doi": "10.5281/zenodo.6531487",
-    "excerpt_selection_rule": "One self-contained 6-12 ADU exchange per selected debate, fixed from source CA annotations before curated English was written; all original CSVs and complete relation graphs remain preserved.",
+    "excerpt_selection_rule": "Three self-contained 6-12 ADU exchanges per selected debate, fixed from source CA annotations before curated English was written; the original pilot excerpt remains development data and eight previously unseen excerpts form the held-out test split.",
     "excluded_before_tenth_selection": [],
     "license": "CC BY-NC-SA 4.0",
     "model_facing_language": "CURATED_EN",
@@ -344,10 +1127,30 @@
     "all_stances_present": true,
     "converted_relation_slot_count": 2191,
     "converted_source_relation_count": 2842,
-    "gold_response_edge_count": 27,
-    "model_facing_real_unit_count": 70,
+    "development_scenario_count": 24,
+    "gold_response_edge_count": 70,
+    "hard_negatives_by_phenomenon": {
+      "independent_counterargument": 2,
+      "repetition_or_rephrase": 7,
+      "same_side_extension": 24,
+      "topical_nonresponse": 8
+    },
+    "heldout_test_scenario_count": 8,
+    "model_facing_real_unit_count": 210,
     "real_debate_count": 10,
-    "scenario_count": 12,
+    "real_scenario_count": 30,
+    "scenario_count": 32,
+    "scenarios_by_phenomenon": {
+      "branching": 14,
+      "cross_application": 1,
+      "dropped_argument": 1,
+      "local_direct": 9,
+      "long_distance": 12,
+      "rephrase_trap": 9,
+      "response_chain": 10,
+      "same_side_extension_trap": 25,
+      "topical_distractor": 8
+    },
     "source_adu_count": 2932,
     "source_annotation_issue_count": 1,
     "source_relation_count": 2842,

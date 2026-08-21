@@ -1,0 +1,23 @@
+{
+  "accepted_count_before_cap": 113,
+  "candidate_count": 115,
+  "created_at": "2026-08-21T06:32:35.529638+00:00",
+  "dataset_paths": [
+    "data/training/v1_n12.jsonl",
+    "data/training/v1_n24.jsonl",
+    "data/training/v1_n48.jsonl",
+    "data/training/v1_n96.jsonl"
+  ],
+  "dataset_sizes": [
+    12,
+    24,
+    48,
+    96
+  ],
+  "filter_model": "gpt-5.6-sol",
+  "published_training_count": 96,
+  "records_path": "results/data_generation/20260821T061839.058137Z/records.jsonl",
+  "rematerialized_at": "2026-08-21T06:32:43.105467+00:00",
+  "response_edge_label_leak_check": "training prompts omit source anchor-pair titles",
+  "teacher_model": "gpt-5.6-sol"
+}

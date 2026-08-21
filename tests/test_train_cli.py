@@ -33,6 +33,7 @@ def test_mlx_qlora_cli_uses_quantized_small_qwen() -> None:
 
     assert args.model == "mlx-community/Qwen3-0.6B-4bit"
     assert args.gradient_accumulation_steps == 4
+    assert module._canonical_base("mlx-community/Qwen3-1.7B-4bit") == "Qwen/Qwen3-1.7B"
 
 
 def test_mlx_training_disables_qwen_thinking_without_mutating_source() -> None:

@@ -27,7 +27,7 @@ extensions, repetition, and independent counterarguments are excluded.
 The locked, falsifiable behavior and fixed 0–4 judge rubric are in
 [`docs/behavior_spec.md`](docs/behavior_spec.md).
 
-## Current status: prompt ceiling completed
+## Current status: local end-to-end loop completed
 
 The approved pilot completed all 72 candidate assignments and 72 fixed-judge
 assessments. The primary exact graph-match rate was 2/72 (2.8%); no
@@ -51,6 +51,16 @@ deterministic exact graph match, so the behavior survives the pre-registered
 95%/90% gate. See [`docs/prompt_ceiling_results.md`](docs/prompt_ceiling_results.md).
 The recurring best-cell failure is spurious response edges, especially on
 same-side extensions.
+
+The first real distillation run then accepted 113/115 VivesDebate-derived
+examples and published leak-free nested 12/24/48/96 training slices. All four
+Qwen3 0.6B QLoRA checkpoints trained locally with complete logs. On the
+nine-case own evaluation set, the best n=96 checkpoint improved valid JSON from
+66.7% to 100% and edge F1 from 0% to 16%, but exact graph match remained 0%.
+Two data-only v2 revisions and a Qwen3 1.7B capacity check failed to improve the
+result. See [`docs/data_generation_results.md`](docs/data_generation_results.md),
+[`docs/data_efficiency_results.md`](docs/data_efficiency_results.md), and
+[`docs/v2_results.md`](docs/v2_results.md).
 
 The pilot justified expansion, so the now-locked formal benchmark contains:
 
@@ -203,7 +213,7 @@ uv run flowjudge distill-training-data --max-workers 4 --required-examples 96
 uv sync --frozen --group mlx-train
 uv run --group mlx-train python scripts/run_efficiency_curve.py --backend mlx
 uv run python eval.py \
-  --model artifacts/efficiency/n12/adapter \
+  --model artifacts/efficiency/n96/adapter \
   --eval-set data/eval/own_eval.jsonl
 ```
 
@@ -211,6 +221,17 @@ uv run python eval.py \
 tuned model, and preserves raw generations plus one full judge JSON object per
 example. A grader can replace the eval path with staff-provided `BenchmarkCase`
 JSONL without changing the harness.
+
+The best n=96 adapter has also been fused and dequantized into a portable local
+Transformers checkpoint at `artifacts/publish/flowjudge-qwen3-0.6b/`. A real
+CPU load and generation verified all 596,049,920 parameters. Public upload is
+prepared by `scripts/publish_hf.py` but requires Hugging Face authentication and
+user-selected public repository IDs.
+
+The OpenAI account exhausted its credit after completing rubric judgments for
+n=12 and n=24. Later local generations, pending-judge rows, and deterministic
+metrics are preserved without substituting a weaker judge. Replenish the same
+key to complete the fixed-judge columns.
 
 ## Prompts and scoring
 
@@ -241,15 +262,13 @@ judge text, complete SDK response envelopes, and summary under `results/`.
 
 ## Decision rule
 
-The pilot and formal kill conditions were not met. The weak baselines repeatedly
-failed on orientation, target attachment, long-distance responses, branching,
-and rephrase/response discrimination. Before SLM training, independently
-adjudicate the small set of consensus disagreements identified in the formal
-report; some may expose gaps between VivesDebate `CA` labels and FlowJudge's
-written response definition. This benchmark can support a claim about
-outperforming the chosen inexpensive general-purpose baselines; it does not
-establish that flagship frontier models are unreliable unless flagship models
-are separately tested.
+The prompt-ceiling kill condition was not met, but the SLM also did not learn
+the behavior reliably. The data produced strong schema compliance and a small
+nonzero graph-reconstruction gain, not superiority to the chosen weak frontier
+baselines. No tested dataset size reliably holds the behavior, so minimum viable
+N is not established at N ≤ 120. The next evidence-driven step is gold-label
+adjudication and more diverse human-checked attachment contrasts, not
+hyperparameter tuning.
 
 ## Layout
 
@@ -257,10 +276,11 @@ are separately tested.
 data/benchmark_*.json*       converted benchmark and validation manifest
 data/curation/               pre-text excerpt blueprints and curated English
 data/source/vivesdebate/     unchanged selected source CSVs and provenance
+data/training/               filtered v1 slices and error-driven v2 datasets
 docs/                        compact review and mapping documentation
 prompts/                     candidate and fixed-judge prompts
 results/                     ignored approved-run artifacts
-scripts/build_benchmark.py   deterministic source converter
+scripts/                     conversion, QLoRA, evaluation, and publication tools
 src/flowjudge/               schemas, loader, runner, scorer, review generator
 tests/                       offline provenance, conversion, gate, and scoring tests
 ```

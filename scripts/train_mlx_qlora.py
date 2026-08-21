@@ -13,6 +13,7 @@ from pathlib import Path
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Train FlowJudge with local Apple-Silicon MLX QLoRA")
     parser.add_argument("--model", default="mlx-community/Qwen3-0.6B-4bit")
+    parser.add_argument("--canonical-base-model")
     parser.add_argument("--train-set", required=True, type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)
     parser.add_argument("--epochs", type=float, default=3.0)
@@ -28,6 +29,7 @@ def main() -> None:
     args = build_parser().parse_args()
     run_training(
         model_id=args.model,
+        canonical_base_model=args.canonical_base_model,
         train_set=args.train_set,
         output_dir=args.output_dir,
         epochs=args.epochs,
@@ -42,6 +44,7 @@ def main() -> None:
 def run_training(
     *,
     model_id: str,
+    canonical_base_model: str | None,
     train_set: Path,
     output_dir: Path,
     epochs: float,
@@ -128,7 +131,7 @@ def run_training(
         "created_at": datetime.now(UTC).isoformat(),
         "framework": "mlx-lm",
         "method": "QLoRA because the loaded base checkpoint is 4-bit quantized",
-        "canonical_base_model": "Qwen/Qwen3-0.6B",
+        "canonical_base_model": canonical_base_model or _canonical_base(model_id),
         "quantized_base_model": model_id,
         "train_set": str(train_set),
         "training_examples": len(rows),
@@ -163,6 +166,11 @@ def _disable_qwen_thinking(messages: list[dict[str, str]]) -> list[dict[str, str
             message["content"] = message["content"].rstrip() + "\n/no_think"
             break
     return copied
+
+
+def _canonical_base(model_id: str) -> str:
+    name = model_id.rsplit("/", 1)[-1].removesuffix("-4bit")
+    return f"Qwen/{name}" if name.startswith("Qwen3-") else model_id
 
 
 if __name__ == "__main__":

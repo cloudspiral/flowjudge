@@ -15,6 +15,7 @@ def build_parser() -> argparse.ArgumentParser:
         description="Fuse a trained MLX QLoRA adapter into a portable Hugging Face checkpoint"
     )
     parser.add_argument("--model", default="mlx-community/Qwen3-0.6B-4bit")
+    parser.add_argument("--evaluation-base-model")
     parser.add_argument("--adapter", required=True, type=Path)
     parser.add_argument("--output-dir", required=True, type=Path)
     return parser
@@ -46,7 +47,11 @@ def main() -> None:
         {
             "fused_at": datetime.now(UTC).isoformat(),
             "publication_format": "dequantized Hugging Face-compatible safetensors",
-            "evaluation_base_model": "Qwen/Qwen3-0.6B",
+            "evaluation_base_model": (
+                args.evaluation_base_model
+                or manifest.get("canonical_base_model")
+                or "Qwen/Qwen3-0.6B"
+            ),
             "fused_from_quantized_model": args.model,
             "fused_from_adapter": str(args.adapter),
             "fuse_command": command,

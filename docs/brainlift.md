@@ -10,7 +10,7 @@ Given a chronological 6–12-unit debate excerpt, the model must return one bare
 
 ## Why training rather than prompting
 
-The official prompt-ceiling report will record the best of six model/prompt cells and the recurring graph error that survives it. The project proceeds only if no cell reaches the pre-registered 95% mean Spec-adherence and 90% mean Robustness gate.
+The best of six prompt-ceiling cells reached only 58.6% mean Spec adherence, 69.5% mean Robustness, and 15.6% exact graph match. It failed mainly by adding spurious response edges around same-side extensions, far below the pre-registered 95%/90% gate.
 
 ## Dataset design
 
@@ -32,7 +32,9 @@ The canonical base is `Qwen/Qwen3-0.6B`. The first local sweep uses the correspo
 
 ## Results
 
-Prompt-ceiling, base-versus-tuned, and data-efficiency numbers will be inserted from their machine-generated reports. The minimum viable dataset size is the smallest checkpoint that holds the improvement on both the own and staff-held-out sets without a recurring core failure.
+On the nine-case own evaluation set, the untuned Qwen3 0.6B base produced 66.7% valid JSON and 0% edge F1. The best n=96 checkpoint produced 100% valid JSON and 16% edge F1, but 0% exact graph match. Smaller 12/24/48 checkpoints had 0% edge F1. Two error-driven v2 data revisions did not improve beyond 16%, and a Qwen3 1.7B capacity check was worse than its base.
+
+No tested size reliably holds the full behavior, so the minimum viable dataset size is **not established at N ≤ 120**. This is a negative but falsifiable result: the data clearly instilled schema compliance and a small amount of response reconstruction, not reliable graph recovery.
 
 ## Limitations
 
@@ -49,4 +51,4 @@ uv run --group mlx-train python scripts/run_efficiency_curve.py --backend mlx
 uv run python eval.py --model <hf-repo-id> --eval-set data/eval/own_eval.jsonl
 ```
 
-The final submission must add the exact evaluation-code commit, public dataset revision, public Hugging Face model commit, complete efficiency table, and demo URL.
+Publication is locally prepared but still needs Hugging Face authentication and repository IDs. Fixed-judge rows beyond n=24 need replenished OpenAI credits, and staff-held-out results need the grader-supplied JSONL.

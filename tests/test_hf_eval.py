@@ -1,6 +1,7 @@
 import json
 
 from flowjudge.hf_eval import (
+    _declared_base_model,
     _mlx_adapter_base_model,
     _resolve_backend,
     _results_table,
@@ -49,3 +50,12 @@ def test_auto_detects_local_mlx_adapter_and_manifest(tmp_path) -> None:
 
     assert _resolve_backend(str(adapter_dir), "auto") == "mlx"
     assert _mlx_adapter_base_model(str(adapter_dir)) == "mlx-community/Qwen3-0.6B-4bit"
+
+
+def test_fused_checkpoint_declares_transformers_evaluation_base(tmp_path) -> None:
+    (tmp_path / "flowjudge_training_manifest.json").write_text(
+        json.dumps({"evaluation_base_model": "Qwen/Qwen3-0.6B"}),
+        encoding="utf-8",
+    )
+
+    assert _declared_base_model(str(tmp_path)) == "Qwen/Qwen3-0.6B"

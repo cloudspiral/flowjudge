@@ -50,3 +50,17 @@ def test_mlx_training_disables_qwen_thinking_without_mutating_source() -> None:
 
     assert result[0]["content"].endswith("/no_think")
     assert source[0]["content"] == "Return JSON."
+
+
+def test_fuse_cli_defaults_to_matching_quantized_base() -> None:
+    path = Path(__file__).parents[1] / "scripts" / "fuse_mlx_for_hf.py"
+    spec = importlib.util.spec_from_file_location("fuse_mlx_for_hf", path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+
+    args = module.build_parser().parse_args(
+        ["--adapter", "adapter", "--output-dir", "fused"]
+    )
+
+    assert args.model == "mlx-community/Qwen3-0.6B-4bit"

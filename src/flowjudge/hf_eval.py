@@ -99,7 +99,11 @@ def run_hf_evaluation(
         else:
             targets = [("model", model_id, None)]
     else:
-        base_model = _adapter_base_model(model_id) if compare_base else None
+        base_model = (
+            _adapter_base_model(model_id) or _declared_base_model(model_id)
+            if compare_base
+            else None
+        )
         targets = (
             [("base", base_model, None), ("tuned", model_id, None)]
             if base_model
@@ -364,17 +368,30 @@ def _mlx_adapter_base_model(model_id: str) -> str | None:
 
 
 def _read_adapter_config(model_id: str) -> dict[str, Any]:
-    config_path = Path(model_id) / "adapter_config.json"
-    if config_path.exists():
+    return _read_json_resource(model_id, "adapter_config.json")
+
+
+def _declared_base_model(model_id: str) -> str | None:
+    manifest = _read_json_resource(model_id, "flowjudge_training_manifest.json")
+    for key in ("evaluation_base_model", "canonical_base_model", "base_model"):
+        value = manifest.get(key)
+        if isinstance(value, str) and value:
+            return value
+    return None
+
+
+def _read_json_resource(model_id: str, filename: str) -> dict[str, Any]:
+    local_path = Path(model_id) / filename
+    if local_path.exists():
         try:
-            value = json.loads(config_path.read_text(encoding="utf-8"))
+            value = json.loads(local_path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             return {}
         return value if isinstance(value, dict) else {}
     try:
         from huggingface_hub import hf_hub_download
 
-        downloaded = hf_hub_download(repo_id=model_id, filename="adapter_config.json")
+        downloaded = hf_hub_download(repo_id=model_id, filename=filename)
         value = json.loads(Path(downloaded).read_text(encoding="utf-8"))
     except Exception:
         return {}

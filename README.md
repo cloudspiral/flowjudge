@@ -146,16 +146,19 @@ The completed Nano/Haiku run is useful hypothesis evidence, but it does not
 satisfy the course requirement to test two frontier model families. The next
 assignment-critical run uses 32 scenarios × 2 frontier providers × 3 prompts,
 with the fixed judge now returning explicit Spec-adherence and Robustness
-scores. Recommended current candidates are `gpt-5.6-sol` and `claude-opus-5`;
-the fixed judge remains `gpt-5.6-sol`.
+scores. To match the pragmatic low-cost interpretation used by the companion
+Minesweeper assignment, the selected candidates are
+`gpt-5.4-mini-2026-03-17` and `claude-haiku-4-5-20251001`. The fixed judge
+remains the stronger `gpt-5.6-sol` so measurement quality is not intentionally
+weakened with the candidates.
 
 Copy `.env.example` to `.env` and add keys if they are not already present:
 
 ```dotenv
 OPENAI_API_KEY=
 ANTHROPIC_API_KEY=
-OPENAI_MODEL=gpt-5.6-sol
-ANTHROPIC_MODEL=claude-opus-5
+OPENAI_MODEL=gpt-5.4-mini-2026-03-17
+ANTHROPIC_MODEL=claude-haiku-4-5-20251001
 JUDGE_MODEL=gpt-5.6-sol
 ```
 
@@ -170,8 +173,8 @@ be overridden on the command line without changing `.env`:
 ```bash
 uv run flowjudge run \
   --approval APPROVE_FRONTIER_ABLATION \
-  --openai-model gpt-5.6-sol \
-  --anthropic-model claude-opus-5 \
+  --openai-model gpt-5.4-mini-2026-03-17 \
+  --anthropic-model claude-haiku-4-5-20251001 \
   --judge-model gpt-5.6-sol
 ```
 

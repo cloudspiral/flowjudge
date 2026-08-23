@@ -25,10 +25,11 @@ remains authoritative.
 - Public base-versus-tuned inference demo at
   `mr-mc/flowjudge-dialam-demo@13edded07c43faf456c08462039c37c56efda26c`,
   anonymously verified in `RUNNING` state with a successful synthetic inference.
+- Exact evaluation-code commit:
+  `f414e1173218fcd977d5833d52282d85a9cbb50b`.
 
 ## Still required before final submission
 
-- Record and pin the Git commit containing the final evaluation entrypoint.
 - Run the same harness on the staff-held-out JSONL when staff provides it; this
   result cannot be produced in advance.
 - Record the required three-to-five-minute demo video after the public demo and

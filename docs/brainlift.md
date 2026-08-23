@@ -102,6 +102,7 @@ completed fixed experiment.
 - Model: [mr-mc/flowjudge-dialam-qwen3-0.6b-v1-n2048](https://huggingface.co/mr-mc/flowjudge-dialam-qwen3-0.6b-v1-n2048), commit `18ee7ee16a48159e8a18997c4719c5dd87d54a6f`.
 - Dataset/reconstruction artifact: [mr-mc/flowjudge-dialam-reconstruction](https://huggingface.co/datasets/mr-mc/flowjudge-dialam-reconstruction), commit `649950879893bfcc1b5b6fb53ec5feff77ab3e66`.
 - Live demo: [mr-mc/flowjudge-dialam-demo](https://huggingface.co/spaces/mr-mc/flowjudge-dialam-demo), static Space commit `13edded07c43faf456c08462039c37c56efda26c`, backed by a scale-to-zero Modal CPU endpoint.
+- Evaluation code: Git commit `f414e1173218fcd977d5833d52282d85a9cbb50b`.
 
 The assignment-prescribed evaluator auto-detects DialAM `PatchExample` JSONL,
 rejects parent-episode leakage, evaluates both the canonical base and adapter,

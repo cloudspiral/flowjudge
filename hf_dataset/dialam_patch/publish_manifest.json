@@ -1,0 +1,140 @@
+{
+  "contains_raw_or_transformed_qt30_text": false,
+  "files": [
+    {
+      "bytes": 2732,
+      "path": "metadata/source_manifest.json",
+      "sha256": "ebc5a11f729eb50f2514a74f295d20f7c245b078a56785c1d2313e028a2da6ea",
+      "source": "data/dialam/source_manifest.json"
+    },
+    {
+      "bytes": 12048,
+      "path": "metadata/corpus_audit_manifest.json",
+      "sha256": "4bbf6418bdd2ccfaa1dac0d77b5e2f07036506d705270656e727bcc35110e2f8",
+      "source": "data/dialam/smoke_manifest.json"
+    },
+    {
+      "bytes": 1565,
+      "path": "metadata/eval_summary.json",
+      "sha256": "72c737361081962a68c692311a012db73e8b187331a43b68d2463f3a6ce33ba2",
+      "source": "data/dialam/eval_summary.json"
+    },
+    {
+      "bytes": 308063,
+      "path": "metadata/frozen_gate_manifest.json",
+      "sha256": "31d920320df2dd91d89638d073101955c681bec4b426085de6a1e1b683bcac4c",
+      "source": "data/dialam/frozen_gate/freeze_manifest.json"
+    },
+    {
+      "bytes": 3529,
+      "path": "metadata/prompt_ceiling_run_manifest.json",
+      "sha256": "8edde847dee55166093d3b9cc3ddf291fa83cb67c856a5c89b1fbbdd5026e9d3",
+      "source": "data/dialam/frozen_gate/prompt_ceiling_run_manifest.json"
+    },
+    {
+      "bytes": 136374,
+      "path": "metadata/prompt_ceiling_metrics.json",
+      "sha256": "89e2c5da54349a22da41b2faa0a5ae1c2a4b81a733e5a5ca47b7195ba1bd3354",
+      "source": "data/dialam/frozen_gate/prompt_ceiling_metrics.json"
+    },
+    {
+      "bytes": 4770,
+      "path": "metadata/training_manifest.json",
+      "sha256": "a68668fc0537f627beb465e165c0b0cc2611a71d743de97d58f25a51f2420fd2",
+      "source": "data/dialam/training/training_manifest.json"
+    },
+    {
+      "bytes": 1485,
+      "path": "schema/training_example.schema.json",
+      "sha256": "d30c83e49a4ea6b590a0188c8c08a653d6201c12fffd259ec14cf2cfed4b7828",
+      "source": "data/dialam/training/training_example.schema.json"
+    },
+    {
+      "bytes": 1387,
+      "path": "reconstruction/build_dialam_gate.py",
+      "sha256": "1f7ac3e4833f83b727d76e22c3c612b59d46f8ac9dd8e474d923b8e3b047e878",
+      "source": "scripts/build_dialam_gate.py"
+    },
+    {
+      "bytes": 1114,
+      "path": "reconstruction/build_dialam_training.py",
+      "sha256": "04449172c0ee5527d00c547a007b15d2fcd24a11c9c8d6cd0bf295a08c7ec9cd",
+      "source": "scripts/build_dialam_training.py"
+    },
+    {
+      "bytes": 4185,
+      "path": "reconstruction/freeze_dialam_gate.py",
+      "sha256": "3bfa5e9a20b9197a7f825a399ac3b28d286c4deb85667fc15e8a2f298eeb701b",
+      "source": "scripts/freeze_dialam_gate.py"
+    },
+    {
+      "bytes": 21054,
+      "path": "reconstruction/flowjudge/dialam.py",
+      "sha256": "558f198c4135ff2a483db81a6848cd95be14db3edd7bdc64b70ba0262709c1eb",
+      "source": "src/flowjudge/dialam.py"
+    },
+    {
+      "bytes": 47106,
+      "path": "reconstruction/flowjudge/patch_data.py",
+      "sha256": "8f2302c46020e68be011ea8e69f78aaf7ba84f45defe28d8ba782de6b3fdd080",
+      "source": "src/flowjudge/patch_data.py"
+    },
+    {
+      "bytes": 10035,
+      "path": "reconstruction/flowjudge/dialam_training.py",
+      "sha256": "36a54be7300b89ba58a572c097764f7a29ce81e445adcaf16b065b2d90160332",
+      "source": "src/flowjudge/dialam_training.py"
+    },
+    {
+      "bytes": 33494,
+      "path": "reconstruction/flowjudge/patch_ceiling.py",
+      "sha256": "0793706ef119b85f795ae0463616d5730d1417a1a3f4d17d4b240d0deaaac578",
+      "source": "src/flowjudge/patch_ceiling.py"
+    },
+    {
+      "bytes": 14136,
+      "path": "reconstruction/flowjudge/patch_metrics.py",
+      "sha256": "7a88aa554dcf5d2e5cdf085c17a407e9eca4cfbe94b8fedf6cec2019a2689064",
+      "source": "src/flowjudge/patch_metrics.py"
+    },
+    {
+      "bytes": 8766,
+      "path": "reconstruction/flowjudge/schemas.py",
+      "sha256": "b645c611f33b72393aaf29f82dee1a54dc73f5abd3c78dbbee4cd61d21f8de58",
+      "source": "src/flowjudge/schemas.py"
+    },
+    {
+      "bytes": 1090,
+      "path": "reconstruction/prompts/dialam/zero_shot.txt",
+      "sha256": "d86c43098b90a20d052be663c44c7e28b1f27dd1048b5f4f60634d78039de21f",
+      "source": "prompts/dialam/zero_shot.txt"
+    },
+    {
+      "bytes": 723,
+      "path": "reconstruction/prompts/dialam/few_shot.txt",
+      "sha256": "f5462ea76063d91848b708d06d1d0750331b706a4b089f8522a9e1e84160b9e0",
+      "source": "prompts/dialam/few_shot.txt"
+    },
+    {
+      "bytes": 1343,
+      "path": "reconstruction/prompts/dialam/strong_structured.txt",
+      "sha256": "7a743efffaf9a3da85c15c6b5340b65a0208e91c23b966c768da296211eccb5e",
+      "source": "prompts/dialam/strong_structured.txt"
+    },
+    {
+      "bytes": 1647,
+      "path": "reconstruction/prompts/dialam/judge.txt",
+      "sha256": "b27fe77a9adce4fe586327fa556a51352efb76d402b93676df2173225be35f66",
+      "source": "prompts/dialam/judge.txt"
+    },
+    {
+      "bytes": 2179,
+      "path": "reconstruction/BEHAVIOR_SPEC.md",
+      "sha256": "5c36854db1590151ed3f0abed7b84971559af93480f9b64d2e6c2b767bfa2064",
+      "source": "BEHAVIOR_SPEC.md"
+    }
+  ],
+  "prepared_at": "2026-08-23T05:16:15.371665+00:00",
+  "publishable_scope": "manifests, metadata, schemas, aggregate statistics, and reconstruction code only",
+  "schema_version": "dialam_hf_dataset_structure_v1"
+}

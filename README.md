@@ -27,6 +27,56 @@ extensions, repetition, and independent counterarguments are excluded.
 The locked, falsifiable behavior and fixed 0–4 judge rubric are in
 [`docs/behavior_spec.md`](docs/behavior_spec.md).
 
+## DialAM incremental-patch feasibility gate
+
+The repository now also contains a data/evaluation gate for the narrower
+incremental behavior in [`BEHAVIOR_SPEC.md`](BEHAVIOR_SPEC.md): given one new
+proposition and a complete fixed-size block of earlier propositions, emit the
+direct `SUPPORT`, `ATTACK`, and `REPHRASE` patch as one bare JSON object.
+
+The official DialAM-2024 QT30 archive is checksum-pinned, downloaded on demand,
+and kept out of Git. The canonical parser preserves episode/map identity,
+chronology, speaker and raw locution grounding, proposition text, original
+RA/CA/MA labels and direction, normalized labels, and n-ary structure. The
+smoke data uses only singly grounded, unambiguous binary direct relations and a
+24-dialogue train / 6-dialogue held-out split. No semantic retrieval is used;
+the gate itself remains frozen independently of the later QLoRA phase.
+
+The post-audit correction confirms that splits use original parent episodes,
+not individual map IDs. Identity-based deduplication leaves 12,767 unique
+RA/CA/MA relations; it does not reproduce the published 10,818 headline. The
+full retention funnel, grounding/chronology defects, exact exclusion policy,
+and conservative publication matrix are in the audit.
+
+```bash
+uv sync --frozen
+uv run python scripts/build_dialam_gate.py
+uv run python scripts/validate_dialam_gate.py
+uv run python scripts/run_dialam_prompt_ceiling.py
+uv run pytest
+```
+
+The last command above is an offline dry-run: 30 balanced diagnostic scenarios
+× 2 cross-family hosted-model baselines × 3 prompts = 180 candidate calls and
+180 fixed-judge calls. The approved Mini/Haiku matrix completed and the
+corrected prompt-ceiling gate passed because no cell cleared every reliability
+threshold. See [`docs/dialam_prompt_ceiling_results.md`](docs/dialam_prompt_ceiling_results.md)
+for the six-cell table and surviving false-edge failure.
+
+The small-model phase now uses only `Qwen/Qwen3-0.6B` and one fixed Unsloth
+QLoRA configuration. Nested 256/512/1024/2048 slices are deterministic prefixes
+of the same leakage-safe corpus. The n=256 smoke checkpoint trained, saved,
+reloaded, and completed the unchanged frozen evaluation. It raised schema
+validity from 0% to 100%, but edge F1 is only 9.5%; see
+[`docs/dialam_qlora_smoke_results.md`](docs/dialam_qlora_smoke_results.md).
+
+The private source audit includes three complete maps and therefore remains
+Git-ignored. Its publishable metadata, generated statistics, known source
+defects, permission basis, schemas, and reconstruction scripts are under
+[`hf_dataset/dialam_patch/`](hf_dataset/dialam_patch/). Text-bearing generated
+JSONL is local-only and Git-ignored because project-use approval does not
+establish redistribution rights.
+
 ## Current status: local end-to-end loop completed
 
 The approved pilot completed all 72 candidate assignments and 72 fixed-judge

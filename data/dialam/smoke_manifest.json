@@ -1,0 +1,399 @@
+{
+  "block_size": 8,
+  "corpus_audit": {
+    "binary_direct_relation_count": 11961,
+    "binary_original_edge_direction": {
+      "earlier_to_later": 2231,
+      "later_to_earlier": 7963,
+      "same_turn": 52,
+      "unknown": 1715
+    },
+    "chronology_issue_counts": {
+      "TA cycle or unresolved precedence among locutions": 30,
+      "duplicate locution metadata IDs deduplicated": 535,
+      "non-L nodes ignored in locution metadata": 2
+    },
+    "dialogue_count": 30,
+    "grounding_and_chronology_defects": {
+      "binary_relation_grounding": {
+        "ambiguous_only_no_missing_endpoint": 270,
+        "at_least_one_endpoint_missing": 1715,
+        "both_endpoints_exactly_one": 9976
+      },
+      "exclusion_policy": {
+        "map": "exclude a map if TA precedence is cyclic/unresolved, it has fewer than two propositions, or any proposition lacks exactly one direct L->YA->I grounding",
+        "relation": "retain only direct binary I->RA/CA/MA->I relations whose singly grounded endpoints have distinct resolvable turns; normalize the later endpoint as source",
+        "update": "exclude an update if any relation touching the new proposition and an earlier proposition is not an unambiguous binary direct relation"
+      },
+      "maps_with_duplicate_locution_metadata": 535,
+      "maps_with_non_l_locution_metadata": 2,
+      "maps_with_unknown_locution_metadata": 0,
+      "maps_with_unresolved_ta_precedence": 30,
+      "singly_grounded_relation_chronology": {
+        "excluded_same_turn": 1,
+        "excluded_unresolved_map": 184,
+        "resolvable": 9791
+      }
+    },
+    "groundings_per_proposition_occurrence": {
+      "0": 3063,
+      "1": 20179,
+      "2": 219,
+      "3": 4
+    },
+    "incomplete_relation_count": 132,
+    "inspected_map_count": 1478,
+    "invalid_locution_metadata_record_count": 5,
+    "maps_by_dialogue": {
+      "cutiestestrun10December2020": 45,
+      "cutiestestrun14January2021": 40,
+      "cutiestestrun15april2021": 74,
+      "cutiestestrun18february2021": 45,
+      "cutiestestrun18march2021": 47,
+      "cutiestestrun19November2020": 36,
+      "cutiestestrun28january2021": 43,
+      "cutiestestrun29april2021": 85,
+      "cutiestestrun4march2021": 56,
+      "cutiestestrun5November2020": 42,
+      "cutietestrun10June2021": 56,
+      "cutietestrun18June2020": 46,
+      "cutietestrun20may2021": 60,
+      "cutietestrun22October2020": 44,
+      "cutietestrun24June2021": 48,
+      "cutietestrun27may2021": 58,
+      "cutietestrun28May2020": 37,
+      "cutietestrun2September2020": 50,
+      "cutietestrun30July2020": 50,
+      "cutietestrun4June2020": 47,
+      "cutietestrun8july2021": 41,
+      "qt02092021wtxt": 44,
+      "qt05082021wtxt": 45,
+      "qt11112021wtxt": 42,
+      "qt14102021wtxt": 40,
+      "qt16092021wtxt": 48,
+      "qt19082021wtxt": 42,
+      "qt22072021wtxt": 49,
+      "qt28102021wtxt": 59,
+      "qt30092021wtxt": 59
+    },
+    "nary_relation_count": 674,
+    "proposition_endpoint_arity": {
+      "0x0": 33,
+      "0x1": 55,
+      "1x0": 44,
+      "1x1": 11961,
+      "2x1": 542,
+      "3x1": 97,
+      "4x1": 25,
+      "5x1": 7,
+      "7x1": 3
+    },
+    "proposition_occurrence_count": 23465,
+    "raw_edge_count": 141150,
+    "raw_locution_record_count": 39496,
+    "raw_node_occurrences_by_type": {
+      "CA": 1232,
+      "I": 23465,
+      "L": 49550,
+      "MA": 5848,
+      "RA": 5687,
+      "TA": 23038,
+      "YA": 34430
+    },
+    "relation_counts_by_normalized_label": {
+      "ATTACK": 1232,
+      "REPHRASE": 5848,
+      "SUPPORT": 5687
+    },
+    "relation_counts_by_original_type": {
+      "CA": 1232,
+      "MA": 5848,
+      "RA": 5687
+    },
+    "relation_retention_funnel": {
+      "identity_key": [
+        "parent_dialogue_id",
+        "ordered_original_source_proposition_ids",
+        "original_relation_node_id",
+        "ordered_original_target_proposition_ids"
+      ],
+      "observed_unique_minus_published": 1949,
+      "published_relation_count": 10818,
+      "stages": {
+        "behavior_compatible": {
+          "by_label": {
+            "ATTACK": 771,
+            "REPHRASE": 3777,
+            "SUPPORT": 3902
+          },
+          "removed_from_previous": 1341,
+          "total": 8450
+        },
+        "binary": {
+          "by_label": {
+            "ATTACK": 1210,
+            "REPHRASE": 5771,
+            "SUPPORT": 4980
+          },
+          "removed_from_previous": 806,
+          "total": 11961
+        },
+        "chronology_resolvable": {
+          "by_label": {
+            "ATTACK": 919,
+            "REPHRASE": 4433,
+            "SUPPORT": 4439
+          },
+          "removed_from_previous": 185,
+          "total": 9791
+        },
+        "grounded": {
+          "by_label": {
+            "ATTACK": 940,
+            "REPHRASE": 4532,
+            "SUPPORT": 4504
+          },
+          "removed_from_previous": 1985,
+          "total": 9976
+        },
+        "raw": {
+          "by_label": {
+            "ATTACK": 1232,
+            "REPHRASE": 5848,
+            "SUPPORT": 5687
+          },
+          "removed_from_previous": 0,
+          "total": 12767
+        },
+        "retained": {
+          "by_label": {
+            "ATTACK": 771,
+            "REPHRASE": 3775,
+            "SUPPORT": 3897
+          },
+          "removed_from_previous": 7,
+          "total": 8443
+        },
+        "unique": {
+          "by_label": {
+            "ATTACK": 1232,
+            "REPHRASE": 5848,
+            "SUPPORT": 5687
+          },
+          "removed_from_previous": 0,
+          "total": 12767
+        }
+      }
+    },
+    "unambiguous_binary_relation_count": 9974,
+    "unique_locution_metadata_ids": 21136,
+    "unique_node_ids_by_type": {
+      "CA": 1232,
+      "I": 20451,
+      "L": 45166,
+      "MA": 5848,
+      "RA": 5687,
+      "TA": 23038,
+      "YA": 34430
+    },
+    "unique_proposition_ids": 20451,
+    "unique_valid_locution_ids": 21131
+  },
+  "diagnostic_validation": {
+    "block_coverage": true,
+    "chronology": true,
+    "dialogue_level_leakage": false,
+    "direct_edge_negatives": true,
+    "edge_direction": true,
+    "eval_dialogue_ids": [
+      "qt02092021wtxt",
+      "qt05082021wtxt",
+      "qt16092021wtxt",
+      "qt19082021wtxt",
+      "qt22072021wtxt",
+      "qt30092021wtxt"
+    ],
+    "gold_target_presence": true,
+    "grounding": true,
+    "ids": true,
+    "parent_episode_level_split": true,
+    "split_unit": "original_parent_episode",
+    "train_dialogue_ids": [
+      "cutiestestrun10December2020",
+      "cutiestestrun14January2021",
+      "cutiestestrun15april2021",
+      "cutiestestrun18february2021",
+      "cutiestestrun18march2021",
+      "cutiestestrun19November2020",
+      "cutiestestrun28january2021",
+      "cutiestestrun29april2021",
+      "cutiestestrun4march2021",
+      "cutiestestrun5November2020",
+      "cutietestrun10June2021",
+      "cutietestrun18June2020",
+      "cutietestrun20may2021",
+      "cutietestrun22October2020",
+      "cutietestrun24June2021",
+      "cutietestrun27may2021",
+      "cutietestrun28May2020",
+      "cutietestrun2September2020",
+      "cutietestrun30July2020",
+      "cutietestrun4June2020",
+      "cutietestrun8july2021",
+      "qt11112021wtxt",
+      "qt14102021wtxt",
+      "qt28102021wtxt"
+    ]
+  },
+  "eval_summary": {
+    "balanced_diagnostic": {
+      "all_negative_scenario_count": 6,
+      "block_example_count": 30,
+      "dialogue_ids": [
+        "qt02092021wtxt",
+        "qt05082021wtxt",
+        "qt16092021wtxt",
+        "qt19082021wtxt",
+        "qt22072021wtxt",
+        "qt30092021wtxt"
+      ],
+      "positive_scenario_count": 24,
+      "relation_counts": {
+        "ATTACK": 8,
+        "REPHRASE": 8,
+        "SUPPORT": 8
+      },
+      "scenario_count": 30,
+      "scenarios_containing_label": {
+        "ATTACK": 8,
+        "REPHRASE": 8,
+        "SUPPORT": 8
+      }
+    },
+    "balanced_diagnostic_selection": {
+      "per_dialogue_scenario_count": 5,
+      "requirements": "one block per scenario; exactly one gold relation for each positive; 8 SUPPORT, 8 ATTACK, 8 REPHRASE, and 6 all-negative scenarios",
+      "scenario_count": 30
+    },
+    "frozen_split_unit": "original QT30 parent episode/subcorpus",
+    "heldout_dialogue_ids": [
+      "qt30092021wtxt",
+      "qt16092021wtxt",
+      "qt02092021wtxt",
+      "qt19082021wtxt",
+      "qt05082021wtxt",
+      "qt22072021wtxt"
+    ],
+    "natural_distribution": {
+      "all_negative_scenario_count": 1488,
+      "block_example_count": 4820,
+      "dialogue_ids": [
+        "qt02092021wtxt",
+        "qt05082021wtxt",
+        "qt16092021wtxt",
+        "qt19082021wtxt",
+        "qt22072021wtxt",
+        "qt30092021wtxt"
+      ],
+      "positive_scenario_count": 1661,
+      "relation_counts": {
+        "ATTACK": 178,
+        "REPHRASE": 779,
+        "SUPPORT": 788
+      },
+      "scenario_count": 3149,
+      "scenarios_containing_label": {
+        "ATTACK": 178,
+        "REPHRASE": 772,
+        "SUPPORT": 767
+      }
+    }
+  },
+  "filter": {
+    "candidate_retrieval": "none; deterministic chronological fixed-size blocks",
+    "comparison_scope": "all strictly earlier propositions in one complete source argument map",
+    "grounding": "exactly one direct L->YA->I grounding for every proposition in a selected map",
+    "relations": "only unambiguous binary direct I->RA/CA/MA->I proposition endpoints",
+    "split_scope": "original parent episode-level QT30 subcorpora, never individual map IDs"
+  },
+  "paths": {
+    "balanced_diagnostic_eval_examples": "balanced_diagnostic_eval_examples.jsonl",
+    "balanced_diagnostic_eval_scenarios": "balanced_diagnostic_eval_scenarios.jsonl",
+    "eval_examples": "smoke_eval_examples.jsonl",
+    "eval_scenarios": "smoke_eval_scenarios.jsonl",
+    "eval_summary": "eval_summary.json",
+    "train_examples": "smoke_train.jsonl"
+  },
+  "permission_basis": "Project owner reported direct approval for this educational toy-project use on 2026-08-22; this is not represented as an official public corpus license.",
+  "schema_version": "dialam_incremental_patch_v1",
+  "selection_seed": "dialam-qt30-smoke-v1",
+  "source_archive_sha256": "9d3d70c5ad86c815f821928dc515ee80a8e2a24d3f5d224557045f50f7a73791",
+  "statistics": {
+    "eval_all_negative_block_count": 28,
+    "eval_dialogue_count": 6,
+    "eval_example_count": 46,
+    "eval_positive_block_count": 18,
+    "eval_relation_counts": {
+      "ATTACK": 3,
+      "REPHRASE": 7,
+      "SUPPORT": 8
+    },
+    "eval_scenario_count": 30,
+    "train_all_negative_block_count": 102,
+    "train_dialogue_count": 24,
+    "train_example_count": 160,
+    "train_positive_block_count": 58,
+    "train_relation_counts": {
+      "ATTACK": 6,
+      "REPHRASE": 32,
+      "SUPPORT": 21
+    },
+    "train_update_count": 108
+  },
+  "validation": {
+    "block_coverage": true,
+    "chronology": true,
+    "dialogue_level_leakage": false,
+    "direct_edge_negatives": true,
+    "edge_direction": true,
+    "eval_dialogue_ids": [
+      "qt02092021wtxt",
+      "qt05082021wtxt",
+      "qt16092021wtxt",
+      "qt19082021wtxt",
+      "qt22072021wtxt",
+      "qt30092021wtxt"
+    ],
+    "gold_target_presence": true,
+    "grounding": true,
+    "ids": true,
+    "parent_episode_level_split": true,
+    "split_unit": "original_parent_episode",
+    "train_dialogue_ids": [
+      "cutiestestrun10December2020",
+      "cutiestestrun14January2021",
+      "cutiestestrun15april2021",
+      "cutiestestrun18february2021",
+      "cutiestestrun18march2021",
+      "cutiestestrun19November2020",
+      "cutiestestrun28january2021",
+      "cutiestestrun29april2021",
+      "cutiestestrun4march2021",
+      "cutiestestrun5November2020",
+      "cutietestrun10June2021",
+      "cutietestrun18June2020",
+      "cutietestrun20may2021",
+      "cutietestrun22October2020",
+      "cutietestrun24June2021",
+      "cutietestrun27may2021",
+      "cutietestrun28May2020",
+      "cutietestrun2September2020",
+      "cutietestrun30July2020",
+      "cutietestrun4June2020",
+      "cutietestrun8july2021",
+      "qt11112021wtxt",
+      "qt14102021wtxt",
+      "qt28102021wtxt"
+    ]
+  }
+}

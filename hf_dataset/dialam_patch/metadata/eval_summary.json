@@ -1,0 +1,64 @@
+{
+  "balanced_diagnostic": {
+    "all_negative_scenario_count": 6,
+    "block_example_count": 30,
+    "dialogue_ids": [
+      "qt02092021wtxt",
+      "qt05082021wtxt",
+      "qt16092021wtxt",
+      "qt19082021wtxt",
+      "qt22072021wtxt",
+      "qt30092021wtxt"
+    ],
+    "positive_scenario_count": 24,
+    "relation_counts": {
+      "ATTACK": 8,
+      "REPHRASE": 8,
+      "SUPPORT": 8
+    },
+    "scenario_count": 30,
+    "scenarios_containing_label": {
+      "ATTACK": 8,
+      "REPHRASE": 8,
+      "SUPPORT": 8
+    }
+  },
+  "balanced_diagnostic_selection": {
+    "per_dialogue_scenario_count": 5,
+    "requirements": "one block per scenario; exactly one gold relation for each positive; 8 SUPPORT, 8 ATTACK, 8 REPHRASE, and 6 all-negative scenarios",
+    "scenario_count": 30
+  },
+  "frozen_split_unit": "original QT30 parent episode/subcorpus",
+  "heldout_dialogue_ids": [
+    "qt30092021wtxt",
+    "qt16092021wtxt",
+    "qt02092021wtxt",
+    "qt19082021wtxt",
+    "qt05082021wtxt",
+    "qt22072021wtxt"
+  ],
+  "natural_distribution": {
+    "all_negative_scenario_count": 1488,
+    "block_example_count": 4820,
+    "dialogue_ids": [
+      "qt02092021wtxt",
+      "qt05082021wtxt",
+      "qt16092021wtxt",
+      "qt19082021wtxt",
+      "qt22072021wtxt",
+      "qt30092021wtxt"
+    ],
+    "positive_scenario_count": 1661,
+    "relation_counts": {
+      "ATTACK": 178,
+      "REPHRASE": 779,
+      "SUPPORT": 788
+    },
+    "scenario_count": 3149,
+    "scenarios_containing_label": {
+      "ATTACK": 178,
+      "REPHRASE": 772,
+      "SUPPORT": 767
+    }
+  }
+}

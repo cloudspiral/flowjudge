@@ -1,0 +1,61 @@
+{
+  "adapter": {
+    "base_model": "Qwen/Qwen3-0.6B",
+    "local_path": "artifacts/dialam_qlora/n256/adapter",
+    "modal_volume": "flowjudge-dialam-qwen3",
+    "modal_volume_path": "checkpoints/n256/adapter",
+    "safetensors_sha256": "c29156f0eeec3e609319dc05fd3cd55b4baa389bdef03d55696f3bdf9bd44613"
+  },
+  "base_metrics": {
+    "edge_f1": 0.0,
+    "exact_patch_accuracy": 0.0,
+    "false_edges_per_update": 0.0,
+    "json_validity_rate": 0.13333333333333333,
+    "judge_robustness_mean": 1.4,
+    "judge_spec_adherence_mean": 0.23333333333333334,
+    "relation_macro_f1": 0.0,
+    "schema_validity_rate": 0.0
+  },
+  "base_summary_sha256": "85dd97bf9edb914457afc7a2b4f1507d424661ab89545956629797cf4712383a",
+  "eval_examples": 30,
+  "eval_sha256": "76badbae23ace13b22822335fa794f7cc796ce0d02753666ebd83c4d7260305b",
+  "fixed_config": {
+    "effective_batch_size": 8,
+    "epochs": 3.0,
+    "learning_rate": 0.0002,
+    "lora_alpha": 32,
+    "lora_r": 16,
+    "max_seq_length": 2048,
+    "seed": 20260823
+  },
+  "judge_model": "gpt-5.4-mini-2026-03-17",
+  "judge_rubric_sha256": "b27fe77a9adce4fe586327fa556a51352efb76d402b93676df2173225be35f66",
+  "n256_metrics": {
+    "direction_accuracy": 1.0,
+    "direction_evaluable_edge_count": 2,
+    "edge_f1": 0.09523809523809525,
+    "edge_precision": 0.1111111111111111,
+    "edge_recall": 0.08333333333333333,
+    "exact_patch_accuracy": 0.16666666666666666,
+    "false_edges_per_update": 0.5333333333333333,
+    "invalid_id_count": 0,
+    "json_validity_rate": 1.0,
+    "judge_robustness_mean": 2.466666666666667,
+    "judge_spec_adherence_mean": 4.0,
+    "relation_macro_f1": 0.05555555555555555,
+    "schema_validity_rate": 1.0
+  },
+  "n256_summary_sha256": "605a38cb217d4e399899d0a098df483d6c370640fd209a5ca8a4d8d4af91793b",
+  "schema_version": "dialam_qlora_smoke_summary_v1",
+  "smoke_status": "PASS",
+  "task_reliability_status": "NOT_YET_ACHIEVED",
+  "training": {
+    "examples": 256,
+    "gpu": "NVIDIA L4",
+    "reload_verified": true,
+    "runtime_seconds": 116.606,
+    "steps": 96,
+    "train_loss": 0.13352974030810097,
+    "training_manifest_sha256": "388d91b294d6d497290766a15887a5275d45406ff1401c712403c4164d0327d4"
+  }
+}

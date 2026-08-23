@@ -1,0 +1,88 @@
+{
+  "approval_required": "APPROVE_DIALAM_PROMPT_CEILING",
+  "block_example_count": 30,
+  "completed_at": "2026-08-23T04:41:42.928902+00:00",
+  "created_at": "2026-08-23T04:36:24.713849+00:00",
+  "example_ids": [
+    "qt30:qt30092021wtxt:nodeset23719:812450:b01",
+    "qt30:qt30092021wtxt:nodeset23710:811355:b01",
+    "qt30:qt30092021wtxt:nodeset23740:814437:b01",
+    "qt30:qt30092021wtxt:nodeset23753:815767:b01",
+    "qt30:qt30092021wtxt:nodeset23735:813973:b01",
+    "qt30:qt16092021wtxt:nodeset23784:819988:b01",
+    "qt30:qt16092021wtxt:nodeset23787:820340:b01",
+    "qt30:qt16092021wtxt:nodeset23788:820559:b01",
+    "qt30:qt16092021wtxt:nodeset23786:820261:b01",
+    "qt30:qt16092021wtxt:nodeset23771:818605:b01",
+    "qt30:qt02092021wtxt:nodeset23810:866117:b01",
+    "qt30:qt02092021wtxt:nodeset23827:826569:b01",
+    "qt30:qt02092021wtxt:nodeset23805:824182:b01",
+    "qt30:qt02092021wtxt:nodeset23832:826961:b01",
+    "qt30:qt02092021wtxt:nodeset23838:827497:b01",
+    "qt30:qt19082021wtxt:nodeset23861:829797:b01",
+    "qt30:qt19082021wtxt:nodeset23881:831639:b01",
+    "qt30:qt19082021wtxt:nodeset25391:831004:b01",
+    "qt30:qt19082021wtxt:nodeset23854:829004:b01",
+    "qt30:qt19082021wtxt:nodeset23880:831590:b01",
+    "qt30:qt05082021wtxt:nodeset23901:834095:b01",
+    "qt30:qt05082021wtxt:nodeset23888:832098:b01",
+    "qt30:qt05082021wtxt:nodeset23922:836801:b01",
+    "qt30:qt05082021wtxt:nodeset25506:831695:b01",
+    "qt30:qt05082021wtxt:nodeset23904:834719:b01",
+    "qt30:qt22072021wtxt:nodeset23962:675582:b01",
+    "qt30:qt22072021wtxt:nodeset23972:841792:b01",
+    "qt30:qt22072021wtxt:nodeset23940:838550:b01",
+    "qt30:qt22072021wtxt:nodeset23973:841843:b01",
+    "qt30:qt22072021wtxt:nodeset23950:839618:b01"
+  ],
+  "few_shot_example_ids": [
+    "qt30:cutiestestrun10December2020:nodeset19351:607554:b01",
+    "qt30:cutiestestrun4march2021:nodeset20494:664679:b01",
+    "qt30:cutiestestrun14January2021:nodeset19757:632460:b02",
+    "qt30:cutiestestrun15april2021:nodeset20841:681849:b01"
+  ],
+  "frozen_judge_rubric_sha256": "b27fe77a9adce4fe586327fa556a51352efb76d402b93676df2173225be35f66",
+  "judge_call_count": 180,
+  "judge_identity_blinded": true,
+  "models": {
+    "anthropic": "claude-haiku-4-5-20251001",
+    "judge": "gpt-5.4-mini-2026-03-17",
+    "openai": "gpt-5.4-mini-2026-03-17"
+  },
+  "network_calls_made": 360,
+  "planned_network_call_count": 360,
+  "primary_call_count": 180,
+  "prompts": [
+    "zero_shot",
+    "few_shot",
+    "strong_structured"
+  ],
+  "provider_families": [
+    "openai",
+    "anthropic"
+  ],
+  "reliability_threshold": {
+    "direction_accuracy_min": 0.95,
+    "edge_f1_min": 0.85,
+    "exact_patch_accuracy_min": 0.8,
+    "false_edges_per_update_max": 0.2,
+    "invalid_id_count_max": 0,
+    "json_validity_rate_min": 1.0,
+    "judge_robustness_mean_min": 3.5,
+    "judge_spec_adherence_mean_min": 3.5,
+    "judge_validity_rate_min": 1.0,
+    "minimum_scenarios_per_combination": 30,
+    "provider_families_required_to_pass": 2,
+    "relation_macro_f1_min": 0.75,
+    "schema_validity_rate_min": 1.0
+  },
+  "scenario_count": 30,
+  "scenario_scoring": "union all separately predicted blocks by update_id before exact match",
+  "source_notes": {
+    "anthropic_model": "https://docs.anthropic.com/en/docs/welcome",
+    "openai_models": "https://developers.openai.com/api/docs/models/compare",
+    "openai_structured_outputs": "https://developers.openai.com/api/reference/java/resources/beta/subresources/responses"
+  },
+  "status": "PASS",
+  "valid": true
+}

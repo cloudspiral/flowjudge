@@ -1,0 +1,164 @@
+{
+  "available_category_counts": {
+    "ATTACK": 548,
+    "MIXED": 115,
+    "NONE": 10272,
+    "REPHRASE": 2883,
+    "SUPPORT": 2924
+  },
+  "available_training_blocks": 16742,
+  "base_model": "Qwen/Qwen3-0.6B",
+  "category_target_weights": {
+    "ATTACK": 0.15,
+    "MIXED": 0.05,
+    "NONE": 0.4,
+    "REPHRASE": 0.2,
+    "SUPPORT": 0.2
+  },
+  "created_at": "2026-08-23T05:13:43.249559+00:00",
+  "dialogue_leakage": false,
+  "frozen_eval_inputs": {
+    "examples": 30,
+    "path": "data/dialam/training/frozen_eval_inputs.jsonl",
+    "sha256": "8e959ff0a1b58fc4ed9929f5c9259d70598a50d5f928e67b408cd1e35cf154a5",
+    "source_eval_sha256": "76badbae23ace13b22822335fa794f7cc796ce0d02753666ebd83c4d7260305b"
+  },
+  "heldout_parent_episode_ids": [
+    "qt02092021wtxt",
+    "qt05082021wtxt",
+    "qt16092021wtxt",
+    "qt19082021wtxt",
+    "qt22072021wtxt",
+    "qt30092021wtxt"
+  ],
+  "max_examples": 2048,
+  "nested_sizes": [
+    256,
+    512,
+    1024,
+    2048
+  ],
+  "privacy": "The JSONL slices contain transformed QT30 text and remain private/local. This text-free manifest and schema may be published.",
+  "prompt": "prompts/dialam/zero_shot.txt",
+  "schema": {
+    "path": "data/dialam/training/training_example.schema.json",
+    "sha256": "d30c83e49a4ea6b590a0188c8c08a653d6201c12fffd259ec14cf2cfed4b7828"
+  },
+  "schema_version": "dialam_training_manifest_v1",
+  "selection_policy": "deterministic weighted interleave without replacement; each smaller slice is the exact prefix of n2048",
+  "selection_seed": "dialam-qt30-qlora-v1",
+  "slices": {
+    "1024": {
+      "all_negative_examples": 410,
+      "category_counts": {
+        "ATTACK": 153,
+        "MIXED": 51,
+        "NONE": 410,
+        "REPHRASE": 205,
+        "SUPPORT": 205
+      },
+      "examples": 1024,
+      "parent_episodes": 24,
+      "path": "data/dialam/training/dialam_n1024.jsonl",
+      "relation_counts": {
+        "ATTACK": 174,
+        "REPHRASE": 242,
+        "SUPPORT": 258
+      },
+      "sha256": "12827139d89478949d5b2df04337d6a0afd067e9ae9ab0d598f7b35eb4c08d80",
+      "updates": 1000
+    },
+    "2048": {
+      "all_negative_examples": 819,
+      "category_counts": {
+        "ATTACK": 307,
+        "MIXED": 102,
+        "NONE": 819,
+        "REPHRASE": 410,
+        "SUPPORT": 410
+      },
+      "examples": 2048,
+      "parent_episodes": 24,
+      "path": "data/dialam/training/dialam_n2048.jsonl",
+      "relation_counts": {
+        "ATTACK": 347,
+        "REPHRASE": 491,
+        "SUPPORT": 516
+      },
+      "sha256": "d919466b44b34fde8e43cf8d163cbe4f69886b1af69b95ce87e8133d42151d65",
+      "updates": 1980
+    },
+    "256": {
+      "all_negative_examples": 103,
+      "category_counts": {
+        "ATTACK": 38,
+        "MIXED": 13,
+        "NONE": 103,
+        "REPHRASE": 51,
+        "SUPPORT": 51
+      },
+      "examples": 256,
+      "parent_episodes": 24,
+      "path": "data/dialam/training/dialam_n256.jsonl",
+      "relation_counts": {
+        "ATTACK": 45,
+        "REPHRASE": 59,
+        "SUPPORT": 64
+      },
+      "sha256": "53ac800e7272c06f8389af55b75061bca883e4dceb3c897c16486e1443579749",
+      "updates": 255
+    },
+    "512": {
+      "all_negative_examples": 205,
+      "category_counts": {
+        "ATTACK": 77,
+        "MIXED": 26,
+        "NONE": 205,
+        "REPHRASE": 102,
+        "SUPPORT": 102
+      },
+      "examples": 512,
+      "parent_episodes": 24,
+      "path": "data/dialam/training/dialam_n512.jsonl",
+      "relation_counts": {
+        "ATTACK": 90,
+        "REPHRASE": 119,
+        "SUPPORT": 130
+      },
+      "sha256": "5d247618ecfbbf9eca459872eae17fbb3c08a22b01898b4d04c58ca0396ee321",
+      "updates": 504
+    }
+  },
+  "source": {
+    "archive_sha256": "9d3d70c5ad86c815f821928dc515ee80a8e2a24d3f5d224557045f50f7a73791",
+    "dialogues_sha256": "60f06e6c8f1c86b158eee7f2a3f7095ab405016d64536364a4d793bf00855299",
+    "eval_summary_sha256": "72c737361081962a68c692311a012db73e8b187331a43b68d2463f3a6ce33ba2"
+  },
+  "split_unit": "original_parent_episode",
+  "training_parent_episode_ids": [
+    "cutiestestrun10December2020",
+    "cutiestestrun14January2021",
+    "cutiestestrun15april2021",
+    "cutiestestrun18february2021",
+    "cutiestestrun18march2021",
+    "cutiestestrun19November2020",
+    "cutiestestrun28january2021",
+    "cutiestestrun29april2021",
+    "cutiestestrun4march2021",
+    "cutiestestrun5November2020",
+    "cutietestrun10June2021",
+    "cutietestrun18June2020",
+    "cutietestrun20may2021",
+    "cutietestrun22October2020",
+    "cutietestrun24June2021",
+    "cutietestrun27may2021",
+    "cutietestrun28May2020",
+    "cutietestrun2September2020",
+    "cutietestrun30July2020",
+    "cutietestrun4June2020",
+    "cutietestrun8july2021",
+    "qt11112021wtxt",
+    "qt14102021wtxt",
+    "qt28102021wtxt"
+  ]
+}

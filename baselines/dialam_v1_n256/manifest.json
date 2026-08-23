@@ -1,0 +1,187 @@
+{
+  "baseline_id": "dialam-v1-n256",
+  "created_at": "2026-08-23T05:32:17.621129+00:00",
+  "dataset": {
+    "category_counts": {
+      "ATTACK": 38,
+      "MIXED": 13,
+      "NONE": 103,
+      "REPHRASE": 51,
+      "SUPPORT": 51
+    },
+    "examples": 256,
+    "parent_episode_leakage": false,
+    "selection_seed": "dialam-qt30-qlora-v1",
+    "split_unit": "original_parent_episode",
+    "training_parent_episodes": 24,
+    "version": "v1"
+  },
+  "failure_diagnosis": {
+    "attack_f1": 0.0,
+    "dominant_failure": "false-positive SUPPORT overprediction",
+    "false_positive_edges": 16,
+    "false_positive_support_edges": 14,
+    "none_cases": 6,
+    "none_cases_with_false_positive_support": 3,
+    "none_false_positive_support_rate": 0.5,
+    "rephrase_f1": 0.0,
+    "summary": "The adapter learned the exact output contract but over-selected direct SUPPORT edges. SUPPORT accounted for 14 of 16 false-positive edges, including spurious SUPPORT on 3 of 6 gold-NONE scenarios."
+  },
+  "fixed_training_config": {
+    "effective_batch_size": 8,
+    "epochs": 3.0,
+    "gradient_accumulation_steps": 4,
+    "learning_rate": 0.0002,
+    "load_in_4bit": true,
+    "lora_alpha": 32,
+    "lora_dropout": 0.0,
+    "lora_r": 16,
+    "lr_scheduler_type": "cosine",
+    "max_seq_length": 2048,
+    "optimizer": "adamw_8bit",
+    "packing": false,
+    "per_device_batch_size": 2,
+    "prompt_masking": true,
+    "seed": 20260823,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ],
+    "warmup_ratio": 0.05
+  },
+  "frozen_evaluation": {
+    "blocks": 30,
+    "eval_examples_sha256": "76badbae23ace13b22822335fa794f7cc796ce0d02753666ebd83c4d7260305b",
+    "freeze_manifest_sha256": "31d920320df2dd91d89638d073101955c681bec4b426085de6a1e1b683bcac4c",
+    "judge_model": "gpt-5.4-mini-2026-03-17",
+    "judge_rubric_sha256": "b27fe77a9adce4fe586327fa556a51352efb76d402b93676df2173225be35f66",
+    "scenarios": 30
+  },
+  "immutable": true,
+  "metrics": {
+    "base": {
+      "edge_f1": 0.0,
+      "exact_patch_accuracy": 0.0,
+      "false_edges_per_update": 0.0,
+      "json_validity_rate": 0.13333333333333333,
+      "judge_robustness_mean": 1.4,
+      "judge_spec_adherence_mean": 0.23333333333333334,
+      "relation_macro_f1": 0.0,
+      "schema_validity_rate": 0.0
+    },
+    "v1_n256": {
+      "direction_accuracy": 1.0,
+      "direction_evaluable_edge_count": 2,
+      "edge_f1": 0.09523809523809525,
+      "edge_precision": 0.1111111111111111,
+      "edge_recall": 0.08333333333333333,
+      "exact_patch_accuracy": 0.16666666666666666,
+      "false_edges_per_update": 0.5333333333333333,
+      "invalid_id_count": 0,
+      "json_validity_rate": 1.0,
+      "judge_robustness_mean": 2.466666666666667,
+      "judge_spec_adherence_mean": 4.0,
+      "relation_macro_f1": 0.05555555555555555,
+      "schema_validity_rate": 1.0
+    }
+  },
+  "model_provenance": {
+    "adapter": {
+      "adapter_config_sha256": "199241f92e02f15f15dce287b7447dfc760060ef6d1230c8b008bb600482c4c1",
+      "adapter_weights_sha256": "c29156f0eeec3e609319dc05fd3cd55b4baa389bdef03d55696f3bdf9bd44613",
+      "tokenizer_config_sha256": "28d5debb24b06a4f905a086a7e58c384cafcc9188555736d7b813ed1d6f96baa"
+    },
+    "canonical": {
+      "config_sha256": "660db3b73d788119c04535e48cf9be5f55bc3100841a718637ae695b442f27dd",
+      "hub_revision": "c1899de289a04d12100db370d81485cdf75e47ca",
+      "model_id": "Qwen/Qwen3-0.6B",
+      "weights_lfs_sha256": "f47f71177f32bcd101b7573ec9171e6a57f4f4d31148d38e382306f42996874b"
+    },
+    "training_runtime": {
+      "config_sha256": "6664d289c50d66483c34c094309cb8565721fcff469c619737a7da395beb3d49",
+      "hub_revision": "e86f5289a2ca40ab7114071959dc2079cf97cb3c",
+      "model_id": "unsloth/qwen3-0.6b-unsloth-bnb-4bit",
+      "weights_lfs_sha256": "fe5874d661c52713581aa8d97e8c845f24f46e3699373abb3bb68a4d1b80edde"
+    }
+  },
+  "private_artifacts": [
+    {
+      "path": "data/dialam/training/dialam_n256.jsonl",
+      "reason": "QT30-derived training text",
+      "sha256": "53ac800e7272c06f8389af55b75061bca883e4dceb3c897c16486e1443579749"
+    },
+    {
+      "path": "data/dialam/training/frozen_eval_inputs.jsonl",
+      "reason": "QT30-derived evaluation text",
+      "sha256": "8e959ff0a1b58fc4ed9929f5c9259d70598a50d5f928e67b408cd1e35cf154a5"
+    },
+    {
+      "path": "results/dialam_model_eval/base/predictions.jsonl",
+      "reason": "raw base candidate responses",
+      "sha256": "3501dc29c8da8517ef3c9ba505546ad4e8da927d690ccdade4b766a80d02ec13"
+    },
+    {
+      "path": "results/dialam_model_eval/base/records.jsonl",
+      "reason": "text-bearing base diagnostics and judge responses",
+      "sha256": "f73cee950a0527394d650f6ebbd3f1ec3c496658b6e5ada4902b0f76f7fda98a"
+    },
+    {
+      "path": "results/dialam_model_eval/base/judge_transcripts.jsonl",
+      "reason": "text-bearing base judge prompts, responses, and envelopes",
+      "sha256": "40a6971f8a2a1e4e763633d7dc384d946f7144ef6feb6096c55d2bda190ee98b"
+    },
+    {
+      "path": "results/dialam_model_eval/base/summary.json",
+      "reason": "local full deterministic failure listing",
+      "sha256": "85dd97bf9edb914457afc7a2b4f1507d424661ab89545956629797cf4712383a"
+    },
+    {
+      "path": "results/dialam_model_eval/n256/predictions.jsonl",
+      "reason": "raw tuned candidate responses",
+      "sha256": "9245a34bfdc5942ce8c76aa40ad98f824577c956225398f4fa096b91d939ece1"
+    },
+    {
+      "path": "results/dialam_model_eval/n256/records.jsonl",
+      "reason": "text-bearing tuned diagnostics and judge responses",
+      "sha256": "f88858ad00d790de1161af7a8332a46f6cb9c4718832d89d6e49cd29d0da4b80"
+    },
+    {
+      "path": "results/dialam_model_eval/n256/judge_transcripts.jsonl",
+      "reason": "text-bearing tuned judge prompts, responses, and envelopes",
+      "sha256": "81419ea5ebb4a7f8c4a8e9aff5044b6367ab3cffe8e250564f3fbfec79b3269f"
+    },
+    {
+      "path": "results/dialam_model_eval/n256/summary.json",
+      "reason": "local full deterministic failure listing",
+      "sha256": "605a38cb217d4e399899d0a098df483d6c370640fd209a5ca8a4d8d4af91793b"
+    },
+    {
+      "path": "artifacts/dialam_qlora/n256/training_manifest.json",
+      "reason": "complete local training log history",
+      "sha256": "388d91b294d6d497290766a15887a5275d45406ff1401c712403c4164d0327d4"
+    },
+    {
+      "path": "artifacts/dialam_qlora/n256/adapter/adapter_config.json",
+      "reason": "local checkpoint configuration",
+      "sha256": "199241f92e02f15f15dce287b7447dfc760060ef6d1230c8b008bb600482c4c1"
+    },
+    {
+      "path": "artifacts/dialam_qlora/n256/adapter/adapter_model.safetensors",
+      "reason": "local checkpoint weights",
+      "sha256": "c29156f0eeec3e609319dc05fd3cd55b4baa389bdef03d55696f3bdf9bd44613"
+    }
+  ],
+  "privacy": "No QT30 text, raw candidate response, judge transcript, or adapter weight is included in this permanent publishable baseline. Paths and hashes make the private local evidence auditable.",
+  "published_source_hashes": {
+    "behavior_spec_sha256": "5c36854db1590151ed3f0abed7b84971559af93480f9b64d2e6c2b767bfa2064",
+    "modal_entrypoint_sha256": "b6057799aa2852dad36e6cda84f32c8e99a37ddf748803816efdb275f66f9088",
+    "training_manifest_sha256": "a68668fc0537f627beb465e165c0b0cc2611a71d743de97d58f25a51f2420fd2",
+    "zero_shot_prompt_sha256": "d86c43098b90a20d052be663c44c7e28b1f27dd1048b5f4f60634d78039de21f"
+  },
+  "schema_version": "dialam_qlora_baseline_v1"
+}

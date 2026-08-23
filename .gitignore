@@ -10,3 +10,13 @@ results/*
 !results/.gitkeep
 !results/README.md
 artifacts/
+data/source/dialam_qt30/
+# These transformed files reproduce corpus text. They are generated locally
+# for the approved educational use but are not cleared for redistribution.
+data/dialam/*.jsonl
+data/dialam/training/*.jsonl
+# Original QT30 episode/map identifiers have no express redistribution grant.
+data/dialam/dialogues.json
+# Contains complete QT30 source examples required by the private audit but not
+# cleared for redistribution. The public audit metadata is under hf_dataset/.
+DATA_AUDIT.md

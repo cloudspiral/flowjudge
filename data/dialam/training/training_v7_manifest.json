@@ -1,0 +1,88 @@
+{
+  "chosen_label_counts": {
+    "ATTACK": 1366,
+    "NONE": 4096,
+    "REPHRASE": 1365,
+    "SUPPORT": 1365
+  },
+  "continuation": {
+    "optimizer_state_reset_between_v5_and_v7": true,
+    "source_adapter": "v5_n8192",
+    "source_adapter_tree_sha256": "cbd9a2a6cae8ab988d78b7694ac9f9829bf9262bbb7a6fab838894a5080f122a"
+  },
+  "created_at": "2026-08-23T23:43:24.987691+00:00",
+  "dataset_version": "v7-qt30-reciprocal-preference",
+  "development_gate": {
+    "edge_f1_min": 0.56,
+    "exact_patch_accuracy_min": 0.5333333333333333,
+    "false_edges_per_update_max": 0.3,
+    "json_validity_rate_min": 1.0,
+    "none_scenarios_with_false_edges_max": 2,
+    "relation_macro_f1_min": 0.5427350427350427,
+    "schema_validity_rate_min": 1.0
+  },
+  "dialogue_ids_unchanged_from_v5": true,
+  "frozen_promotion_gate": {
+    "attack_f1_min": 0.3076923076923077,
+    "edge_f1_min": 0.5061904761904762,
+    "exact_patch_accuracy_min": 0.5333333333333333,
+    "false_edges_per_update_max": 0.26666666666666666,
+    "json_validity_rate_min": 1.0,
+    "none_scenarios_with_false_edges_max": 0,
+    "relation_macro_f1_min": 0.4743589743589744,
+    "schema_validity_rate_min": 1.0
+  },
+  "new_external_data": false,
+  "objective": {
+    "chosen_label_nll_weight": 0.1,
+    "hard_negative_candidate_preference": "NONE > paired gold relation",
+    "inference_alignment": "mean allowed-label token log probability",
+    "name": "reciprocal_candidate_preference",
+    "positive_candidate_preference": "gold direct relation > NONE",
+    "preference_loss": "softplus(-(chosen_score-rejected_score))",
+    "same_complete_block": true
+  },
+  "output": {
+    "path": "data/dialam/training/dialam_v7_n8192.jsonl",
+    "sha256": "4c97097388af73202b99963d580bc6ede2c1ffcfb5065cfa674e8f3c72b6b1cc"
+  },
+  "pair_role_counts": {
+    "NONE": 4096,
+    "POSITIVE": 4096
+  },
+  "preregistration": {
+    "path": "docs/dialam_v7_preregistration.md",
+    "sha256": "23ea2df015c3f48d222f3d506765e1ad6d5c142703d68c461e6302aeb34610ed"
+  },
+  "publication": "Rows contain transformed QT30 text and remain local/ignored unless the project owner's redistribution permission is documented for publication.",
+  "rejected_label_counts": {
+    "ATTACK": 1366,
+    "NONE": 4096,
+    "REPHRASE": 1365,
+    "SUPPORT": 1365
+  },
+  "resumability": {
+    "completed_run_is_idempotent_in_auto_mode": true,
+    "identity_mismatch_refuses_resume": true,
+    "periodic_full_trainer_state": true,
+    "persistent_modal_volume_commit_on_every_save": true,
+    "smoke_subset_is_nested_prefix": true
+  },
+  "schema": {
+    "path": "data/dialam/training/training_example_v7.schema.json",
+    "sha256": "36c6c7442a4a7f26c8d5c29f13d431e0397512f09b9b6b1ed6016d12c59a759d"
+  },
+  "schema_version": "dialam_training_manifest_v7",
+  "selection_seed": "dialam-qt30-qlora-v7-reciprocal-preference",
+  "size": 8192,
+  "smoke_output": {
+    "path": "data/dialam/training/dialam_v7_resume_smoke_n256.jsonl",
+    "sha256": "e98f475ef107b3ee39abbf8d149ebb330587dd53111c5fa2828c49243c0ce911"
+  },
+  "smoke_size": 256,
+  "source_corpus": "exact frozen DialAM v5 QT30 pair corpus",
+  "source_v5_pair_groups": 4096,
+  "source_v5_rows": 8192,
+  "source_v5_sha256": "23f4b8d552a6bca16cdb79507d89ec9675bb16a8d2f5b7b573c6a0981a42d8db",
+  "split_unit": "original_parent_episode"
+}

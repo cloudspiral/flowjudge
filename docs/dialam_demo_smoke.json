@@ -1,34 +1,34 @@
 {
   "backend": {
     "cost_controls": {
-      "compute": "CPU",
+      "compute": "NVIDIA L4",
       "max_concurrent_inputs": 1,
       "max_containers": 1,
       "scaledown_window_seconds": 120
     },
+    "health_response": {
+      "model": "mr-mc/flowjudge-dialam-qwen3-0.6b-v5-1-n8192",
+      "status": "ok"
+    },
     "health_status": 200,
     "predict_status": 200,
-    "url": "https://cloudspiral--flowjudge-dialam-public-demo-web.modal.run"
+    "url": "https://cloudspiral--flowjudge-dialam-public-demo-web.modal.run",
+    "warm_prediction_latency_seconds": 5.929618
   },
-  "checked_at": "2026-08-23T09:10:37Z",
-  "hf_gradio_blocker": "HF returned 402 because dynamic Gradio CPU Spaces require Pro; no subscription was started. The public interface uses a free static Space instead.",
-  "model": "mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096",
+  "checked_at": "2026-08-23T18:53:57Z",
+  "model": "mr-mc/flowjudge-dialam-qwen3-0.6b-v5-1-n8192",
+  "model_commit": "888f710037af43d6965c75163b240c785dee3cad",
   "public_space": {
-    "commit": "b34685eab4b02044d62dbfdf4c3ab244281a179c",
+    "commit": "d540bc489db5fc5dc3c51e620222a93400ddddf4",
     "private": false,
-    "runtime_stage": "RUNNING",
     "sdk": "static",
     "url": "https://huggingface.co/spaces/mr-mc/flowjudge-dialam-demo"
   },
   "smoke_response": {
-    "base": "```json\n[]",
-    "note": "Same prompt and greedy decoding. V3 materially improved held-out edge metrics and false-edge calibration, but did not clear the frozen semantic-reliability threshold.",
-    "tuned": "{\"relations\":[{\"source\":\"P3\",\"target\":\"P1\",\"type\":\"SUPPORT\"}]}"
+    "base": "{\"relations\":[]}",
+    "note": "Same complete-block pairwise scorer and fixed 3.0 NONE margin. V5.1 passed every promotion check and improved frozen edge metrics, but did not clear the original high reliability bar.",
+    "tuned": "{\"relations\":[]}"
   },
-  "synthetic_expected_relation": {
-    "source": "P3",
-    "target": "P1",
-    "type": "SUPPORT"
-  },
-  "verdict": "RUNTIME_PASS_SYNTHETIC_OUTPUT_MATCH"
+  "synthetic_input_is_not_a_scored_gold_case": true,
+  "verdict": "RUNTIME_AND_SCHEMA_PASS"
 }

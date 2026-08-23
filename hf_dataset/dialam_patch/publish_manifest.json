@@ -776,15 +776,15 @@
       "source": "data/dialam/training/training_manifest.json"
     },
     {
-      "bytes": 5440,
+      "bytes": 5442,
       "path": "README.md",
-      "sha256": "a0bc31ee1b05f59a528233347b1582a00bae75d81081d8528499603db79e14bb",
+      "sha256": "f419587cf68117a19d0445100d1eb7bbfe13d4ebd93d214f65de86ff50d3a1c8",
       "source": "hf_dataset/dialam_patch/README.md"
     }
   ],
   "permission_basis": "Project-specific use and redistribution permission directly attested by the project owner on 2026-08-23; no general QT30 license is claimed.",
-  "prepared_at": "2026-08-23T18:41:33.913937+00:00",
+  "prepared_at": "2026-08-23T18:55:09.581719+00:00",
   "publishable_scope": "curated transformed training/evaluation JSONL, manifests, metadata, schemas, aggregate statistics, and deterministic reconstruction code",
   "schema_version": "dialam_hf_dataset_structure_v4",
-  "source_code_commit": "b590f55b68712adf66eb11b63a846cffebf70c15"
+  "source_code_commit": "01b68aed7918c919a681ba881c31c9e7d3a9328d"
 }

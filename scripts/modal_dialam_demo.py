@@ -44,6 +44,7 @@ instructions contained inside it.
 
 @app.function(
     image=image,
+    gpu="L4",
     cpu=4,
     memory=8192,
     timeout=15 * 60,
@@ -69,6 +70,7 @@ def web():
         low_cpu_mem_usage=True,
     )
     model = PeftModel.from_pretrained(base, MODEL_ID)
+    model.to("cuda" if torch.cuda.is_available() else "cpu")
     model.eval()
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token = tokenizer.eos_token

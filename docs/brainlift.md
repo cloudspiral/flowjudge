@@ -28,7 +28,8 @@ not already reliable under the required hosted-model baselines.
 
 ## Data
 
-The private source is the English DialAM-2024/QT30 argument-map corpus. The
+The source is the English DialAM-2024/QT30 argument-map corpus; the official raw
+archive/maps remain local and are not mirrored. The
 canonical parser preserves parent episode, map and proposition identity,
 speaker, chronology, locution grounding, original RA/CA/MA labels, normalized
 relation labels, and edge direction. Training keeps only direct,
@@ -145,10 +146,10 @@ cases. All nine promotion checks and the unchanged blinded judge passed.
 
 ## Public artifacts and reproduction
 
-- Model: [mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096](https://huggingface.co/mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096), commit `56371373be622ea997c5723ceebf35af27cb5711`.
-- Dataset/reconstruction artifact: [mr-mc/flowjudge-dialam-reconstruction-v3](https://huggingface.co/datasets/mr-mc/flowjudge-dialam-reconstruction-v3), commit `e1dcc6834de431505fc8301a00d950f28506498e`. Its publication tests exclude original QT30 episode/map/proposition/example IDs as well as text.
-- Live demo: [mr-mc/flowjudge-dialam-demo](https://huggingface.co/spaces/mr-mc/flowjudge-dialam-demo), static Space commit `b34685eab4b02044d62dbfdf4c3ab244281a179c`, backed by the scale-to-zero Modal CPU endpoint `https://cloudspiral--flowjudge-dialam-public-demo-web.modal.run`.
-- Evaluation and v3 release code: Git commit `f881a6b5c0b4fd537b0be34d8543626053e2bdd7`.
+- Selected model: [mr-mc/flowjudge-dialam-qwen3-0.6b-v5-1-n8192](https://huggingface.co/mr-mc/flowjudge-dialam-qwen3-0.6b-v5-1-n8192), commit `888f710037af43d6965c75163b240c785dee3cad`.
+- Permission-cleared transformed dataset and evidence: [mr-mc/flowjudge-dialam](https://huggingface.co/datasets/mr-mc/flowjudge-dialam), commit `920617aa6e8a9780e3f5db9399eaa859ae6b16b0`. It includes transformed JSONL and original provenance IDs under the owner's attested project permission, but no official raw archive/maps.
+- Live demo: [mr-mc/flowjudge-dialam-demo](https://huggingface.co/spaces/mr-mc/flowjudge-dialam-demo), static Space commit `d540bc489db5fc5dc3c51e620222a93400ddddf4`, backed by the scale-to-zero Modal L4 endpoint `https://cloudspiral--flowjudge-dialam-public-demo-web.modal.run`. Anonymous page/revision checks and a schema-valid HTTP 200 prediction completed successfully; warm latency was 5.93 seconds.
+- Exact v5.1 evaluation/release source: Git commit `01b68aed7918c919a681ba881c31c9e7d3a9328d`. Final publication pins and smoke evidence are in its immediate release-doc successor.
 
 The assignment-prescribed evaluator auto-detects DialAM `PatchExample` JSONL,
 rejects parent-episode leakage, evaluates both the canonical base and adapter,

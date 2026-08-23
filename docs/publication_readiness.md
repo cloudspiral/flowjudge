@@ -49,6 +49,17 @@ The public demo compares the untouched base with the selected adapter using the
 same complete-block pairwise scorer and fixed margin. The static Hugging Face
 Space calls the scale-to-zero Modal endpoint.
 
+## Published revisions and smoke proof
+
+- Model: `mr-mc/flowjudge-dialam-qwen3-0.6b-v5-1-n8192@888f710037af43d6965c75163b240c785dee3cad`.
+- Dataset: `mr-mc/flowjudge-dialam@920617aa6e8a9780e3f5db9399eaa859ae6b16b0`.
+- Static Space: `mr-mc/flowjudge-dialam-demo@d540bc489db5fc5dc3c51e620222a93400ddddf4`.
+- Exact source commit embedded in both model/dataset manifests:
+  `01b68aed7918c919a681ba881c31c9e7d3a9328d`.
+- Anonymous model, dataset, Space, and exact-revision requests returned HTTP
+  200. The synthetic public prediction returned schema-valid base/tuned JSON
+  with HTTP 200 in 5.93 warm seconds.
+
 ## Remaining external submission actions
 
 - Run the unchanged `eval.py --model ... --eval-set ...` harness on the

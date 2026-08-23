@@ -124,5 +124,5 @@ The relation labels inherit QT30's annotations and the documented grounding,
 chronology, and binary-relation filters. The frozen set has only 30 scenarios,
 so small absolute changes produce visibly large percentage changes. Failed
 experiments remain in the history to prevent selective reporting. Consult the
-latest result and promotion decision in `metadata/dialam_v5_results.md`; do not
+latest result and promotion decision in `metadata/dialam_v5_1_results.md`; do not
 interpret publication as a claim that the selected model is production-ready.

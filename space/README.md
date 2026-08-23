@@ -18,6 +18,6 @@ reused-benchmark promotion check, improving frozen exact-patch accuracy to
 53.3% and edge F1 to 47.6%, but it remains a research artifact because it did
 not clear the project's original high reliability threshold.
 
-The static interface calls a scale-to-zero Modal CPU endpoint that loads the
+The static interface calls a scale-to-zero Modal L4 endpoint that loads the
 public adapter. Cold starts can take about a minute. No QT30-derived dialogue
 text is bundled with the demo.

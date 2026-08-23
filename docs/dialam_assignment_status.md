@@ -28,9 +28,11 @@ remains authoritative.
   47.4% macro-F1, 30.8% ATTACK F1, 0.267 false edges/update, 0/6 NONE cases
   with a false edge, and 3.03/4 judge Robustness. It is the selected direction
   but does not clear the original high reliability bar.
-- Permission-cleared Hugging Face model and transformed-dataset packages are
-  complete locally; exact public Hub commits are recorded after upload in
-  `docs/dialam_hf_publication_manifest.json`.
+- Public selected model:
+  `mr-mc/flowjudge-dialam-qwen3-0.6b-v5-1-n8192@888f710037af43d6965c75163b240c785dee3cad`.
+- Public permission-cleared transformed dataset and evidence:
+  `mr-mc/flowjudge-dialam@920617aa6e8a9780e3f5db9399eaa859ae6b16b0`.
+  Anonymous page and exact-revision checks returned HTTP 200 for both.
 - Required `eval.py --model <hf-repo-id> --eval-set <path>` interface, including
   DialAM schema auto-detection, v5.1 fixed-label likelihood scoring, block
   unioning, deterministic correctness metrics, and blinded judge transcripts.
@@ -38,15 +40,16 @@ remains authoritative.
   evidence, minimum-viable-N finding, failure diagnosis, and exact public
   artifact commits.
 - Public base-versus-tuned inference demo at
-  `mr-mc/flowjudge-dialam-demo@b34685eab4b02044d62dbfdf4c3ab244281a179c`,
-  anonymously verified in `RUNNING` state with a successful synthetic v3
-  inference. Its public repository contains only `README.md` and `index.html`.
+  `mr-mc/flowjudge-dialam-demo@d540bc489db5fc5dc3c51e620222a93400ddddf4`,
+  anonymously verified with a successful synthetic v5.1 HTTP 200 inference in
+  5.93 warm seconds. Its public repository contains only `README.md` and
+  `index.html`; the scale-to-zero Modal L4 backend hosts the model runtime.
 - The official QT30 raw archive/maps remain ignored. Under the owner's explicit
   project-specific redistribution permission, the vetted HF dataset package
   includes transformed training/evaluation JSONL and candidate/judge evidence,
   with paths and hashes in its publication manifest.
-- Exact evaluation/release-code commit:
-  `f881a6b5c0b4fd537b0be34d8543626053e2bdd7`.
+- Exact v5.1 evaluation/release-code commit:
+  `01b68aed7918c919a681ba881c31c9e7d3a9328d`.
 - V4 class-balanced rehearsal experiment at N=8192. It
   improved episode-disjoint development edge F1 from 21.1% to 34.1% and ATTACK
   F1 from 0% to 54.5%, but worsened NONE cases with a false edge from 2/6 to

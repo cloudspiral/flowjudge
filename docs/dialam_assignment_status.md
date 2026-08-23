@@ -41,8 +41,8 @@ remains authoritative.
 - Raw QT30-derived training/evaluation text, predictions, records, and judge
   transcripts remain ignored locally; their paths and hashes are preserved in
   the aggregate v3 report.
-- Exact evaluation/release-code commit will be pinned here immediately after
-  the final verified release commit is created.
+- Exact evaluation/release-code commit:
+  `f881a6b5c0b4fd537b0be34d8543626053e2bdd7`.
 
 ## Still required before final submission
 

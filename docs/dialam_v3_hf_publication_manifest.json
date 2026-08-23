@@ -6,5 +6,6 @@
   "model_commit": "56371373be622ea997c5723ceebf35af27cb5711",
   "model_repo": "mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096",
   "private": false,
-  "published_at": "2026-08-23T09:17:00.569970+00:00"
+  "published_at": "2026-08-23T09:17:00.569970+00:00",
+  "release_code_commit": "f881a6b5c0b4fd537b0be34d8543626053e2bdd7"
 }

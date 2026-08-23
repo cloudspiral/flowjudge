@@ -115,7 +115,7 @@ that should be registered as a new experiment, not folded into this result.
 - Model: [mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096](https://huggingface.co/mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096), commit `56371373be622ea997c5723ceebf35af27cb5711`.
 - Dataset/reconstruction artifact: [mr-mc/flowjudge-dialam-reconstruction-v3](https://huggingface.co/datasets/mr-mc/flowjudge-dialam-reconstruction-v3), commit `e1dcc6834de431505fc8301a00d950f28506498e`. Its publication tests exclude original QT30 episode/map/proposition/example IDs as well as text.
 - Live demo: [mr-mc/flowjudge-dialam-demo](https://huggingface.co/spaces/mr-mc/flowjudge-dialam-demo), static Space commit `b34685eab4b02044d62dbfdf4c3ab244281a179c`, backed by the scale-to-zero Modal CPU endpoint `https://cloudspiral--flowjudge-dialam-public-demo-web.modal.run`.
-- Evaluation and v3 release code: this feature branch; the exact release commit is pinned in `docs/dialam_assignment_status.md` after final verification.
+- Evaluation and v3 release code: Git commit `f881a6b5c0b4fd537b0be34d8543626053e2bdd7`.
 
 The assignment-prescribed evaluator auto-detects DialAM `PatchExample` JSONL,
 rejects parent-episode leakage, evaluates both the canonical base and adapter,

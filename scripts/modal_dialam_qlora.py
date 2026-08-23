@@ -13,8 +13,17 @@ REMOTE_DATA_DIR = Path("/workspace/dialam_data")
 PERSISTENT_ROOT = Path("/workspace/persistent")
 CHECKPOINT_ROOT = PERSISTENT_ROOT / "checkpoints"
 BASE_MODEL = "Qwen/Qwen3-0.6B"
-SIZES = (256, 512, 1024, 2048)
-DATASET_VERSIONS = ("v1", "v2")
+SIZES = (256, 512, 1024, 2048, 4096)
+DATASET_VERSIONS = ("v1", "v2", "v3")
+VALID_SIZES_BY_VERSION = {
+    "v1": (256, 512, 1024, 2048),
+    "v2": (2048,),
+    "v3": (4096,),
+}
+EVAL_INPUT_FILENAMES = {
+    "frozen": "frozen_eval_inputs.jsonl",
+    "v3_dev": "v3_dev_eval_inputs.jsonl",
+}
 MAX_SEQ_LENGTH = 2048
 SEED = 20260823
 
@@ -47,6 +56,10 @@ FIXED_CONFIG = {
     "prompt_masking": True,
     "packing": False,
 }
+V3_LOSS_CONFIG = {
+    "name": "per_example_assistant_token_mean_then_batch_mean",
+    "assistant_loss_weight_per_example": 1.0,
+}
 
 image = (
     modal.Image.from_registry("unsloth/unsloth:latest")
@@ -64,14 +77,21 @@ def _load_rows(path: Path) -> list[dict]:
 def _checkpoint_label(size: int, dataset_version: str) -> str:
     if dataset_version not in DATASET_VERSIONS:
         raise ValueError(f"dataset_version must be one of {DATASET_VERSIONS}")
-    if dataset_version == "v2" and size != 2048:
-        raise ValueError("the fixed v2 experiment is registered only for n=2048")
-    return f"n{size}" if dataset_version == "v1" else f"v2_n{size}"
+    if size not in VALID_SIZES_BY_VERSION[dataset_version]:
+        raise ValueError(
+            f"dataset_version {dataset_version} is registered only for "
+            f"n={VALID_SIZES_BY_VERSION[dataset_version]}"
+        )
+    return f"n{size}" if dataset_version == "v1" else f"{dataset_version}_n{size}"
 
 
 def _train_filename(size: int, dataset_version: str) -> str:
     _checkpoint_label(size, dataset_version)
-    return f"dialam_n{size}.jsonl" if dataset_version == "v1" else f"dialam_v2_n{size}.jsonl"
+    return (
+        f"dialam_n{size}.jsonl"
+        if dataset_version == "v1"
+        else f"dialam_{dataset_version}_n{size}.jsonl"
+    )
 
 
 def _generate(model: object, tokenizer: object, prompt: str, max_new_tokens: int = 256) -> str:
@@ -102,8 +122,7 @@ def _generate(model: object, tokenizer: object, prompt: str, max_new_tokens: int
     volumes={str(PERSISTENT_ROOT): volume},
 )
 def train_checkpoint(size: int, dataset_version: str = "v1") -> dict:
-    if size not in SIZES:
-        raise ValueError(f"size must be one of {SIZES}")
+    _checkpoint_label(size, dataset_version)
 
     import hashlib
     import shutil
@@ -187,6 +206,11 @@ def train_checkpoint(size: int, dataset_version: str = "v1") -> dict:
         remove_columns=list(rows[0]),
         desc=f"tokenize DialAM n={size}",
     )
+    assistant_token_counts = [
+        sum(token != -100 for token in labels) for labels in dataset["labels"]
+    ]
+    if not assistant_token_counts or min(assistant_token_counts) <= 0:
+        raise ValueError("at least one training row has no unmasked assistant tokens")
     training_args = TrainingArguments(
         output_dir=str(checkpoint_dir / "trainer"),
         num_train_epochs=FIXED_CONFIG["epochs"],
@@ -205,7 +229,33 @@ def train_checkpoint(size: int, dataset_version: str = "v1") -> dict:
         data_seed=SEED,
         remove_unused_columns=False,
     )
-    trainer = Trainer(
+    class PerExampleAssistantLossTrainer(Trainer):
+        def compute_loss(
+            self,
+            model: object,
+            inputs: dict,
+            return_outputs: bool = False,
+            num_items_in_batch: object | None = None,
+        ) -> object:
+            del num_items_in_batch
+            labels = inputs.pop("labels")
+            outputs = model(**inputs)
+            logits = outputs.logits
+            shift_logits = logits[..., :-1, :].contiguous().float()
+            shift_labels = labels[..., 1:].contiguous()
+            token_losses = torch.nn.functional.cross_entropy(
+                shift_logits.view(-1, shift_logits.size(-1)),
+                shift_labels.view(-1),
+                ignore_index=-100,
+                reduction="none",
+            ).view_as(shift_labels)
+            mask = shift_labels.ne(-100)
+            per_example = (token_losses * mask).sum(dim=1) / mask.sum(dim=1).clamp_min(1)
+            loss = per_example.mean()
+            return (loss, outputs) if return_outputs else loss
+
+    trainer_class = PerExampleAssistantLossTrainer if dataset_version == "v3" else Trainer
+    trainer = trainer_class(
         model=model,
         args=training_args,
         train_dataset=dataset,
@@ -245,6 +295,14 @@ def train_checkpoint(size: int, dataset_version: str = "v1") -> dict:
         "dataset_version": dataset_version,
         "train_sha256": hashlib.sha256(train_path.read_bytes()).hexdigest(),
         "fixed_config": FIXED_CONFIG,
+        "loss_config": V3_LOSS_CONFIG if dataset_version == "v3" else {
+            "name": "assistant_token_mean",
+        },
+        "assistant_token_counts": {
+            "minimum": min(assistant_token_counts),
+            "mean": sum(assistant_token_counts) / len(assistant_token_counts),
+            "maximum": max(assistant_token_counts),
+        },
         "gpu": torch.cuda.get_device_name(0),
         "cuda": torch.version.cuda,
         "torch": str(torch.__version__),
@@ -272,18 +330,19 @@ def train_checkpoint(size: int, dataset_version: str = "v1") -> dict:
     timeout=60 * 60,
     volumes={str(PERSISTENT_ROOT): volume},
 )
-def generate_frozen_eval(
+def generate_model_eval(
     target: str,
     size: int = 256,
     dataset_version: str = "v1",
+    eval_split: str = "frozen",
 ) -> list[dict]:
     import torch
     from unsloth import FastLanguageModel
 
     if target not in {"base", "tuned"}:
         raise ValueError("target must be base or tuned")
-    if target == "tuned" and size not in SIZES:
-        raise ValueError(f"size must be one of {SIZES}")
+    if eval_split not in EVAL_INPUT_FILENAMES:
+        raise ValueError(f"eval_split must be one of {tuple(EVAL_INPUT_FILENAMES)}")
     checkpoint_label = _checkpoint_label(size, dataset_version)
     model_name = (
         BASE_MODEL
@@ -301,7 +360,7 @@ def generate_frozen_eval(
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token = tokenizer.eos_token
     FastLanguageModel.for_inference(model)
-    rows = _load_rows(REMOTE_DATA_DIR / "frozen_eval_inputs.jsonl")
+    rows = _load_rows(REMOTE_DATA_DIR / EVAL_INPUT_FILENAMES[eval_split])
     predictions = []
     for index, row in enumerate(rows, start=1):
         response = _generate(model, tokenizer, row["prompt"])
@@ -313,6 +372,7 @@ def generate_frozen_eval(
                 "model": BASE_MODEL,
                 "adapter_size": size if target == "tuned" else None,
                 "dataset_version": dataset_version if target == "tuned" else None,
+                "eval_split": eval_split,
                 "raw_response": response,
             }
         )
@@ -328,6 +388,7 @@ def main(
     size: int = 256,
     target: str = "base",
     dataset_version: str = "v1",
+    eval_split: str = "frozen",
     output_path: str = "",
 ) -> None:
     if action == "train":
@@ -341,9 +402,15 @@ def main(
             / "remote_training_result.json"
         )
     elif action == "evaluate":
-        result = generate_frozen_eval.remote(target, size, dataset_version)
+        result = generate_model_eval.remote(target, size, dataset_version, eval_split)
         label = "base" if target == "base" else _checkpoint_label(size, dataset_version)
-        default = PROJECT_ROOT / "results" / "dialam_model_eval" / label / "predictions.jsonl"
+        default = (
+            PROJECT_ROOT
+            / "results"
+            / "dialam_model_eval"
+            / (label if eval_split == "frozen" else f"{label}_{eval_split}")
+            / "predictions.jsonl"
+        )
     else:
         raise ValueError("action must be train or evaluate")
 

@@ -1,0 +1,148 @@
+{
+  "$defs": {
+    "PairMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "closest_turn_gap": {
+          "exclusiveMinimum": 0,
+          "title": "Closest Turn Gap",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "same_update_direct_edge_elsewhere",
+          "title": "Kind",
+          "type": "string"
+        },
+        "max_jaccard_similarity": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Max Jaccard Similarity",
+          "type": "number"
+        },
+        "max_overlap_coefficient": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Max Overlap Coefficient",
+          "type": "number"
+        },
+        "max_shared_content_tokens": {
+          "minimum": 0,
+          "title": "Max Shared Content Tokens",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "max_shared_content_tokens",
+        "max_overlap_coefficient",
+        "max_jaccard_similarity",
+        "closest_turn_gap"
+      ],
+      "title": "PairMetadata",
+      "type": "object"
+    },
+    "TrainingMessage": {
+      "additionalProperties": false,
+      "properties": {
+        "content": {
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "user",
+            "assistant"
+          ],
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "content"
+      ],
+      "title": "TrainingMessage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "assistant_loss_weight": {
+      "const": 1.0,
+      "title": "Assistant Loss Weight",
+      "type": "number"
+    },
+    "category": {
+      "enum": [
+        "NONE",
+        "SUPPORT",
+        "ATTACK",
+        "REPHRASE",
+        "MIXED"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "dialogue_id": {
+      "title": "Dialogue Id",
+      "type": "string"
+    },
+    "example_id": {
+      "title": "Example Id",
+      "type": "string"
+    },
+    "messages": {
+      "items": {
+        "$ref": "#/$defs/TrainingMessage"
+      },
+      "maxItems": 2,
+      "minItems": 2,
+      "title": "Messages",
+      "type": "array"
+    },
+    "pair_id": {
+      "title": "Pair Id",
+      "type": "string"
+    },
+    "pair_metadata": {
+      "$ref": "#/$defs/PairMetadata"
+    },
+    "pair_role": {
+      "enum": [
+        "POSITIVE",
+        "NONE"
+      ],
+      "title": "Pair Role",
+      "type": "string"
+    },
+    "paired_example_id": {
+      "title": "Paired Example Id",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "dialam_qlora_chat_v3",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "update_id": {
+      "title": "Update Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "example_id",
+    "update_id",
+    "dialogue_id",
+    "category",
+    "pair_id",
+    "pair_role",
+    "paired_example_id",
+    "assistant_loss_weight",
+    "pair_metadata",
+    "messages"
+  ],
+  "title": "DialAMTrainingRowV3",
+  "type": "object"
+}

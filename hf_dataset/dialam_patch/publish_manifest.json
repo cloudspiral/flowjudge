@@ -50,6 +50,12 @@
       "source": "data/dialam/training/training_v2_manifest.json"
     },
     {
+      "bytes": 4503,
+      "path": "metadata/training_v3_manifest.json",
+      "sha256": "60e042cee5cd5b6d87d94fd362d775c6c7877fed99fe2c0ecc40b8607d708034",
+      "source": "data/dialam/training/training_v3_manifest.json"
+    },
+    {
       "bytes": 1485,
       "path": "schema/training_example.schema.json",
       "sha256": "d30c83e49a4ea6b590a0188c8c08a653d6201c12fffd259ec14cf2cfed4b7828",
@@ -62,6 +68,12 @@
       "source": "data/dialam/training/training_example_v2.schema.json"
     },
     {
+      "bytes": 3187,
+      "path": "schema/training_example_v3.schema.json",
+      "sha256": "506a17d709e94a056df7164aaac06726edfa4616a7b33628ca9e2fdc71199e85",
+      "source": "data/dialam/training/training_example_v3.schema.json"
+    },
+    {
       "bytes": 17537,
       "path": "metadata/dialam_v1_efficiency_curve.json",
       "sha256": "c6b1596d368b4c0db754bf5a909b7c1af5745d26f187f76ee1afc022c3a87894",
@@ -72,6 +84,12 @@
       "path": "metadata/dialam_v1_to_v2.json",
       "sha256": "10e485a295260cebfe472d6a385784a0053bc052a7058b87f7dbee0673134273",
       "source": "reports/dialam_v1_to_v2.json"
+    },
+    {
+      "bytes": 2735,
+      "path": "metadata/dialam_v3_preregistration.md",
+      "sha256": "622425385e990d7c770bfcc5dc0426047a5d3626cf1431c6ade44b5859b444d3",
+      "source": "docs/dialam_v3_preregistration.md"
     },
     {
       "bytes": 1387,
@@ -90,6 +108,12 @@
       "path": "reconstruction/build_dialam_training_v2.py",
       "sha256": "fc0ff301bd77b67884abc8b85cce9bc926af63672f27553464c3872aa2720193",
       "source": "scripts/build_dialam_training_v2.py"
+    },
+    {
+      "bytes": 798,
+      "path": "reconstruction/build_dialam_training_v3.py",
+      "sha256": "fe03ffd044a3955dc771d66f8fa015dd911192a3853e79d36667b43f659735a5",
+      "source": "scripts/build_dialam_training_v3.py"
     },
     {
       "bytes": 15339,
@@ -116,9 +140,9 @@
       "source": "scripts/freeze_dialam_gate.py"
     },
     {
-      "bytes": 12053,
+      "bytes": 14576,
       "path": "reconstruction/modal_dialam_qlora.py",
-      "sha256": "e431708950ff79eed2888c944e94c0f13b89357f2b8b5b88e7938a6d044f2f1d",
+      "sha256": "2d42b04dcbabc4a0f8a8040c455195c5b6478e6bd0b167b9a57f1a31cd38cdb1",
       "source": "scripts/modal_dialam_qlora.py"
     },
     {
@@ -150,6 +174,12 @@
       "path": "reconstruction/flowjudge/dialam_training_v2.py",
       "sha256": "bd0dd02fc5744aeea87bbb97d0ac697fe9fe98b552818b8d49123d1df12add55",
       "source": "src/flowjudge/dialam_training_v2.py"
+    },
+    {
+      "bytes": 22097,
+      "path": "reconstruction/flowjudge/dialam_training_v3.py",
+      "sha256": "f829db16b916123d4c83edd5ea422105784b1d59f117256ee7c0ead148d11bca",
+      "source": "src/flowjudge/dialam_training_v3.py"
     },
     {
       "bytes": 33494,
@@ -206,13 +236,13 @@
       "source": "BEHAVIOR_SPEC.md"
     },
     {
-      "bytes": 2691,
+      "bytes": 3264,
       "path": "README.md",
-      "sha256": "72db3355ef51ba38029568580d32169b513e1969a471ac00a73385ecf9ef048c",
+      "sha256": "486855858d1e1933d2a88d798f58cb5dc6a8127b4c2f008d9a54dad073cd6b78",
       "source": "hf_dataset/dialam_patch/README.md"
     }
   ],
-  "prepared_at": "2026-08-23T07:40:47.663727+00:00",
+  "prepared_at": "2026-08-23T08:20:14.658581+00:00",
   "publishable_scope": "manifests, metadata, schemas, aggregate statistics, and reconstruction code only",
-  "schema_version": "dialam_hf_dataset_structure_v2"
+  "schema_version": "dialam_hf_dataset_structure_v3"
 }

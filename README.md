@@ -88,6 +88,15 @@ See
 [`docs/dialam_v1_efficiency_results.md`](docs/dialam_v1_efficiency_results.md)
 and [`docs/dialam_v2_hard_negative_results.md`](docs/dialam_v2_hard_negative_results.md).
 
+A single v3 correction is preregistered before training. It uses 4,096 rows as
+2,048 exact same-update positive/NONE pairs and changes only the loss reduction:
+assistant-token loss is averaged within each row before rows are averaged. This
+removes the 4.50× positive-to-NONE supervised-character imbalance while keeping
+the Qwen base and every optimization hyperparameter fixed. Four parent episodes
+are reserved for a new 30-case development check; the original frozen set will
+be used once afterward. See
+[`docs/dialam_v3_preregistration.md`](docs/dialam_v3_preregistration.md).
+
 The assignment-prescribed base-versus-tuned evaluator now auto-detects DialAM
 `PatchExample` JSONL and writes the complete deterministic table plus blinded
 judge transcripts:

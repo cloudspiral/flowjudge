@@ -1,0 +1,107 @@
+{
+  "base_model": "Qwen/Qwen3-0.6B",
+  "category_counts": {
+    "ATTACK": 189,
+    "MIXED": 30,
+    "NONE": 2048,
+    "REPHRASE": 915,
+    "SUPPORT": 914
+  },
+  "created_at": "2026-08-23T08:19:16.267165+00:00",
+  "dataset_version": "v3-paired-loss-balanced",
+  "development_evaluation": {
+    "category_counts": {
+      "ATTACK": 8,
+      "NONE": 6,
+      "REPHRASE": 8,
+      "SUPPORT": 8
+    },
+    "examples": 30,
+    "examples_path": "data/dialam/training/v3_dev_eval_examples.jsonl",
+    "examples_sha256": "78f4ccc35312a4e3e74cce062346af040ff4e00b365a1312c2a627d7d0e1ec55",
+    "inputs_path": "data/dialam/training/v3_dev_eval_inputs.jsonl",
+    "inputs_sha256": "8ae5555f489ef47b3d4915674b0df5f69d84caaff8649cd21d57e09f6f92d1c3",
+    "policy": "30 one-block scenarios from four parent episodes excluded from v3 training and the frozen gate"
+  },
+  "development_parent_episode_count": 4,
+  "development_parent_episode_set_sha256": "d5c46607a98f9a5d73def22a2e59f4da8fcec26f6f68793b4a9eeab8260ad147",
+  "dialogue_leakage": false,
+  "frozen_evaluation": {
+    "eval_sha256": "76badbae23ace13b22822335fa794f7cc796ce0d02753666ebd83c4d7260305b",
+    "examples": 30,
+    "judge_rubric_sha256": "b27fe77a9adce4fe586327fa556a51352efb76d402b93676df2173225be35f66",
+    "policy": "evaluate once after the development check; never select or tune v3 from frozen responses",
+    "unchanged_from_v1_v2": true
+  },
+  "frozen_parent_episode_count": 6,
+  "loss_policy": {
+    "assistant_loss_weight_per_row": 1.0,
+    "description": "Mask every prompt token, average causal cross-entropy over each row's assistant tokens, then average rows. This gives a short NONE JSON answer the same configured example weight as its longer positive sibling.",
+    "name": "per_example_assistant_token_mean_then_batch_mean",
+    "positive_to_none_row_ratio": 1.0,
+    "unbalanced_positive_to_none_supervised_character_ratio": 4.4976806640625
+  },
+  "output": {
+    "path": "data/dialam/training/dialam_v3_n4096.jsonl",
+    "sha256": "902bd567df7b6c2cb23c8987dd8bf4284e53e4fbfd2b35de262a811fb16dc3e0"
+  },
+  "pair_count": 2048,
+  "pair_policy": {
+    "description": "Select one positive block and one all-negative block from the exact same update, use each update at most once, exhaust paired ATTACK/MIXED coverage, and rank the NONE sibling by deterministic lexical hardness.",
+    "duplicates": false,
+    "one_pair_per_update": true,
+    "overlap_coefficient": {
+      "maximum": 1.0,
+      "mean": 0.25567809469176656,
+      "minimum": 0.0
+    },
+    "pairs_with_one_or_more_shared_content_tokens": 1421,
+    "pairs_with_two_or_more_shared_content_tokens": 729,
+    "positive_target_counts": {
+      "ATTACK": 189,
+      "MIXED": 30,
+      "REPHRASE": 915,
+      "SUPPORT": 914
+    },
+    "same_update_for_every_pair": true,
+    "semantic_candidate_retrieval": false,
+    "shared_content_tokens": {
+      "maximum": 13,
+      "mean": 1.283203125,
+      "minimum": 0
+    }
+  },
+  "pair_role_counts": {
+    "NONE": 2048,
+    "POSITIVE": 2048
+  },
+  "preregistered_material_improvement": {
+    "false_edge_baseline": "v1/n2048 false_edges_per_update=0.6666666666666666",
+    "json_and_schema_validity_must_remain": 1.0,
+    "maximum_false_edges_per_update": 0.6666666666666666,
+    "maximum_none_scenarios_with_false_edges": 2,
+    "minimum_edge_f1": 0.2642857142857143,
+    "semantic_baseline": "v2/n2048 edge_f1=0.21428571428571427"
+  },
+  "privacy": "The v3 training and development JSONL files contain transformed QT30 text and remain private/local. This text-free manifest, aggregate statistics, schema, and deterministic reconstruction code may be published.",
+  "relation_counts": {
+    "ATTACK": 198,
+    "REPHRASE": 945,
+    "SUPPORT": 964
+  },
+  "schema": {
+    "path": "data/dialam/training/training_example_v3.schema.json",
+    "sha256": "506a17d709e94a056df7164aaac06726edfa4616a7b33628ca9e2fdc71199e85"
+  },
+  "schema_version": "dialam_training_manifest_v3",
+  "selection_seed": "dialam-qt30-qlora-v3-paired-balanced",
+  "size": 4096,
+  "source": {
+    "archive_sha256": "9d3d70c5ad86c815f821928dc515ee80a8e2a24d3f5d224557045f50f7a73791",
+    "dialogues_sha256": "60f06e6c8f1c86b158eee7f2a3f7095ab405016d64536364a4d793bf00855299",
+    "eval_summary_sha256": "72c737361081962a68c692311a012db73e8b187331a43b68d2463f3a6ce33ba2",
+    "v2_training_manifest_sha256": "5c8e11961bc5c98689c954c658f7c1aed13b68716cd445dd0bc8bb55e79ec566"
+  },
+  "split_unit": "original_parent_episode",
+  "training_parent_episode_count": 20
+}

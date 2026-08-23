@@ -31,6 +31,15 @@ the preregistered material-improvement criterion. No tested checkpoint cleared
 the frozen reliability threshold; the published artifacts preserve that
 negative result rather than presenting the model as reliable.
 
+One v3 experiment is preregistered but has not yet replaced the selected model.
+Its private 4,096-row corpus contains 2,048 exact same-update positive/NONE
+pairs. It reserves four of the former training episodes for a new development
+check, trains on the remaining 20, and keeps the original six frozen evaluation
+episodes untouched. V3 averages assistant-token loss within each example before
+averaging examples, eliminating the output-length weighting mismatch documented
+after v2. The text-free v3 manifest, schema, and reconstruction implementation
+are included here.
+
 ## Behavior
 
 Given one new proposition and a complete fixed-size comparison block of earlier

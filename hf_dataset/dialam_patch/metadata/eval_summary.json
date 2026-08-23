@@ -41,7 +41,7 @@
     }
   },
   "publication_redaction": {
-    "policy": "Original QT30 episode, map, proposition, and example identifiers are omitted because IDs/labels-only redistribution remains unclear.",
+    "policy": "Per-example inventories are omitted from compact aggregate metadata; the permitted transformed JSONL files preserve the complete examples.",
     "removed_fields": [
       "identifier-bearing fields and per-example inventories where present"
     ],

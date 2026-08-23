@@ -1,0 +1,524 @@
+{
+  "adapter_size": 8192,
+  "artifacts": {
+    "judge_transcripts": "judge_transcripts.jsonl",
+    "predictions": "predictions.jsonl",
+    "records": "records.jsonl"
+  },
+  "completed_at": "2026-08-23T18:32:09.169572+00:00",
+  "dataset_version": "v5.1",
+  "deterministic_metrics": {
+    "block_example_count": 30,
+    "direction_accuracy": 1.0,
+    "direction_evaluable_edge_count": 10,
+    "edge_f1": 0.4761904761904762,
+    "edge_precision": 0.5555555555555556,
+    "edge_recall": 0.4166666666666667,
+    "exact_patch_accuracy": 0.5333333333333333,
+    "exact_scenario_patch_accuracy": 0.5333333333333333,
+    "exact_scenario_patch_count": 16,
+    "example_count": 30,
+    "failure_cases": [
+      {
+        "error": null,
+        "example_id": "qt30:qt30092021wtxt:nodeset23710:811355:b01",
+        "false_negative": [
+          [
+            "811355",
+            "811308",
+            "SUPPORT"
+          ]
+        ],
+        "false_positive": [],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt30092021wtxt:nodeset23740:814437:b01",
+        "false_negative": [
+          [
+            "814437",
+            "814433",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "814437",
+            "814433",
+            "REPHRASE"
+          ]
+        ],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt30092021wtxt:nodeset23753:815767:b01",
+        "false_negative": [
+          [
+            "815767",
+            "815746",
+            "REPHRASE"
+          ]
+        ],
+        "false_positive": [],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt16092021wtxt:nodeset23787:820340:b01",
+        "false_negative": [
+          [
+            "820340",
+            "820330",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "820340",
+            "820314",
+            "ATTACK"
+          ]
+        ],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt16092021wtxt:nodeset23788:820559:b01",
+        "false_negative": [
+          [
+            "820559",
+            "820552",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "820559",
+            "820545",
+            "REPHRASE"
+          ]
+        ],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt02092021wtxt:nodeset23810:866117:b01",
+        "false_negative": [
+          [
+            "866117",
+            "866113",
+            "SUPPORT"
+          ]
+        ],
+        "false_positive": [
+          [
+            "866117",
+            "866113",
+            "REPHRASE"
+          ]
+        ],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt02092021wtxt:nodeset23805:824182:b01",
+        "false_negative": [
+          [
+            "824182",
+            "824170",
+            "REPHRASE"
+          ]
+        ],
+        "false_positive": [],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt19082021wtxt:nodeset23861:829797:b01",
+        "false_negative": [
+          [
+            "829797",
+            "829781",
+            "SUPPORT"
+          ]
+        ],
+        "false_positive": [],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt05082021wtxt:nodeset23901:834095:b01",
+        "false_negative": [
+          [
+            "834095",
+            "834091",
+            "SUPPORT"
+          ]
+        ],
+        "false_positive": [
+          [
+            "834095",
+            "834091",
+            "ATTACK"
+          ]
+        ],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt05082021wtxt:nodeset23888:832098:b01",
+        "false_negative": [
+          [
+            "832098",
+            "832089",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "832098",
+            "832089",
+            "SUPPORT"
+          ]
+        ],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt05082021wtxt:nodeset23922:836801:b01",
+        "false_negative": [
+          [
+            "836801",
+            "836797",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "836801",
+            "836760",
+            "REPHRASE"
+          ]
+        ],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt22072021wtxt:nodeset23972:841792:b01",
+        "false_negative": [
+          [
+            "841792",
+            "841781",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt22072021wtxt:nodeset23940:838550:b01",
+        "false_negative": [
+          [
+            "838550",
+            "838559",
+            "REPHRASE"
+          ]
+        ],
+        "false_positive": [
+          [
+            "838550",
+            "838559",
+            "ATTACK"
+          ]
+        ],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt22072021wtxt:nodeset23973:841843:b01",
+        "false_negative": [
+          [
+            "841843",
+            "841836",
+            "REPHRASE"
+          ]
+        ],
+        "false_positive": [],
+        "invalid_relations": []
+      }
+    ],
+    "false_edges_per_update": 0.26666666666666666,
+    "false_negative_edges": 14,
+    "false_positive_edges": 8,
+    "invalid_id_count": 0,
+    "invalid_relation_count": 0,
+    "json_validity_rate": 1.0,
+    "relation_macro_f1": 0.4743589743589744,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.3076923076923077,
+        "false_negative": 6,
+        "false_positive": 3,
+        "precision": 0.4,
+        "recall": 0.25,
+        "true_positive": 2
+      },
+      "REPHRASE": {
+        "f1": 0.5,
+        "false_negative": 4,
+        "false_positive": 4,
+        "precision": 0.5,
+        "recall": 0.5,
+        "true_positive": 4
+      },
+      "SUPPORT": {
+        "f1": 0.6153846153846154,
+        "false_negative": 4,
+        "false_positive": 1,
+        "precision": 0.8,
+        "recall": 0.5,
+        "true_positive": 4
+      }
+    },
+    "scenario_count": 30,
+    "scenario_failure_cases": [
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "824182",
+            "824170",
+            "REPHRASE"
+          ]
+        ],
+        "false_positive": [],
+        "update_id": "qt30:qt02092021wtxt:nodeset23805:824182"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "866117",
+            "866113",
+            "SUPPORT"
+          ]
+        ],
+        "false_positive": [
+          [
+            "866117",
+            "866113",
+            "REPHRASE"
+          ]
+        ],
+        "update_id": "qt30:qt02092021wtxt:nodeset23810:866117"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "832098",
+            "832089",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "832098",
+            "832089",
+            "SUPPORT"
+          ]
+        ],
+        "update_id": "qt30:qt05082021wtxt:nodeset23888:832098"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "834095",
+            "834091",
+            "SUPPORT"
+          ]
+        ],
+        "false_positive": [
+          [
+            "834095",
+            "834091",
+            "ATTACK"
+          ]
+        ],
+        "update_id": "qt30:qt05082021wtxt:nodeset23901:834095"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "836801",
+            "836797",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "836801",
+            "836760",
+            "REPHRASE"
+          ]
+        ],
+        "update_id": "qt30:qt05082021wtxt:nodeset23922:836801"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "820340",
+            "820330",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "820340",
+            "820314",
+            "ATTACK"
+          ]
+        ],
+        "update_id": "qt30:qt16092021wtxt:nodeset23787:820340"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "820559",
+            "820552",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "820559",
+            "820545",
+            "REPHRASE"
+          ]
+        ],
+        "update_id": "qt30:qt16092021wtxt:nodeset23788:820559"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "829797",
+            "829781",
+            "SUPPORT"
+          ]
+        ],
+        "false_positive": [],
+        "update_id": "qt30:qt19082021wtxt:nodeset23861:829797"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "838550",
+            "838559",
+            "REPHRASE"
+          ]
+        ],
+        "false_positive": [
+          [
+            "838550",
+            "838559",
+            "ATTACK"
+          ]
+        ],
+        "update_id": "qt30:qt22072021wtxt:nodeset23940:838550"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "841792",
+            "841781",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [],
+        "update_id": "qt30:qt22072021wtxt:nodeset23972:841792"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "841843",
+            "841836",
+            "REPHRASE"
+          ]
+        ],
+        "false_positive": [],
+        "update_id": "qt30:qt22072021wtxt:nodeset23973:841843"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "811355",
+            "811308",
+            "SUPPORT"
+          ]
+        ],
+        "false_positive": [],
+        "update_id": "qt30:qt30092021wtxt:nodeset23710:811355"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "814437",
+            "814433",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "814437",
+            "814433",
+            "REPHRASE"
+          ]
+        ],
+        "update_id": "qt30:qt30092021wtxt:nodeset23740:814437"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "815767",
+            "815746",
+            "REPHRASE"
+          ]
+        ],
+        "false_positive": [],
+        "update_id": "qt30:qt30092021wtxt:nodeset23753:815767"
+      }
+    ],
+    "schema_validity_rate": 1.0,
+    "true_positive_edges": 10,
+    "update_count": 30
+  },
+  "eval_examples": 30,
+  "eval_sha256": "76badbae23ace13b22822335fa794f7cc796ce0d02753666ebd83c4d7260305b",
+  "freeze_manifest_sha256": "31d920320df2dd91d89638d073101955c681bec4b426085de6a1e1b683bcac4c",
+  "judge_identity_blinded": true,
+  "judge_metrics": {
+    "judge_validity_rate": 1.0,
+    "mean_robustness": 3.033333333333333,
+    "mean_spec_adherence": 4.0,
+    "valid_judgments": 30
+  },
+  "judge_model": "gpt-5.4-mini-2026-03-17",
+  "judge_rubric_sha256": "b27fe77a9adce4fe586327fa556a51352efb76d402b93676df2173225be35f66",
+  "model": "Qwen/Qwen3-0.6B",
+  "schema_version": "dialam_model_eval_v1",
+  "target": "tuned"
+}

@@ -16,7 +16,7 @@ def main() -> None:
     parser.add_argument("--space-repo", default="mr-mc/flowjudge-dialam-demo")
     parser.add_argument(
         "--model-repo",
-        default="mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096",
+        default="mr-mc/flowjudge-dialam-qwen3-0.6b-v5-1-n8192",
     )
     args = parser.parse_args()
 
@@ -49,7 +49,7 @@ def main() -> None:
         ],
         commit_message=(
             "Publish DialAM base-versus-tuned patch demo with the selected "
-            "Qwen3-0.6B v3 n=4096 paired-loss adapter"
+            "Qwen3-0.6B v5.1 n=8192 calibrated pairwise adapter"
         ),
     )
     path = PROJECT_ROOT / "docs" / "dialam_space_publication_manifest.json"

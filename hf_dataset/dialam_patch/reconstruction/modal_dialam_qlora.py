@@ -13,17 +13,24 @@ REMOTE_DATA_DIR = Path("/workspace/dialam_data")
 PERSISTENT_ROOT = Path("/workspace/persistent")
 CHECKPOINT_ROOT = PERSISTENT_ROOT / "checkpoints"
 BASE_MODEL = "Qwen/Qwen3-0.6B"
-SIZES = (256, 512, 1024, 2048, 4096)
-DATASET_VERSIONS = ("v1", "v2", "v3")
+SIZES = (256, 512, 1024, 2048, 4096, 8192)
+DATASET_VERSIONS = ("v1", "v2", "v3", "v4", "v5")
 VALID_SIZES_BY_VERSION = {
     "v1": (256, 512, 1024, 2048),
     "v2": (2048,),
     "v3": (4096,),
+    "v4": (8192,),
+    "v5": (8192,),
 }
 EVAL_INPUT_FILENAMES = {
     "frozen": "frozen_eval_inputs.jsonl",
     "v3_dev": "v3_dev_eval_inputs.jsonl",
 }
+V5_EVAL_INPUT_FILENAMES = {
+    "frozen": "v5_frozen_pairwise_inputs.jsonl",
+    "v3_dev": "v5_dev_pairwise_inputs.jsonl",
+}
+PAIRWISE_LABELS = ("NONE", "SUPPORT", "ATTACK", "REPHRASE")
 MAX_SEQ_LENGTH = 2048
 SEED = 20260823
 
@@ -59,6 +66,24 @@ FIXED_CONFIG = {
 V3_LOSS_CONFIG = {
     "name": "per_example_assistant_token_mean_then_batch_mean",
     "assistant_loss_weight_per_example": 1.0,
+}
+V4_LOSS_CONFIG = {
+    "name": "per_example_assistant_token_mean_then_batch_mean",
+    "assistant_loss_weight_per_example": 1.0,
+    "class_balance": {
+        "NONE": 4096,
+        "SUPPORT": 1344,
+        "ATTACK": 1344,
+        "REPHRASE": 1344,
+        "MIXED": 64,
+    },
+}
+V5_LOSS_CONFIG = {
+    "name": "paired_sequential_per_example_assistant_token_mean",
+    "assistant_loss_weight_per_example": 1.0,
+    "per_device_batch_layout": ["POSITIVE", "NONE"],
+    "inference": "highest mean allowed-label token log probability",
+    "tie_break_order": list(PAIRWISE_LABELS),
 }
 
 image = (
@@ -115,6 +140,68 @@ def _generate(model: object, tokenizer: object, prompt: str, max_new_tokens: int
     return tokenizer.decode(generated, skip_special_tokens=True).strip()
 
 
+def _score_pairwise_labels(
+    model: object,
+    tokenizer: object,
+    prompt: str,
+) -> tuple[str, dict[str, float]]:
+    import torch
+
+    prompt_text = tokenizer.apply_chat_template(
+        [{"role": "user", "content": prompt}],
+        tokenize=False,
+        add_generation_prompt=True,
+        enable_thinking=False,
+    )
+    prompt_ids = tokenizer(
+        prompt_text,
+        add_special_tokens=False,
+    )["input_ids"]
+    label_ids = {
+        label: tokenizer(label, add_special_tokens=False)["input_ids"]
+        for label in PAIRWISE_LABELS
+    }
+    if not prompt_ids or any(not tokens for tokens in label_ids.values()):
+        raise ValueError("pairwise prompt or label tokenization is empty")
+    maximum_length = max(len(prompt_ids) + len(tokens) for tokens in label_ids.values())
+    if maximum_length > MAX_SEQ_LENGTH:
+        raise ValueError(
+            f"pairwise prompt needs {maximum_length} tokens, exceeding {MAX_SEQ_LENGTH}"
+        )
+    pad_id = tokenizer.pad_token_id
+    if pad_id is None:
+        raise ValueError("pairwise scoring requires a tokenizer pad token")
+
+    sequences = [prompt_ids + label_ids[label] for label in PAIRWISE_LABELS]
+    input_ids = torch.full(
+        (len(sequences), maximum_length),
+        pad_id,
+        dtype=torch.long,
+        device=model.device,
+    )
+    attention_mask = torch.zeros_like(input_ids)
+    for index, sequence in enumerate(sequences):
+        input_ids[index, : len(sequence)] = torch.tensor(sequence, device=model.device)
+        attention_mask[index, : len(sequence)] = 1
+    with torch.inference_mode():
+        logits = model(input_ids=input_ids, attention_mask=attention_mask).logits.float()
+        log_probs = torch.nn.functional.log_softmax(logits, dim=-1)
+
+    scores: dict[str, float] = {}
+    for row_index, label in enumerate(PAIRWISE_LABELS):
+        tokens = label_ids[label]
+        token_scores = [
+            log_probs[row_index, len(prompt_ids) + offset - 1, token_id]
+            for offset, token_id in enumerate(tokens)
+        ]
+        scores[label] = float(torch.stack(token_scores).mean().item())
+    selected = max(
+        PAIRWISE_LABELS,
+        key=lambda label: (scores[label], -PAIRWISE_LABELS.index(label)),
+    )
+    return selected, scores
+
+
 @app.function(
     image=image,
     gpu="L4",
@@ -144,6 +231,13 @@ def train_checkpoint(size: int, dataset_version: str = "v1") -> dict:
     rows = _load_rows(train_path)
     if len(rows) != size:
         raise ValueError(f"expected {size} training rows, found {len(rows)}")
+    if dataset_version == "v5":
+        for index in range(0, len(rows), 2):
+            pair = rows[index : index + 2]
+            if len(pair) != 2 or [item["pair_role"] for item in pair] != ["POSITIVE", "NONE"]:
+                raise ValueError(f"v5 rows {index}:{index + 2} are not a positive/NONE batch")
+            if len({item["pair_group_id"] for item in pair}) != 1:
+                raise ValueError(f"v5 rows {index}:{index + 2} cross pair groups")
     checkpoint_dir = CHECKPOINT_ROOT / checkpoint_label
     adapter_dir = checkpoint_dir / "adapter"
     if checkpoint_dir.exists():
@@ -254,7 +348,22 @@ def train_checkpoint(size: int, dataset_version: str = "v1") -> dict:
             loss = per_example.mean()
             return (loss, outputs) if return_outputs else loss
 
-    trainer_class = PerExampleAssistantLossTrainer if dataset_version == "v3" else Trainer
+    class PairedSequentialLossTrainer(PerExampleAssistantLossTrainer):
+        def _get_train_sampler(self, train_dataset: object | None = None) -> object:
+            from torch.utils.data import SequentialSampler
+
+            dataset_for_sampler = (
+                train_dataset if train_dataset is not None else self.train_dataset
+            )
+            return SequentialSampler(dataset_for_sampler)
+
+    trainer_class = (
+        PairedSequentialLossTrainer
+        if dataset_version == "v5"
+        else PerExampleAssistantLossTrainer
+        if dataset_version in {"v3", "v4"}
+        else Trainer
+    )
     trainer = trainer_class(
         model=model,
         args=training_args,
@@ -280,11 +389,19 @@ def train_checkpoint(size: int, dataset_version: str = "v1") -> dict:
         dtype=None,
     )
     FastLanguageModel.for_inference(reloaded_model)
-    reload_probe = _generate(
-        reloaded_model,
-        reloaded_tokenizer,
-        rows[0]["messages"][0]["content"],
-    )
+    reload_scores = None
+    if dataset_version == "v5":
+        reload_probe, reload_scores = _score_pairwise_labels(
+            reloaded_model,
+            reloaded_tokenizer,
+            rows[0]["messages"][0]["content"],
+        )
+    else:
+        reload_probe = _generate(
+            reloaded_model,
+            reloaded_tokenizer,
+            rows[0]["messages"][0]["content"],
+        )
     if not reload_probe.strip():
         raise RuntimeError("saved adapter reloaded but produced an empty smoke response")
 
@@ -295,9 +412,15 @@ def train_checkpoint(size: int, dataset_version: str = "v1") -> dict:
         "dataset_version": dataset_version,
         "train_sha256": hashlib.sha256(train_path.read_bytes()).hexdigest(),
         "fixed_config": FIXED_CONFIG,
-        "loss_config": V3_LOSS_CONFIG if dataset_version == "v3" else {
-            "name": "assistant_token_mean",
-        },
+        "loss_config": (
+            V3_LOSS_CONFIG
+            if dataset_version == "v3"
+            else V4_LOSS_CONFIG
+            if dataset_version == "v4"
+            else V5_LOSS_CONFIG
+            if dataset_version == "v5"
+            else {"name": "assistant_token_mean"}
+        ),
         "assistant_token_counts": {
             "minimum": min(assistant_token_counts),
             "mean": sum(assistant_token_counts) / len(assistant_token_counts),
@@ -312,6 +435,7 @@ def train_checkpoint(size: int, dataset_version: str = "v1") -> dict:
         "adapter_files": sorted(path.name for path in adapter_dir.iterdir()),
         "reload_verified": True,
         "reload_probe": reload_probe,
+        "reload_probe_label_scores": reload_scores,
     }
     (checkpoint_dir / "training_manifest.json").write_text(
         json.dumps(manifest, indent=2, sort_keys=True) + "\n",
@@ -360,10 +484,40 @@ def generate_model_eval(
     if tokenizer.pad_token_id is None:
         tokenizer.pad_token = tokenizer.eos_token
     FastLanguageModel.for_inference(model)
-    rows = _load_rows(REMOTE_DATA_DIR / EVAL_INPUT_FILENAMES[eval_split])
+    input_filenames = (
+        V5_EVAL_INPUT_FILENAMES if dataset_version == "v5" else EVAL_INPUT_FILENAMES
+    )
+    rows = _load_rows(REMOTE_DATA_DIR / input_filenames[eval_split])
     predictions = []
     for index, row in enumerate(rows, start=1):
-        response = _generate(model, tokenizer, row["prompt"])
+        pairwise_decisions = None
+        if dataset_version == "v5":
+            pairwise_decisions = []
+            relations = []
+            for candidate in row["candidates"]:
+                label, label_scores = _score_pairwise_labels(
+                    model,
+                    tokenizer,
+                    candidate["prompt"],
+                )
+                pairwise_decisions.append(
+                    {
+                        "target_id": candidate["target_id"],
+                        "label": label,
+                        "label_scores": label_scores,
+                    }
+                )
+                if label != "NONE":
+                    relations.append(
+                        {
+                            "source": row["source_id"],
+                            "target": candidate["target_id"],
+                            "type": label,
+                        }
+                    )
+            response = json.dumps({"relations": relations}, separators=(",", ":"))
+        else:
+            response = _generate(model, tokenizer, row["prompt"])
         predictions.append(
             {
                 "example_id": row["example_id"],
@@ -374,6 +528,7 @@ def generate_model_eval(
                 "dataset_version": dataset_version if target == "tuned" else None,
                 "eval_split": eval_split,
                 "raw_response": response,
+                "pairwise_decisions": pairwise_decisions,
             }
         )
         print(f"generated {target} {index}/{len(rows)}", flush=True)

@@ -1,0 +1,121 @@
+{
+  "ambiguous_same_pair_decisions_excluded": 3,
+  "available_candidate_label_counts": {
+    "ATTACK": 517,
+    "NONE": 70719,
+    "REPHRASE": 2499,
+    "SUPPORT": 2618
+  },
+  "available_candidate_positive_rate": 0.07378884916113315,
+  "available_unique_positive_decisions": {
+    "ATTACK": 443,
+    "REPHRASE": 2182,
+    "SUPPORT": 2252
+  },
+  "base_model": "Qwen/Qwen3-0.6B",
+  "contrast_pair_count": 4096,
+  "created_at": "2026-08-23T17:41:40.051750+00:00",
+  "dataset_version": "v5-pairwise-classification",
+  "development_evaluation": {
+    "candidate_decisions": 143,
+    "examples": 30,
+    "examples_sha256": "78f4ccc35312a4e3e74cce062346af040ff4e00b365a1312c2a627d7d0e1ec55",
+    "inputs_path": "data/dialam/training/v5_dev_pairwise_inputs.jsonl",
+    "inputs_sha256": "d315f9f73f87cfeb2b1df074736df9863f72dcaa692aca617a05ffa44603a9ee"
+  },
+  "development_gate": {
+    "edge_f1_min": 0.39146341463414636,
+    "exact_patch_accuracy_min": 0.3,
+    "false_edges_per_update_max": 0.3333333333333333,
+    "json_validity_rate_min": 1.0,
+    "none_scenarios_with_false_edges_max": 2,
+    "relation_macro_f1_min": 0.3151515151515151,
+    "schema_validity_rate_min": 1.0
+  },
+  "development_parent_episode_count": 4,
+  "dialogue_leakage": false,
+  "frozen_evaluation": {
+    "candidate_decisions": 150,
+    "eval_sha256": "76badbae23ace13b22822335fa794f7cc796ce0d02753666ebd83c4d7260305b",
+    "examples": 30,
+    "inputs_path": "data/dialam/training/v5_frozen_pairwise_inputs.jsonl",
+    "inputs_sha256": "79722e11d16de90af8799fded1ff3f85f044d819e22bbcbf05906256d3642293",
+    "judge_rubric_sha256": "b27fe77a9adce4fe586327fa556a51352efb76d402b93676df2173225be35f66",
+    "policy": "run only if every preregistered development gate condition passes"
+  },
+  "frozen_parent_episode_count": 6,
+  "loss_policy": {
+    "assistant_loss_weight_per_row": 1.0,
+    "name": "paired_sequential_per_example_assistant_token_mean",
+    "positive_to_none_row_ratio": 1.0,
+    "reason": "builder shuffles pair groups deterministically and keeps each two-row contrast in one device batch",
+    "shuffle": false
+  },
+  "objective": {
+    "assistant_target": "one exact class label",
+    "inference": "mean label-token log probability, deterministic NONE-first tie break",
+    "labels": [
+      "NONE",
+      "SUPPORT",
+      "ATTACK",
+      "REPHRASE"
+    ],
+    "patch_assembly": "deterministic supplied-ID union of non-NONE decisions",
+    "prompt_character_count": {
+      "maximum": 3237,
+      "mean": 2061.30712890625,
+      "minimum": 1322
+    },
+    "prompt_sha256": "ed20a5edb899c4fb85e7219e1216716162a568bde23efe5fcb90484b14bb2574"
+  },
+  "output": {
+    "path": "data/dialam/training/dialam_v5_n8192.jsonl",
+    "sha256": "23f4b8d552a6bca16cdb79507d89ec9675bb16a8d2f5b7b573c6a0981a42d8db"
+  },
+  "pair_policy": {
+    "maximum_positive_occurrences": 4,
+    "negative_overlap_coefficient": {
+      "maximum": 1.0,
+      "mean": 0.22005437130331293,
+      "minimum": 0.0
+    },
+    "negative_shared_content_tokens": {
+      "maximum": 17,
+      "mean": 1.203857421875,
+      "minimum": 0
+    },
+    "one_positive_and_one_none_per_device_batch": true,
+    "repeated_positive_rows": 923,
+    "same_complete_block_for_every_contrast": true,
+    "semantic_candidate_retrieval": false,
+    "unique_positive_decisions": 3173,
+    "unique_positives_before_repetition": true
+  },
+  "positive_target_counts": {
+    "ATTACK": 1366,
+    "REPHRASE": 1365,
+    "SUPPORT": 1365
+  },
+  "publication": "The generated rows contain transformed QT30 text. They remain ignored during the experiment and may be uploaded only under the project owner's reported redistribution permission with that permission basis documented.",
+  "row_label_counts": {
+    "ATTACK": 1366,
+    "NONE": 4096,
+    "REPHRASE": 1365,
+    "SUPPORT": 1365
+  },
+  "schema": {
+    "path": "data/dialam/training/training_example_v5.schema.json",
+    "sha256": "f25313315b7a95134c9ea1626a401de07619978c379ebcf034a74b27a0ab2c57"
+  },
+  "schema_version": "dialam_training_manifest_v5",
+  "selection_seed": "dialam-qt30-qlora-v5-pairwise-classification",
+  "size": 8192,
+  "source": {
+    "archive_sha256": "9d3d70c5ad86c815f821928dc515ee80a8e2a24d3f5d224557045f50f7a73791",
+    "dialogues_sha256": "60f06e6c8f1c86b158eee7f2a3f7095ab405016d64536364a4d793bf00855299",
+    "eval_summary_sha256": "72c737361081962a68c692311a012db73e8b187331a43b68d2463f3a6ce33ba2",
+    "v4_training_manifest_sha256": "9b8a36d7ce0f188a998df806aeb1536dd842640e5747a97b6060dd6f6d169534"
+  },
+  "split_unit": "original_parent_episode",
+  "training_parent_episode_count": 20
+}

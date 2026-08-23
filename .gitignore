@@ -11,12 +11,15 @@ results/*
 !results/README.md
 artifacts/
 data/source/dialam_qt30/
-# These transformed files reproduce corpus text. They are generated locally
-# for the approved educational use but are not cleared for redistribution.
+# Canonical generated working files stay ignored to avoid accidental partial
+# publication. The vetted copies are assembled under hf_dataset/dialam_patch/
+# by the permission-aware publication script.
 data/dialam/*.jsonl
 data/dialam/training/*.jsonl
-# Original QT30 episode/map identifiers have no express redistribution grant.
+# The official-source retrieval inventory is regenerated locally; only curated
+# transformed examples and provenance manifests belong in the HF package.
 data/dialam/dialogues.json
-# Contains complete QT30 source examples required by the private audit but not
-# cleared for redistribution. The public audit metadata is under hf_dataset/.
+# The complete source audit is copied into the HF package only by the vetted
+# preparation script.
 DATA_AUDIT.md
+!hf_dataset/dialam_patch/metadata/DATA_AUDIT.md

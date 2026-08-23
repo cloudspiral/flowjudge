@@ -15,7 +15,7 @@ from flowjudge.patch_data import PROJECT_ROOT
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Publish only the vetted DialAM model and text-free dataset artifacts"
+        description="Publish the vetted DialAM model and permission-cleared transformed dataset"
     )
     parser.add_argument("--model-repo", required=True)
     parser.add_argument("--dataset-repo", required=True)
@@ -26,7 +26,7 @@ def main() -> None:
             PROJECT_ROOT
             / "artifacts"
             / "hf_publish"
-            / "dialam-qwen3-0.6b-v3-n4096"
+            / "dialam-qwen3-0.6b-v5-1-n8192"
         ),
     )
     parser.add_argument(
@@ -53,10 +53,12 @@ def main() -> None:
         raise ValueError("model package is not marked as the selected submission checkpoint")
     if model_manifest.get("contains_raw_or_transformed_qt30_text") is not False:
         raise ValueError("model package redistribution boundary is not safe")
-    if dataset_manifest.get("contains_raw_or_transformed_qt30_text") is not False:
-        raise ValueError("dataset package redistribution boundary is not safe")
-    if dataset_manifest.get("contains_original_qt30_identifiers") is not False:
-        raise ValueError("dataset package still contains uncleared QT30 identifiers")
+    if dataset_manifest.get("contains_raw_qt30_archive_or_maps") is not False:
+        raise ValueError("dataset package must not mirror the official raw archive or maps")
+    if dataset_manifest.get("contains_transformed_qt30_text") is not True:
+        raise ValueError("dataset package is missing the publishable transformed dataset")
+    if not dataset_manifest.get("permission_basis"):
+        raise ValueError("dataset package is missing its redistribution permission basis")
 
     load_dotenv(PROJECT_ROOT / ".env", override=False)
     token = os.getenv("HF_TOKEN", "").strip() or None
@@ -78,7 +80,10 @@ def main() -> None:
             repo_id=args.model_repo,
             repo_type="model",
             folder_path=args.model_dir,
-            commit_message=f"Publish selected {model_manifest['model']} and frozen evaluation evidence",
+            commit_message=(
+                f"Publish selected {model_manifest['model']} with frozen evaluation "
+                "and calibrated inference evidence"
+            ),
         ).oid
     api.create_repo(
         args.dataset_repo,
@@ -90,7 +95,7 @@ def main() -> None:
         repo_id=args.dataset_repo,
         repo_type="dataset",
         folder_path=args.dataset_dir,
-        commit_message="Publish text-free DialAM reconstruction manifests, schemas, and scripts",
+        commit_message="Publish permission-cleared DialAM training/evaluation data and reproducibility artifacts",
     )
     output = args.output_manifest
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -103,8 +108,11 @@ def main() -> None:
                 "model_commit": model_commit,
                 "dataset_repo": args.dataset_repo,
                 "dataset_commit": dataset_commit.oid,
-                "dataset_contains_raw_or_transformed_qt30_text": dataset_manifest[
-                    "contains_raw_or_transformed_qt30_text"
+                "dataset_contains_raw_qt30_archive_or_maps": dataset_manifest[
+                    "contains_raw_qt30_archive_or_maps"
+                ],
+                "dataset_contains_transformed_qt30_text": dataset_manifest[
+                    "contains_transformed_qt30_text"
                 ],
                 "dataset_contains_original_qt30_identifiers": dataset_manifest[
                     "contains_original_qt30_identifiers"
@@ -127,7 +135,7 @@ def _validate_manifest(directory: Path) -> dict:
     declared: set[Path] = set()
     for entry in manifest["files"]:
         relative = Path(entry["path"])
-        if relative.is_absolute() or ".." in relative.parts or relative.suffix == ".jsonl":
+        if relative.is_absolute() or ".." in relative.parts:
             raise ValueError(f"unsafe publication path: {relative}")
         if relative in declared:
             raise ValueError(f"duplicate publication path: {relative}")

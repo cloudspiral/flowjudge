@@ -1,73 +1,128 @@
 ---
-pretty_name: FlowJudge DialAM Patch Reconstruction Artifact
+pretty_name: FlowJudge DialAM Incremental Argument Patches
 license: other
+language:
+  - en
 task_categories:
   - text-generation
+  - text-classification
 tags:
   - argument-mining
   - qlora
+  - qt30
   - reproducibility
+configs:
+  - config_name: v1_curve
+    data_files:
+      - split: train_256
+        path: data/train_v1_n256.jsonl
+      - split: train_512
+        path: data/train_v1_n512.jsonl
+      - split: train_1024
+        path: data/train_v1_n1024.jsonl
+      - split: train_2048
+        path: data/train_v1_n2048.jsonl
+  - config_name: v2_hard_negative
+    data_files:
+      - split: train
+        path: data/train_v2_n2048.jsonl
+  - config_name: v3_paired_patch
+    data_files:
+      - split: train
+        path: data/train_v3_n4096.jsonl
+  - config_name: v5_pairwise
+    data_files:
+      - split: train
+        path: data/train_v5_n8192.jsonl
+  - config_name: evaluation
+    data_files:
+      - split: development
+        path: data/development_eval_30.jsonl
+      - split: test
+        path: data/frozen_own_eval_30.jsonl
 ---
 
-# FlowJudge DialAM patch reconstruction artifact
+# FlowJudge DialAM incremental argument patches
 
-This publishable artifact documents a private educational transformation of the
-English DialAM/QT30 corpus for incremental argument-graph patch prediction. It
-contains **no raw or transformed QT30 dialogue text and no original QT30
-episode, map, proposition, or example IDs**. Because IDs/labels-only
-redistribution remains unclear, identifier-bearing fields and per-example
-failure inventories are replaced by counts and source-file hashes. The artifact
-contains only allowed source/manifests, aggregate statistics, JSON schemas,
-frozen evaluation hashes, prompt-ceiling metrics, and deterministic
-reconstruction code.
+This is the actual transformed dataset used to test whether a 0.6B open model
+can learn one falsifiable behavior: given one new proposition and one complete
+fixed-size block of earlier propositions from the same dialogue, emit every and
+only direct `SUPPORT`, `ATTACK`, or `REPHRASE` edge as one bare JSON object.
+An empty relation list is required when no direct edge exists.
 
-The private training slices contain 256, 512, 1024, and 2048 nested examples.
-Every slice is an exact prefix of the next and uses an original-parent-episode
-split: 24 episodes for training and six untouched episodes for evaluation.
-The n=2048 slice contains 819 NONE, 410 SUPPORT, 307 ATTACK, 410 REPHRASE, and
-102 mixed-label blocks.
+The package includes the nested v1 data-efficiency curve, the v2 hard-negative
+intervention, the v3 paired patch corpus, the selected v5/v5.1 pairwise pipeline,
+the project-owned development and frozen evaluation sets, schemas, aggregate
+reports, a chronological improvement chart, and deterministic reconstruction
+code. The `evidence/` directory preserves every prompt-ceiling candidate/judge
+record plus raw candidate and blinded-judge JSONL for the base, all four v1
+checkpoints, v2, v3, and the promoted v5.1 result.
 
-All four v1 sizes and one hard-negative v2 n=2048 checkpoint were evaluated on
-the same frozen 30-scenario set. V1 n=2048 was the best fixed-curve point. The
-v2 data change added 1,024 difficult NONE blocks, but increased false edges and
-failed its preregistered material-improvement criterion.
+![FlowJudge DialAM experiment history](metadata/dialam_experiment_history.svg)
 
-The preregistered v3 experiment materially improved the behavior and is now the
-selected direction. Its private 4,096-row corpus contains 2,048 exact
-same-update positive/NONE pairs. It reserves four of the former training
-episodes for development, trains on the remaining 20, and keeps the original
-six frozen evaluation episodes untouched. Per-example assistant-token loss
-eliminates the output-length weighting mismatch documented after v2. V3 reached
-43.3% exact patch accuracy, 35.0% edge F1, 0.300 false edges/update, and 0/6
-NONE false-positive cases on the frozen set. It still does not clear the
-original reliability bar. The selected public adapter is
-[`mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096`](https://huggingface.co/mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096).
-The text-free manifest, schema, aggregate result, and reconstruction
-implementation are included here; the negative reliability finding is
-preserved rather than presenting the model as production-ready.
+## Splits and leakage controls
 
-## Behavior
+All splits operate on original QT30 parent episodes, never individual DialAM
+map IDs. V1/v2 use 24 training episodes and six frozen evaluation episodes.
+V3/v5 reserve four of those former training episodes as a separate development
+set, train on the remaining 20, and leave the same six frozen episodes
+untouched. The 30-case development and 30-case frozen files are project-owned
+evaluation scenarios; the grader's staff-held-out set is not included.
 
-Given one new proposition and a complete fixed-size comparison block of earlier
-propositions from the same dialogue, return one bare JSON object containing all
-direct SUPPORT, ATTACK, or REPHRASE relations to supplied IDs. Return an empty
-list when none exists; do not emit indirect relations, invented IDs, or prose.
+The v1 sizes are deterministic nested prefixes. V3 has 4,096 block-level rows
+arranged as 2,048 exact same-update positive/NONE contrast pairs. V5 has 8,192
+candidate-level rows arranged as 4,096 positive/NONE pairs: 1,366 ATTACK, 1,365
+REPHRASE, 1,365 SUPPORT, and 4,096 NONE rows. V5 still supplies the complete
+comparison block in every input; its fixed four-label predictions are assembled
+deterministically into the external block-level JSON contract. V5.1 keeps the
+same checkpoint and applies the preregistered fixed 3.0 NONE margin selected on
+the separate development set.
 
-## Reconstruction
+## Source and permission
 
-The `reconstruction/` directory contains the deterministic parser, filtering,
-split, prompt, freeze, and nested-corpus build code. Reconstruction requires a
-separately obtained official QT30 archive and permission appropriate to the
-user's intended use. The archive itself and generated text-bearing JSONL files
-are deliberately omitted.
+The source is English QT30 as distributed for DialAM-2024 by ARG-tech at the
+University of Dundee. Exact archive URL, retrieval metadata, SHA-256 hashes,
+format references, and known archive/API discrepancies are in
+`metadata/source_manifest.json` and `metadata/DATA_AUDIT.md`.
 
-The metadata directory records the exact source checksum, retention funnel,
-episode split, class counts, nested-slice hashes, frozen 30-scenario evaluation
-hashes, prompt-ceiling metrics, and judge-rubric fingerprint.
+The project owner directly attested on 2026-08-23 that their project-specific
+permission includes redistribution. This repository therefore publishes the
+curated transformed training/evaluation JSONL and original identifiers needed
+for provenance. It does not claim a general QT30 license or grant rights beyond
+this project. The official raw archive and extracted maps are deliberately not
+mirrored; obtain those from ARG-tech.
 
-## Redistribution boundary
+## Reproduction
 
-Project-use approval does not establish a general public redistribution license
-for the underlying QT30 text. Consumers should obtain the official source and
-review its terms themselves. This repository is a reproducibility and evidence
-artifact, not a mirror of the corpus.
+From the FlowJudge source repository, place the separately obtained official
+archive at the documented input path and run:
+
+```bash
+uv sync --frozen
+uv run python scripts/build_dialam_gate.py
+uv run python scripts/validate_dialam_gate.py
+uv run python scripts/build_dialam_training.py
+uv run python scripts/build_dialam_training_v2.py
+uv run python scripts/build_dialam_training_v3.py
+uv run python scripts/build_dialam_training_v5.py
+uv run python scripts/prepare_dialam_hf_dataset.py
+```
+
+Every published file is inventoried with its byte count and SHA-256 hash in
+`publish_manifest.json`. The manifests record the seed, exact episode split,
+class mix, filter funnel, frozen eval/rubric hashes, training configuration,
+checkpoint evidence, and all preregistered experiment decisions.
+
+## Limitations
+
+The selected v5.1 result reaches 53.3% exact patches, 47.6% edge F1, and 47.4%
+relation macro-F1 on the reused 30-scenario frozen benchmark. It passes the
+project's preregistered v3-to-v5.1 promotion gate but not the original high
+reliability bar; it is not production-ready.
+
+The relation labels inherit QT30's annotations and the documented grounding,
+chronology, and binary-relation filters. The frozen set has only 30 scenarios,
+so small absolute changes produce visibly large percentage changes. Failed
+experiments remain in the history to prevent selective reporting. Consult the
+latest result and promotion decision in `metadata/dialam_v5_results.md`; do not
+interpret publication as a claim that the selected model is production-ready.

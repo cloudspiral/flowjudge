@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720">
+<style>
+text{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;fill:#172033}
+.title{font-size:24px;font-weight:700}.subtitle{font-size:13px;fill:#596579}
+.panel-title{font-size:16px;font-weight:650}.plot{fill:#fbfcfe;stroke:#cbd5e1}
+.grid{stroke:#e2e8f0;stroke-width:1}.tick,.x-label{font-size:11px;fill:#5d687a}
+.series{stroke-width:3;stroke-linejoin:round;stroke-linecap:round}
+.legend{font-size:12px;font-weight:600}
+</style>
+<rect width="1200" height="720" fill="#f5f7fb"/>
+<text x="600" y="34" text-anchor="middle" class="title">DialAM improvement history</text>
+<text x="600" y="56" text-anchor="middle" class="subtitle">Separate panels prevent development-only results from being presented as frozen-benchmark gains.</text>
+<text x="400.0" y="104" text-anchor="middle" class="panel-title">Frozen 30-scenario benchmark</text>
+<rect x="88" y="124" width="662" height="435" class="plot"/>
+<line x1="88" y1="559.0" x2="750" y2="559.0" class="grid"/>
+<text x="80" y="563.0" text-anchor="end" class="tick">0%</text>
+<line x1="88" y1="450.25" x2="750" y2="450.25" class="grid"/>
+<text x="80" y="454.25" text-anchor="end" class="tick">25%</text>
+<line x1="88" y1="341.5" x2="750" y2="341.5" class="grid"/>
+<text x="80" y="345.5" text-anchor="end" class="tick">50%</text>
+<line x1="88" y1="232.75" x2="750" y2="232.75" class="grid"/>
+<text x="80" y="236.75" text-anchor="end" class="tick">75%</text>
+<line x1="88" y1="124.0" x2="750" y2="124.0" class="grid"/>
+<text x="80" y="128.0" text-anchor="end" class="tick">100%</text>
+<path d="M 88.0 559.0 L 182.6 486.5 L 277.1 486.5 L 371.7 486.5 L 466.3 443.0 L 560.9 457.5 L 655.4 370.5 L 750.0 327.0" fill="none" stroke="#2563eb" class="series"/>
+<circle cx="88.0" cy="559.0" r="4" fill="#2563eb"/>
+<circle cx="182.6" cy="486.5" r="4" fill="#2563eb"/>
+<circle cx="277.1" cy="486.5" r="4" fill="#2563eb"/>
+<circle cx="371.7" cy="486.5" r="4" fill="#2563eb"/>
+<circle cx="466.3" cy="443.0" r="4" fill="#2563eb"/>
+<circle cx="560.9" cy="457.5" r="4" fill="#2563eb"/>
+<circle cx="655.4" cy="370.5" r="4" fill="#2563eb"/>
+<circle cx="750.0" cy="327.0" r="4" fill="#2563eb"/>
+<path d="M 88.0 559.0 L 182.6 517.6 L 277.1 517.6 L 371.7 522.0 L 466.3 486.5 L 560.9 465.8 L 655.4 406.7 L 750.0 351.9" fill="none" stroke="#059669" class="series"/>
+<circle cx="88.0" cy="559.0" r="4" fill="#059669"/>
+<circle cx="182.6" cy="517.6" r="4" fill="#059669"/>
+<circle cx="277.1" cy="517.6" r="4" fill="#059669"/>
+<circle cx="371.7" cy="522.0" r="4" fill="#059669"/>
+<circle cx="466.3" cy="486.5" r="4" fill="#059669"/>
+<circle cx="560.9" cy="465.8" r="4" fill="#059669"/>
+<circle cx="655.4" cy="406.7" r="4" fill="#059669"/>
+<circle cx="750.0" cy="351.9" r="4" fill="#059669"/>
+<path d="M 88.0 559.0 L 182.6 534.8 L 277.1 531.4 L 371.7 520.3 L 466.3 486.2 L 560.9 477.2 L 655.4 411.3 L 750.0 352.7" fill="none" stroke="#d97706" class="series"/>
+<circle cx="88.0" cy="559.0" r="4" fill="#d97706"/>
+<circle cx="182.6" cy="534.8" r="4" fill="#d97706"/>
+<circle cx="277.1" cy="531.4" r="4" fill="#d97706"/>
+<circle cx="371.7" cy="520.3" r="4" fill="#d97706"/>
+<circle cx="466.3" cy="486.2" r="4" fill="#d97706"/>
+<circle cx="560.9" cy="477.2" r="4" fill="#d97706"/>
+<circle cx="655.4" cy="411.3" r="4" fill="#d97706"/>
+<circle cx="750.0" cy="352.7" r="4" fill="#d97706"/>
+<text x="88.0" y="579" text-anchor="middle" class="x-label">Base</text>
+<text x="182.6" y="579" text-anchor="middle" class="x-label">v1/256</text>
+<text x="277.1" y="579" text-anchor="middle" class="x-label">v1/512</text>
+<text x="371.7" y="579" text-anchor="middle" class="x-label">v1/1024</text>
+<text x="466.3" y="579" text-anchor="middle" class="x-label">v1/2048</text>
+<text x="560.9" y="579" text-anchor="middle" class="x-label">v2/2048</text>
+<text x="655.4" y="579" text-anchor="middle" class="x-label">v3/4096</text>
+<text x="750.0" y="579" text-anchor="middle" class="x-label">v5.1/8192</text>
+<text x="980.0" y="104" text-anchor="middle" class="panel-title">Episode-disjoint development</text>
+<rect x="848" y="124" width="302" height="435" class="plot"/>
+<line x1="848" y1="559.0" x2="1150" y2="559.0" class="grid"/>
+<text x="840" y="563.0" text-anchor="end" class="tick">0%</text>
+<line x1="848" y1="450.25" x2="1150" y2="450.25" class="grid"/>
+<text x="840" y="454.25" text-anchor="end" class="tick">25%</text>
+<line x1="848" y1="341.5" x2="1150" y2="341.5" class="grid"/>
+<text x="840" y="345.5" text-anchor="end" class="tick">50%</text>
+<line x1="848" y1="232.75" x2="1150" y2="232.75" class="grid"/>
+<text x="840" y="236.75" text-anchor="end" class="tick">75%</text>
+<line x1="848" y1="124.0" x2="1150" y2="124.0" class="grid"/>
+<text x="840" y="128.0" text-anchor="end" class="tick">100%</text>
+<path d="M 848.0 443.0 L 923.5 428.5 L 999.0 544.5 L 1074.5 385.0 L 1150.0 327.0" fill="none" stroke="#2563eb" class="series"/>
+<circle cx="848.0" cy="443.0" r="4" fill="#2563eb"/>
+<circle cx="923.5" cy="428.5" r="4" fill="#2563eb"/>
+<circle cx="999.0" cy="544.5" r="4" fill="#2563eb"/>
+<circle cx="1074.5" cy="385.0" r="4" fill="#2563eb"/>
+<circle cx="1150.0" cy="327.0" r="4" fill="#2563eb"/>
+<path d="M 848.0 467.4 L 923.5 410.5 L 999.0 512.1 L 1074.5 349.0 L 1150.0 327.0" fill="none" stroke="#059669" class="series"/>
+<circle cx="848.0" cy="467.4" r="4" fill="#059669"/>
+<circle cx="923.5" cy="410.5" r="4" fill="#059669"/>
+<circle cx="999.0" cy="512.1" r="4" fill="#059669"/>
+<circle cx="1074.5" cy="349.0" r="4" fill="#059669"/>
+<circle cx="1150.0" cy="327.0" r="4" fill="#059669"/>
+<path d="M 848.0 483.7 L 923.5 421.9 L 999.0 526.2 L 1074.5 343.5 L 1150.0 322.9" fill="none" stroke="#d97706" class="series"/>
+<circle cx="848.0" cy="483.7" r="4" fill="#d97706"/>
+<circle cx="923.5" cy="421.9" r="4" fill="#d97706"/>
+<circle cx="999.0" cy="526.2" r="4" fill="#d97706"/>
+<circle cx="1074.5" cy="343.5" r="4" fill="#d97706"/>
+<circle cx="1150.0" cy="322.9" r="4" fill="#d97706"/>
+<text x="848.0" y="579" text-anchor="middle" class="x-label">v3/4096</text>
+<text x="923.5" y="579" text-anchor="middle" class="x-label">v4/8192</text>
+<text x="999.0" y="579" text-anchor="middle" class="x-label">Pairwise base</text>
+<text x="1074.5" y="579" text-anchor="middle" class="x-label">v5/8192</text>
+<text x="1150.0" y="579" text-anchor="middle" class="x-label">v5.1/8192</text>
+<line x1="420" y1="670" x2="446" y2="670" stroke="#2563eb" class="series"/>
+<text x="454" y="674" class="legend">Exact patch</text>
+<line x1="570" y1="670" x2="596" y2="670" stroke="#059669" class="series"/>
+<text x="604" y="674" class="legend">Edge F1</text>
+<line x1="720" y1="670" x2="746" y2="670" stroke="#d97706" class="series"/>
+<text x="754" y="674" class="legend">Macro-F1</text>
+</svg>

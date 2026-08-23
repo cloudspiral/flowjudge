@@ -51,8 +51,8 @@
   <main>
     <h2>Incremental argument-graph patching</h2>
     <h1>Base vs tuned, same input.</h1>
-    <p>Compare untouched Qwen3-0.6B with the selected FlowJudge v3/n=4096 paired-loss QLoRA adapter. The model must return one bare JSON object containing only direct SUPPORT, ATTACK, or REPHRASE edges to supplied IDs.</p>
-    <p class="notice"><strong>Research result:</strong> v3 materially improved held-out edge F1 and false-edge calibration over v1/v2, but it still did not clear the frozen reliability threshold. A plausible-looking tuned answer can still be wrong.</p>
+    <p>Compare untouched Qwen3-0.6B with the selected FlowJudge v5.1/n=8192 pairwise QLoRA adapter. Both systems score every supplied candidate as NONE, SUPPORT, ATTACK, or REPHRASE, apply the same fixed NONE margin, and assemble one bare JSON patch.</p>
+    <p class="notice"><strong>Research result:</strong> v5.1 passed all preregistered promotion checks, improving frozen exact patches from 43.3% to 53.3% and edge F1 from 35.0% to 47.6%. It still did not clear the original high reliability bar, so a plausible-looking answer can be wrong.</p>
 
     <section class="panel">
       <h2>Patch input</h2>
@@ -79,13 +79,13 @@
         <pre id="base">Run the comparison to generate output.</pre>
       </div>
       <div class="panel">
-        <h2>QLoRA v3 / n=4096</h2>
+        <h2>QLoRA v5.1 / n=8192</h2>
         <pre id="tuned">Run the comparison to generate output.</pre>
       </div>
     </section>
 
     <footer>
-      Model: <a href="https://huggingface.co/mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096">mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096</a>.
+      Model: <a href="https://huggingface.co/mr-mc/flowjudge-dialam-qwen3-0.6b-v5-1-n8192">mr-mc/flowjudge-dialam-qwen3-0.6b-v5-1-n8192</a>.
       Synthetic example only; no QT30 text is redistributed.
     </footer>
   </main>

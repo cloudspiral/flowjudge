@@ -1,0 +1,476 @@
+{
+  "base_development_n8192": {
+    "block_example_count": 30,
+    "direction_accuracy": 1.0,
+    "direction_evaluable_edge_count": 9,
+    "edge_f1": 0.10778443113772457,
+    "edge_precision": 0.06293706293706294,
+    "edge_recall": 0.375,
+    "exact_patch_accuracy": 0.03333333333333333,
+    "exact_scenario_patch_accuracy": 0.03333333333333333,
+    "exact_scenario_patch_count": 1,
+    "example_count": 30,
+    "false_edges_per_update": 4.466666666666667,
+    "false_negative_edges": 15,
+    "false_positive_edges": 134,
+    "invalid_id_count": 0,
+    "invalid_relation_count": 0,
+    "json_validity_rate": 1.0,
+    "none_diagnostics": {
+      "false_edge_labels": {
+        "REPHRASE": 12,
+        "SUPPORT": 18
+      },
+      "false_positive_rate": 1.0,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 6
+    },
+    "relation_macro_f1": 0.07547169811320754,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.0,
+        "false_negative": 8,
+        "false_positive": 0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "true_positive": 0
+      },
+      "REPHRASE": {
+        "f1": 0.11320754716981134,
+        "false_negative": 5,
+        "false_positive": 42,
+        "precision": 0.06666666666666667,
+        "recall": 0.375,
+        "true_positive": 3
+      },
+      "SUPPORT": {
+        "f1": 0.11320754716981131,
+        "false_negative": 2,
+        "false_positive": 92,
+        "precision": 0.061224489795918366,
+        "recall": 0.75,
+        "true_positive": 6
+      }
+    },
+    "scenario_count": 30,
+    "schema_validity_rate": 1.0,
+    "true_positive_edges": 9,
+    "update_count": 30
+  },
+  "controlled_variables": {
+    "base_model": "Qwen/Qwen3-0.6B",
+    "declared_intervention": "pairwise four-label targets, fixed label-likelihood scoring, deterministic supplied-ID patch assembly, exact paired batches",
+    "development_eval_sha256": "78f4ccc35312a4e3e74cce062346af040ff4e00b365a1312c2a627d7d0e1ec55",
+    "optimization_config_unchanged_from_v4": true,
+    "preregistration_sha256": "2b7d7076271f4b30bf3011b6fba554e9eaf608be617109e2345cd1a76dc15c92"
+  },
+  "development_decision": "RETAIN_V3_V5_FAILED_DEVELOPMENT_GATE",
+  "development_gate_checks": {
+    "edge_f1": true,
+    "exact_patch_accuracy": true,
+    "false_edges_per_update": false,
+    "json_validity": true,
+    "none_scenarios_with_false_edges": false,
+    "relation_macro_f1": true,
+    "schema_validity": true
+  },
+  "development_gate_passed": false,
+  "experiment": "v5/n8192 complete-block pairwise four-label classification",
+  "failed_development_conditions": [
+    "false_edges_per_update",
+    "none_scenarios_with_false_edges"
+  ],
+  "failure_diagnosis": {
+    "dominant_edge_error": "false_positive",
+    "false_negative_edges": 10,
+    "false_positive_edges": 20,
+    "known_prior_shift": true,
+    "natural_candidate_positive_rate": 0.07378884916113315,
+    "none_false_edge_labels": {
+      "ATTACK": 1,
+      "REPHRASE": 1,
+      "SUPPORT": 6
+    },
+    "selected_training_positive_rate": 0.5
+  },
+  "private_artifacts": {
+    "base_development_predictions": {
+      "path": "results/dialam_model_generation/v5_base_dev/predictions.jsonl",
+      "sha256": "0435b89bbab4ff5f0421fcfa12580b12e89967e02473f43cd83a965568448c6b"
+    },
+    "v5_development_predictions": {
+      "path": "results/dialam_model_generation/v5_n8192_dev/predictions.jsonl",
+      "sha256": "f85e2b11e5d34b935129606f6b32165dd1929ceec5fdf7cbeb38ff71ce718016"
+    }
+  },
+  "reused_frozen_benchmark": {
+    "candidate_calls": 0,
+    "eval_sha256": "76badbae23ace13b22822335fa794f7cc796ce0d02753666ebd83c4d7260305b",
+    "judge_calls": 0,
+    "judge_rubric_sha256": "b27fe77a9adce4fe586327fa556a51352efb76d402b93676df2173225be35f66",
+    "status": "NOT_RUN_PREREGISTERED_DEVELOPMENT_GATE_FAILED"
+  },
+  "schema_version": "dialam_v5_pairwise_classification_result_v1",
+  "training": {
+    "checkpoint_files": [
+      {
+        "bytes": 5234,
+        "path": "README.md",
+        "sha256": "34ab0170dfe77802e9df8dd644e7b26f9fb5f66f84daa9100de4d0d78fd2794a"
+      },
+      {
+        "bytes": 1202,
+        "path": "adapter_config.json",
+        "sha256": "87664d7c466871d313ee3d7c7736352f5b2c13174387a10c301d3fd3204e6c4b"
+      },
+      {
+        "bytes": 40422168,
+        "path": "adapter_model.safetensors",
+        "sha256": "ac1a29ff52c89932fab12442b12b4bfd572970a2b4e92e0bf891725d4ad7ccd9"
+      },
+      {
+        "bytes": 734,
+        "path": "added_tokens.json",
+        "sha256": "7a208f10d02bfdf1708662e42ade85ea67af7158ab941bc5432bd715f4911216"
+      },
+      {
+        "bytes": 4905,
+        "path": "chat_template.jinja",
+        "sha256": "5da44855ab7e0641774d5ed0ff0b4f89671d01df7d316e54d06557a962211cb4"
+      },
+      {
+        "bytes": 1671853,
+        "path": "merges.txt",
+        "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+      },
+      {
+        "bytes": 499,
+        "path": "special_tokens_map.json",
+        "sha256": "8c8752b0d30549fb854ffee2d43b787c0053f507dfde7e0ccb6d1b42a8ae75ec"
+      },
+      {
+        "bytes": 11422943,
+        "path": "tokenizer.json",
+        "sha256": "64af246a059e79ec2e7641c4e0551eab01df498b032efe58881de2cc7aec6427"
+      },
+      {
+        "bytes": 5610,
+        "path": "tokenizer_config.json",
+        "sha256": "28d5debb24b06a4f905a086a7e58c384cafcc9188555736d7b813ed1d6f96baa"
+      },
+      {
+        "bytes": 2776833,
+        "path": "vocab.json",
+        "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      }
+    ],
+    "checkpoint_tree_sha256": "cbd9a2a6cae8ab988d78b7694ac9f9829bf9262bbb7a6fab838894a5080f122a",
+    "fixed_config": {
+      "base_model": "Qwen/Qwen3-0.6B",
+      "effective_batch_size": 8,
+      "epochs": 3.0,
+      "gradient_accumulation_steps": 4,
+      "learning_rate": 0.0002,
+      "load_in_4bit": true,
+      "lora_alpha": 32,
+      "lora_dropout": 0.0,
+      "lora_r": 16,
+      "lr_scheduler_type": "cosine",
+      "max_seq_length": 2048,
+      "method": "Unsloth QLoRA",
+      "optimizer": "adamw_8bit",
+      "packing": false,
+      "per_device_batch_size": 2,
+      "prompt_masking": true,
+      "seed": 20260823,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ],
+      "warmup_ratio": 0.05
+    },
+    "loss_config": {
+      "assistant_loss_weight_per_example": 1.0,
+      "inference": "highest mean allowed-label token log probability",
+      "name": "paired_sequential_per_example_assistant_token_mean",
+      "per_device_batch_layout": [
+        "POSITIVE",
+        "NONE"
+      ],
+      "tie_break_order": [
+        "NONE",
+        "SUPPORT",
+        "ATTACK",
+        "REPHRASE"
+      ]
+    },
+    "metrics": {
+      "epoch": 3.0,
+      "total_flos": 3.651432136704e+16,
+      "train_loss": 0.796548465868303,
+      "train_runtime": 3681.8147,
+      "train_samples_per_second": 6.675,
+      "train_steps_per_second": 0.834
+    },
+    "reload_probe": "SUPPORT",
+    "reload_probe_label_scores": {
+      "ATTACK": -3.564756155014038,
+      "NONE": -6.504512310028076,
+      "REPHRASE": -0.5323788523674011,
+      "SUPPORT": -0.06475615501403809
+    },
+    "train_sha256": "23f4b8d552a6bca16cdb79507d89ec9675bb16a8d2f5b7b573c6a0981a42d8db"
+  },
+  "v3_development_n4096": {
+    "block_example_count": 30,
+    "direction_accuracy": 1.0,
+    "direction_evaluable_edge_count": 4,
+    "edge_f1": 0.2105263157894737,
+    "edge_precision": 0.2857142857142857,
+    "edge_recall": 0.16666666666666666,
+    "exact_patch_accuracy": 0.26666666666666666,
+    "exact_scenario_patch_accuracy": 0.26666666666666666,
+    "exact_scenario_patch_count": 8,
+    "example_count": 30,
+    "false_edges_per_update": 0.3333333333333333,
+    "false_negative_edges": 20,
+    "false_positive_edges": 10,
+    "invalid_id_count": 0,
+    "invalid_relation_count": 0,
+    "json_validity_rate": 1.0,
+    "none_diagnostics": {
+      "false_edge_labels": {
+        "SUPPORT": 2
+      },
+      "false_positive_rate": 0.3333333333333333,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 2
+    },
+    "relation_macro_f1": 0.173202614379085,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.0,
+        "false_negative": 8,
+        "false_positive": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "true_positive": 0
+      },
+      "REPHRASE": {
+        "f1": 0.16666666666666666,
+        "false_negative": 7,
+        "false_positive": 3,
+        "precision": 0.25,
+        "recall": 0.125,
+        "true_positive": 1
+      },
+      "SUPPORT": {
+        "f1": 0.35294117647058826,
+        "false_negative": 5,
+        "false_positive": 6,
+        "precision": 0.3333333333333333,
+        "recall": 0.375,
+        "true_positive": 3
+      }
+    },
+    "scenario_count": 30,
+    "schema_validity_rate": 1.0,
+    "true_positive_edges": 4,
+    "update_count": 30
+  },
+  "v3_frozen_n4096": {
+    "block_example_count": 30,
+    "direction_accuracy": 1.0,
+    "direction_evaluable_edge_count": 7,
+    "edge_f1": 0.35000000000000003,
+    "edge_precision": 0.4375,
+    "edge_recall": 0.2916666666666667,
+    "exact_patch_accuracy": 0.43333333333333335,
+    "exact_scenario_patch_accuracy": 0.43333333333333335,
+    "exact_scenario_patch_count": 13,
+    "example_count": 30,
+    "false_edges_per_update": 0.3,
+    "false_negative_edges": 17,
+    "false_positive_edges": 9,
+    "invalid_id_count": 0,
+    "invalid_relation_count": 0,
+    "json_validity_rate": 1.0,
+    "judge_metrics": {
+      "judge_validity_rate": 1.0,
+      "mean_robustness": 2.966666666666667,
+      "mean_spec_adherence": 4.0,
+      "valid_judgments": 30
+    },
+    "none_diagnostics": {
+      "false_edge_labels": {},
+      "false_positive_rate": 0.0,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 0
+    },
+    "relation_macro_f1": 0.33945221445221446,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.18181818181818182,
+        "false_negative": 7,
+        "false_positive": 2,
+        "precision": 0.3333333333333333,
+        "recall": 0.125,
+        "true_positive": 1
+      },
+      "REPHRASE": {
+        "f1": 0.375,
+        "false_negative": 5,
+        "false_positive": 5,
+        "precision": 0.375,
+        "recall": 0.375,
+        "true_positive": 3
+      },
+      "SUPPORT": {
+        "f1": 0.4615384615384615,
+        "false_negative": 5,
+        "false_positive": 2,
+        "precision": 0.6,
+        "recall": 0.375,
+        "true_positive": 3
+      }
+    },
+    "reliability_checks": {
+      "direction_accuracy": true,
+      "edge_f1": false,
+      "exact_patch_accuracy": false,
+      "false_edges_per_update": false,
+      "invalid_id_count": true,
+      "json_validity_rate": true,
+      "judge_robustness_mean": false,
+      "judge_spec_adherence_mean": true,
+      "judge_validity_rate": true,
+      "relation_macro_f1": false,
+      "schema_validity_rate": true
+    },
+    "scenario_count": 30,
+    "schema_validity_rate": 1.0,
+    "true_positive_edges": 7,
+    "update_count": 30
+  },
+  "v4_development_n8192": {
+    "block_example_count": 30,
+    "direction_accuracy": 1.0,
+    "direction_evaluable_edge_count": 7,
+    "edge_f1": 0.34146341463414637,
+    "edge_precision": 0.4117647058823529,
+    "edge_recall": 0.2916666666666667,
+    "exact_patch_accuracy": 0.3,
+    "exact_scenario_patch_accuracy": 0.3,
+    "exact_scenario_patch_count": 9,
+    "example_count": 30,
+    "false_edges_per_update": 0.3333333333333333,
+    "false_negative_edges": 17,
+    "false_positive_edges": 10,
+    "invalid_id_count": 0,
+    "invalid_relation_count": 0,
+    "json_validity_rate": 1.0,
+    "none_diagnostics": {
+      "false_edge_labels": {
+        "SUPPORT": 4
+      },
+      "false_positive_rate": 0.6666666666666666,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 4
+    },
+    "relation_macro_f1": 0.3151515151515151,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.5454545454545454,
+        "false_negative": 5,
+        "false_positive": 0,
+        "precision": 1.0,
+        "recall": 0.375,
+        "true_positive": 3
+      },
+      "REPHRASE": {
+        "f1": 0.0,
+        "false_negative": 8,
+        "false_positive": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "true_positive": 0
+      },
+      "SUPPORT": {
+        "f1": 0.4,
+        "false_negative": 4,
+        "false_positive": 8,
+        "precision": 0.3333333333333333,
+        "recall": 0.5,
+        "true_positive": 4
+      }
+    },
+    "scenario_count": 30,
+    "schema_validity_rate": 1.0,
+    "true_positive_edges": 7,
+    "update_count": 30
+  },
+  "v5_development_n8192": {
+    "block_example_count": 30,
+    "direction_accuracy": 1.0,
+    "direction_evaluable_edge_count": 14,
+    "edge_f1": 0.4827586206896552,
+    "edge_precision": 0.4117647058823529,
+    "edge_recall": 0.5833333333333334,
+    "exact_patch_accuracy": 0.4,
+    "exact_scenario_patch_accuracy": 0.4,
+    "exact_scenario_patch_count": 12,
+    "example_count": 30,
+    "false_edges_per_update": 0.6666666666666666,
+    "false_negative_edges": 10,
+    "false_positive_edges": 20,
+    "invalid_id_count": 0,
+    "invalid_relation_count": 0,
+    "json_validity_rate": 1.0,
+    "none_diagnostics": {
+      "false_edge_labels": {
+        "ATTACK": 1,
+        "REPHRASE": 1,
+        "SUPPORT": 6
+      },
+      "false_positive_rate": 1.0,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 6
+    },
+    "relation_macro_f1": 0.4954870837223779,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.5714285714285715,
+        "false_negative": 4,
+        "false_positive": 2,
+        "precision": 0.6666666666666666,
+        "recall": 0.5,
+        "true_positive": 4
+      },
+      "REPHRASE": {
+        "f1": 0.47058823529411764,
+        "false_negative": 4,
+        "false_positive": 5,
+        "precision": 0.4444444444444444,
+        "recall": 0.5,
+        "true_positive": 4
+      },
+      "SUPPORT": {
+        "f1": 0.44444444444444436,
+        "false_negative": 2,
+        "false_positive": 13,
+        "precision": 0.3157894736842105,
+        "recall": 0.75,
+        "true_positive": 6
+      }
+    },
+    "scenario_count": 30,
+    "schema_validity_rate": 1.0,
+    "true_positive_edges": 14,
+    "update_count": 30
+  }
+}

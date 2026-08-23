@@ -1,0 +1,65 @@
+{
+  "examples": "data/dialam/balanced_diagnostic_eval_examples.jsonl",
+  "examples_sha256": "76badbae23ace13b22822335fa794f7cc796ce0d02753666ebd83c4d7260305b",
+  "input_predictions": "results/dialam_model_generation/v5_n8192_frozen_raw_scores/predictions.jsonl",
+  "input_predictions_sha256": "076256c9299b16a872ed0216e18f1844c8392f0546bcb634162638cb20548971",
+  "margin": 3.0,
+  "metrics": {
+    "block_example_count": 30,
+    "direction_accuracy": 1.0,
+    "direction_evaluable_edge_count": 10,
+    "edge_f1": 0.4761904761904762,
+    "edge_precision": 0.5555555555555556,
+    "edge_recall": 0.4166666666666667,
+    "exact_patch_accuracy": 0.5333333333333333,
+    "exact_scenario_patch_accuracy": 0.5333333333333333,
+    "exact_scenario_patch_count": 16,
+    "example_count": 30,
+    "false_edges_per_update": 0.26666666666666666,
+    "false_negative_edges": 14,
+    "false_positive_edges": 8,
+    "invalid_id_count": 0,
+    "invalid_relation_count": 0,
+    "json_validity_rate": 1.0,
+    "relation_macro_f1": 0.4743589743589744,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.3076923076923077,
+        "false_negative": 6,
+        "false_positive": 3,
+        "precision": 0.4,
+        "recall": 0.25,
+        "true_positive": 2
+      },
+      "REPHRASE": {
+        "f1": 0.5,
+        "false_negative": 4,
+        "false_positive": 4,
+        "precision": 0.5,
+        "recall": 0.5,
+        "true_positive": 4
+      },
+      "SUPPORT": {
+        "f1": 0.6153846153846154,
+        "false_negative": 4,
+        "false_positive": 1,
+        "precision": 0.8,
+        "recall": 0.5,
+        "true_positive": 4
+      }
+    },
+    "scenario_count": 30,
+    "schema_validity_rate": 1.0,
+    "true_positive_edges": 10,
+    "update_count": 30
+  },
+  "none_diagnostics": {
+    "false_edge_labels": {},
+    "false_positive_rate": 0.0,
+    "none_scenarios": 6,
+    "scenarios_with_false_edges": 0
+  },
+  "output_predictions": "results/dialam_model_generation/v5_1_n8192/predictions.jsonl",
+  "output_predictions_sha256": "f03b252bdee6c7e14b8583922a48306bbeab0b79a3648145cf7c20fed8f9a3d0",
+  "schema_version": "dialam_v5_1_fixed_margin_application_v1"
+}

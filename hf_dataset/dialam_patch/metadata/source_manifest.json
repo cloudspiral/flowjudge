@@ -18,25 +18,25 @@
     "aifdb_license_field_as_retrieved": "",
     "aifdb_license_url_as_retrieved": "",
     "official_corpus_license": null,
-    "permission_basis": "The project owner reported on 2026-08-22 that they obtained approval to use QT30 for this educational toy project.",
+    "permission_basis": "The project owner reported on 2026-08-22 that they obtained approval to use QT30 for this educational toy project and explicitly confirmed on 2026-08-23 that the permission includes redistribution for this project.",
     "publication_matrix": {
       "aggregate_manifests_and_statistics": "CLEARED TO PUBLISH as project-generated factual metadata, with source citation and no corpus text.",
-      "ids_and_labels_only": "UNCLEAR: no express dataset license or redistribution grant was found; obtain written clarification before publication.",
+      "ids_and_labels_only": "CLEARED TO PUBLISH under the same project-specific redistribution permission.",
       "original_project_scripts": "CLEARED TO PUBLISH by the project owner, provided they contain no corpus text or secrets.",
-      "raw_corpus_text": "NOT CLEARED: project-specific use approval is not evidence of redistribution permission.",
-      "transformed_jsonl_with_text": "NOT CLEARED: transformed examples reproduce raw locution and reconstructed proposition text."
+      "raw_corpus_archive_and_maps": "NOT REPUBLISHED: outside the needs of this project artifact; obtain the official source from ARG-tech.",
+      "transformed_jsonl_with_text": "CLEARED TO PUBLISH under the project-specific redistribution permission directly attested by the project owner on 2026-08-23."
     },
-    "scope_note": "This manifest records project-specific permission as reported by the project owner. It does not claim that QT30 has a general public redistribution license."
+    "scope_note": "This manifest records project-specific use and redistribution permission as directly attested by the project owner. It does not claim that QT30 has a general public license or grant rights outside this project."
   },
   "publication_redaction": {
-    "policy": "Original QT30 episode, map, proposition, and example identifiers are omitted because IDs/labels-only redistribution remains unclear.",
+    "policy": "Per-example inventories are omitted from compact aggregate metadata; the permitted transformed JSONL files preserve the complete examples.",
     "removed_fields": [
       "identifier-bearing fields and per-example inventories where present"
     ],
-    "source_sha256": "ebc5a11f729eb50f2514a74f295d20f7c245b078a56785c1d2313e028a2da6ea"
+    "source_sha256": "795b9670148b2b64962155232087a48ef71ecbf87b75ac0470d4924cea0cc0f6"
   },
   "publisher": "ARG-tech, University of Dundee",
-  "raw_data_policy": "The source archive, extracted maps, and text-bearing generated JSONL are reproducibly generated but excluded from Git. Only original transformation code and text-free manifests/statistics are publication-ready under the recorded evidence.",
+  "raw_data_policy": "The official source archive and extracted maps are not mirrored. Curated transformed training and project-owned evaluation JSONL may be published under the project-specific redistribution permission directly attested by the project owner; source citation, transformation provenance, and exact hashes must be retained.",
   "retrieved_at": "2026-08-22",
   "training_archive": {
     "bytes": 5059617,

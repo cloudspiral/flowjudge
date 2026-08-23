@@ -11,7 +11,9 @@ from flowjudge.hf_eval import (
 from flowjudge.dialam_hf_eval import (
     _declared_dialam_base_model,
     _dialam_results_table,
+    _pairwise_prediction,
 )
+from test_dialam_training_v5 import _example
 
 
 def test_eval_cli_requires_prescribed_model_and_eval_set() -> None:
@@ -84,6 +86,53 @@ def test_dialam_model_package_declares_canonical_base(tmp_path) -> None:
     )
 
     assert _declared_dialam_base_model(str(tmp_path)) == "Qwen/Qwen3-0.6B"
+
+
+def test_dialam_v5_model_package_declares_canonical_base(tmp_path) -> None:
+    (tmp_path / "dialam_v5_checkpoint_manifest.json").write_text(
+        json.dumps({"fixed_config": {"base_model": "Qwen/Qwen3-0.6B"}}),
+        encoding="utf-8",
+    )
+
+    assert _declared_dialam_base_model(str(tmp_path)) == "Qwen/Qwen3-0.6B"
+
+
+def test_pairwise_hf_inference_applies_fixed_none_margin_and_assembles_patch() -> None:
+    class FakeGenerator:
+        def score_completions(self, prompt, completions, *, max_sequence_length):
+            assert completions == ("NONE", "SUPPORT", "ATTACK", "REPHRASE")
+            assert max_sequence_length == 2048
+            assert "complete_earlier_comparison_block" in prompt
+            if 'CANDIDATE TARGET ID\n"old-a"' in prompt:
+                return {
+                    "NONE": 0.0,
+                    "SUPPORT": 3.1,
+                    "ATTACK": -1.0,
+                    "REPHRASE": -1.0,
+                }
+            return {
+                "NONE": 0.0,
+                "SUPPORT": 2.9,
+                "ATTACK": -1.0,
+                "REPHRASE": -1.0,
+            }
+
+    response, decisions = _pairwise_prediction(
+        FakeGenerator(),
+        _example(update="support-a", label="SUPPORT"),
+        {
+            "allowed_labels": ["NONE", "SUPPORT", "ATTACK", "REPHRASE"],
+            "none_margin": 3.0,
+            "max_sequence_length": 2048,
+        },
+    )
+
+    assert json.loads(response) == {
+        "relations": [
+            {"source": "new-support-a", "target": "old-a", "type": "SUPPORT"}
+        ]
+    }
+    assert [item["label"] for item in decisions] == ["SUPPORT", "NONE", "NONE"]
 
 
 def test_dialam_results_table_contains_required_metrics() -> None:

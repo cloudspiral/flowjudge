@@ -1,0 +1,178 @@
+{
+  "$defs": {
+    "CandidateHardness": {
+      "additionalProperties": false,
+      "properties": {
+        "jaccard_similarity": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Jaccard Similarity",
+          "type": "number"
+        },
+        "overlap_coefficient": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Overlap Coefficient",
+          "type": "number"
+        },
+        "shared_content_tokens": {
+          "minimum": 0,
+          "title": "Shared Content Tokens",
+          "type": "integer"
+        },
+        "turn_gap": {
+          "exclusiveMinimum": 0,
+          "title": "Turn Gap",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "shared_content_tokens",
+        "overlap_coefficient",
+        "jaccard_similarity",
+        "turn_gap"
+      ],
+      "title": "CandidateHardness",
+      "type": "object"
+    },
+    "TrainingMessage": {
+      "additionalProperties": false,
+      "properties": {
+        "content": {
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "user",
+            "assistant"
+          ],
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "content"
+      ],
+      "title": "TrainingMessage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "assistant_loss_weight": {
+      "const": 1.0,
+      "title": "Assistant Loss Weight",
+      "type": "number"
+    },
+    "block_index": {
+      "minimum": 0,
+      "title": "Block Index",
+      "type": "integer"
+    },
+    "candidate_target_id": {
+      "title": "Candidate Target Id",
+      "type": "string"
+    },
+    "dialogue_id": {
+      "title": "Dialogue Id",
+      "type": "string"
+    },
+    "is_repeated_positive": {
+      "title": "Is Repeated Positive",
+      "type": "boolean"
+    },
+    "label": {
+      "enum": [
+        "NONE",
+        "SUPPORT",
+        "ATTACK",
+        "REPHRASE"
+      ],
+      "title": "Label",
+      "type": "string"
+    },
+    "messages": {
+      "items": {
+        "$ref": "#/$defs/TrainingMessage"
+      },
+      "maxItems": 2,
+      "minItems": 2,
+      "title": "Messages",
+      "type": "array"
+    },
+    "negative_hardness": {
+      "$ref": "#/$defs/CandidateHardness"
+    },
+    "pair_group_id": {
+      "title": "Pair Group Id",
+      "type": "string"
+    },
+    "pair_role": {
+      "enum": [
+        "POSITIVE",
+        "NONE"
+      ],
+      "title": "Pair Role",
+      "type": "string"
+    },
+    "paired_candidate_target_id": {
+      "title": "Paired Candidate Target Id",
+      "type": "string"
+    },
+    "positive_label": {
+      "enum": [
+        "SUPPORT",
+        "ATTACK",
+        "REPHRASE"
+      ],
+      "title": "Positive Label",
+      "type": "string"
+    },
+    "repetition_index": {
+      "minimum": 0,
+      "title": "Repetition Index",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "dialam_qlora_pairwise_v5",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_example_id": {
+      "title": "Source Example Id",
+      "type": "string"
+    },
+    "training_row_id": {
+      "title": "Training Row Id",
+      "type": "string"
+    },
+    "update_id": {
+      "title": "Update Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "training_row_id",
+    "pair_group_id",
+    "pair_role",
+    "source_example_id",
+    "update_id",
+    "dialogue_id",
+    "block_index",
+    "candidate_target_id",
+    "paired_candidate_target_id",
+    "label",
+    "positive_label",
+    "repetition_index",
+    "is_repeated_positive",
+    "negative_hardness",
+    "assistant_loss_weight",
+    "messages"
+  ],
+  "title": "DialAMTrainingRowV5",
+  "type": "object"
+}

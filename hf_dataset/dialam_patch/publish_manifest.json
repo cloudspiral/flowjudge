@@ -1,6 +1,7 @@
 {
-  "contains_original_qt30_identifiers": false,
-  "contains_raw_or_transformed_qt30_text": false,
+  "contains_original_qt30_identifiers": true,
+  "contains_raw_qt30_archive_or_maps": false,
+  "contains_transformed_qt30_text": true,
   "files": [
     {
       "bytes": 3135,
@@ -13,6 +14,18 @@
       "path": "metadata/training_v3_manifest.json",
       "sha256": "60e042cee5cd5b6d87d94fd362d775c6c7877fed99fe2c0ecc40b8607d708034",
       "source": "data/dialam/training/training_v3_manifest.json"
+    },
+    {
+      "bytes": 5050,
+      "path": "metadata/training_v4_manifest.json",
+      "sha256": "9b8a36d7ce0f188a998df806aeb1536dd842640e5747a97b6060dd6f6d169534",
+      "source": "data/dialam/training/training_v4_manifest.json"
+    },
+    {
+      "bytes": 4590,
+      "path": "metadata/training_v5_manifest.json",
+      "sha256": "624a196c35e47de658ad9fc1d2bd1887cc1e875b021ea4a6891469a9b9882c24",
+      "source": "data/dialam/training/training_v5_manifest.json"
     },
     {
       "bytes": 1485,
@@ -33,6 +46,18 @@
       "source": "data/dialam/training/training_example_v3.schema.json"
     },
     {
+      "bytes": 3909,
+      "path": "schema/training_example_v4.schema.json",
+      "sha256": "537efcba4af04125ebe313a13f1587a71aff150242502cb21e5995bf3540e8de",
+      "source": "data/dialam/training/training_example_v4.schema.json"
+    },
+    {
+      "bytes": 3850,
+      "path": "schema/training_example_v5.schema.json",
+      "sha256": "f25313315b7a95134c9ea1626a401de07619978c379ebcf034a74b27a0ab2c57",
+      "source": "data/dialam/training/training_example_v5.schema.json"
+    },
+    {
       "bytes": 17537,
       "path": "metadata/dialam_v1_efficiency_curve.json",
       "sha256": "c6b1596d368b4c0db754bf5a909b7c1af5745d26f187f76ee1afc022c3a87894",
@@ -51,6 +76,84 @@
       "source": "reports/dialam_v1_v2_v3.json"
     },
     {
+      "bytes": 13312,
+      "path": "metadata/dialam_v4_class_balanced_rehearsal.json",
+      "sha256": "cdfa3da5c0f244b8bafa18a739d58e390d42074018600428d70eed2099022073",
+      "source": "reports/dialam_v4_class_balanced_rehearsal.json"
+    },
+    {
+      "bytes": 14299,
+      "path": "metadata/dialam_v5_pairwise_classification.json",
+      "sha256": "414ff8f7357a07554851d7e5420f53c7d7a6e0c7d66d7ac7589acaf9b47796da",
+      "source": "reports/dialam_v5_pairwise_classification.json"
+    },
+    {
+      "bytes": 25358,
+      "path": "metadata/dialam_v5_1_result.json",
+      "sha256": "9a0bbd3b28b5dc377b023cb4d713c80777bb36df7e7997088ffea1281c6f774d",
+      "source": "reports/dialam_v5_1_result.json"
+    },
+    {
+      "bytes": 13247,
+      "path": "metadata/dialam_experiment_history.json",
+      "sha256": "5665d939df60b90dfc85e193225d0ad7ef1058c5fcdea477edb0a56129dd2a79",
+      "source": "reports/dialam_experiment_history.json"
+    },
+    {
+      "bytes": 6785,
+      "path": "metadata/dialam_experiment_history.svg",
+      "sha256": "59df6e4d9e5019341f8ef2181c5a4463d7c9b1ef705e8795fb30bb3895b9b108",
+      "source": "reports/dialam_experiment_history.svg"
+    },
+    {
+      "bytes": 4867,
+      "path": "evidence/training_v1_n256.json",
+      "sha256": "388d91b294d6d497290766a15887a5275d45406ff1401c712403c4164d0327d4",
+      "source": "artifacts/dialam_qlora/n256/training_manifest.json"
+    },
+    {
+      "bytes": 7975,
+      "path": "evidence/training_v1_n512.json",
+      "sha256": "119bd634549f52846cf7c4a021e56e9a610d2f0acde0aca586cf836648d8df88",
+      "source": "artifacts/dialam_qlora/n512/training_manifest.json"
+    },
+    {
+      "bytes": 14204,
+      "path": "evidence/training_v1_n1024.json",
+      "sha256": "b978650ff27eb7c9fdc4601a81f6c19824cb20cd463745f528e66a369310a537",
+      "source": "artifacts/dialam_qlora/n1024/training_manifest.json"
+    },
+    {
+      "bytes": 26981,
+      "path": "evidence/training_v1_n2048.json",
+      "sha256": "5b08e8e9988d4ebeb49c69f85a20579a89ffb6e4ce6f1f2768f9f2d20f828f32",
+      "source": "artifacts/dialam_qlora/n2048/training_manifest.json"
+    },
+    {
+      "bytes": 27087,
+      "path": "evidence/training_v2_n2048.json",
+      "sha256": "5e3589d27d5092ae84ca2a167534d05ef3f37e1fd0b22307e7ad0abe0d527012",
+      "source": "artifacts/dialam_qlora/v2_n2048/training_manifest.json"
+    },
+    {
+      "bytes": 52973,
+      "path": "evidence/training_v3_n4096.json",
+      "sha256": "498759636dc89dbea73eea6be318ae942e0700992972adbc74c86ae21c0c01ed",
+      "source": "artifacts/dialam_qlora/v3_n4096/training_manifest.json"
+    },
+    {
+      "bytes": 104618,
+      "path": "evidence/training_v4_n8192.json",
+      "sha256": "23d4cd2089636337d079b6faabf5a368f1ae75d4c29d58cef42b7d0d6853000f",
+      "source": "artifacts/dialam_qlora/v4_n8192/training_manifest.json"
+    },
+    {
+      "bytes": 104682,
+      "path": "evidence/training_v5_n8192.json",
+      "sha256": "a3fac9eda572b441a682be577adae3ff7ca7875f0205bb6724dee54d6a7f4aa5",
+      "source": "artifacts/dialam_qlora/v5_n8192/training_manifest.json"
+    },
+    {
       "bytes": 2735,
       "path": "metadata/dialam_v3_preregistration.md",
       "sha256": "622425385e990d7c770bfcc5dc0426047a5d3626cf1431c6ade44b5859b444d3",
@@ -61,6 +164,54 @@
       "path": "metadata/dialam_v3_results.md",
       "sha256": "e4360a2295490012d1ca6437489aea206510e5633c13e6b61a60827e70553ee7",
       "source": "docs/dialam_v3_results.md"
+    },
+    {
+      "bytes": 2833,
+      "path": "metadata/dialam_v4_preregistration.md",
+      "sha256": "3234b9dc974edecac1355d767ecc7790ecc8f6d9bd46237e81bab49f87d4a684",
+      "source": "docs/dialam_v4_preregistration.md"
+    },
+    {
+      "bytes": 2838,
+      "path": "metadata/dialam_v4_results.md",
+      "sha256": "42531b09e54014275db49ada038894516cd0a8b1cdd992147702cc03647c62d0",
+      "source": "docs/dialam_v4_results.md"
+    },
+    {
+      "bytes": 4799,
+      "path": "metadata/dialam_v5_preregistration.md",
+      "sha256": "2b7d7076271f4b30bf3011b6fba554e9eaf608be617109e2345cd1a76dc15c92",
+      "source": "docs/dialam_v5_preregistration.md"
+    },
+    {
+      "bytes": 1904,
+      "path": "metadata/dialam_v5_1_calibration_preregistration.md",
+      "sha256": "dc8c92ed6af13dd7479501489329412235891128b34d54d1a0808027ce7dddd1",
+      "source": "docs/dialam_v5_1_calibration_preregistration.md"
+    },
+    {
+      "bytes": 2298,
+      "path": "metadata/dialam_v5_results.md",
+      "sha256": "bda3de560d7ef511060e526185864cef21987b4e00e58a536d5a4fc5eea2b892",
+      "source": "docs/dialam_v5_results.md"
+    },
+    {
+      "bytes": 3048,
+      "path": "metadata/dialam_v5_1_results.md",
+      "sha256": "bf7dc383e6fbbf7118fdd6b0b27192180c757b899e834b11ecf1c51b347c421e",
+      "source": "docs/dialam_v5_1_results.md"
+    },
+    {
+      "bytes": 2020,
+      "path": "metadata/dialam_experiment_history.md",
+      "sha256": "6b450085d71bd60e17eefbdf87f7933a133a333718e4351803d5a269b112d3cf",
+      "source": "docs/dialam_experiment_history.md"
+    },
+    {
+      "bytes": 17795,
+      "path": "metadata/DATA_AUDIT.md",
+      "sha256": "5de507826b31606a16ae6072c32aff68d8b32b7b37dfb799b46da53993f4cb66",
+      "source": "DATA_AUDIT.md"
     },
     {
       "bytes": 1387,
@@ -87,6 +238,18 @@
       "source": "scripts/build_dialam_training_v3.py"
     },
     {
+      "bytes": 784,
+      "path": "reconstruction/build_dialam_training_v4.py",
+      "sha256": "ae90077216dd375e0a4db7f63942128a835a349baebce68aed4f4b8341c15eb9",
+      "source": "scripts/build_dialam_training_v4.py"
+    },
+    {
+      "bytes": 771,
+      "path": "reconstruction/build_dialam_training_v5.py",
+      "sha256": "829be042a23b07a3e99cd4713358a4f305bffe65285e784def76c711ea57be6e",
+      "source": "scripts/build_dialam_training_v5.py"
+    },
+    {
       "bytes": 15339,
       "path": "reconstruction/build_dialam_v1_curve_report.py",
       "sha256": "6c8426824d2827ef31262208914a2e3ccc08d066e4fe49a7d8b7977cdd7fdb33",
@@ -105,6 +268,42 @@
       "source": "scripts/build_dialam_v3_report.py"
     },
     {
+      "bytes": 17370,
+      "path": "reconstruction/build_dialam_v4_report.py",
+      "sha256": "3160996d575671b3ec3c63bb32b7566546ce92d43dd1fd53219b00bb03fc3881",
+      "source": "scripts/build_dialam_v4_report.py"
+    },
+    {
+      "bytes": 20061,
+      "path": "reconstruction/build_dialam_v5_report.py",
+      "sha256": "5f369ad117b9ec0341de350772cec148c8088dd8a445d2515f6c58ea97cb5685",
+      "source": "scripts/build_dialam_v5_report.py"
+    },
+    {
+      "bytes": 16805,
+      "path": "reconstruction/build_dialam_v5_1_report.py",
+      "sha256": "d2ad3130ac9077beb19553963eb591f3441bca62baf7654c9f6bde39a7f40d7f",
+      "source": "scripts/build_dialam_v5_1_report.py"
+    },
+    {
+      "bytes": 4500,
+      "path": "reconstruction/calibrate_dialam_v5.py",
+      "sha256": "1f0f69fd52b0e115d8f33b1acdd29e07dd6df775626a576c1fbd80bb1510f187",
+      "source": "scripts/calibrate_dialam_v5.py"
+    },
+    {
+      "bytes": 2419,
+      "path": "reconstruction/apply_dialam_v5_margin.py",
+      "sha256": "725557f5ab1a349feea91c4ecd3f2f909aecf0a096ad37f21998f98959715c15",
+      "source": "scripts/apply_dialam_v5_margin.py"
+    },
+    {
+      "bytes": 280,
+      "path": "reconstruction/build_dialam_experiment_history.py",
+      "sha256": "37cf756f8d096081d04941a0ae2063681a626eae4fc49eafae74a25734fc2490",
+      "source": "scripts/build_dialam_experiment_history.py"
+    },
+    {
       "bytes": 1010,
       "path": "reconstruction/evaluate_dialam_model.py",
       "sha256": "2e66a7602f0e35c068b52583bec79e8ccdc671918b0cef2c08f0c6915cdbd9a6",
@@ -117,10 +316,16 @@
       "source": "scripts/freeze_dialam_gate.py"
     },
     {
-      "bytes": 14576,
+      "bytes": 20336,
       "path": "reconstruction/modal_dialam_qlora.py",
-      "sha256": "2d42b04dcbabc4a0f8a8040c455195c5b6478e6bd0b167b9a57f1a31cd38cdb1",
+      "sha256": "013abe5ceaef4c066199d0b36a3d9ba80d01ef5e8071ae68903f8ef8bdee34b1",
       "source": "scripts/modal_dialam_qlora.py"
+    },
+    {
+      "bytes": 10931,
+      "path": "reconstruction/prepare_dialam_hf_model_v5_1.py",
+      "sha256": "50c846a5f5a71c63748eaaeffb5e069cc8baec34da0ef3163c747482d0b23871",
+      "source": "scripts/prepare_dialam_hf_model_v5_1.py"
     },
     {
       "bytes": 1815,
@@ -157,6 +362,42 @@
       "path": "reconstruction/flowjudge/dialam_training_v3.py",
       "sha256": "f829db16b916123d4c83edd5ea422105784b1d59f117256ee7c0ead148d11bca",
       "source": "src/flowjudge/dialam_training_v3.py"
+    },
+    {
+      "bytes": 20271,
+      "path": "reconstruction/flowjudge/dialam_training_v4.py",
+      "sha256": "1f26006bb16d45ccdc867f8dc117dcfc25efe2475476364a954fc8176507e5c6",
+      "source": "src/flowjudge/dialam_training_v4.py"
+    },
+    {
+      "bytes": 23683,
+      "path": "reconstruction/flowjudge/dialam_training_v5.py",
+      "sha256": "970db7f074e328b9f9da00e8d6036cfbf3cc462f9b4b83a95c236d5d9b68be74",
+      "source": "src/flowjudge/dialam_training_v5.py"
+    },
+    {
+      "bytes": 7312,
+      "path": "reconstruction/flowjudge/dialam_calibration_v5.py",
+      "sha256": "45f265aae8122fc8a95549309e3e5d71b08b8ecadda03e0c4478020ff1b94664",
+      "source": "src/flowjudge/dialam_calibration_v5.py"
+    },
+    {
+      "bytes": 14418,
+      "path": "reconstruction/flowjudge/dialam_hf_eval.py",
+      "sha256": "f2e93b05ba220499d5c0b1f55374aa9babc5e73bfaa81dc6fc49869337e08ec1",
+      "source": "src/flowjudge/dialam_hf_eval.py"
+    },
+    {
+      "bytes": 17654,
+      "path": "reconstruction/flowjudge/experiment_history.py",
+      "sha256": "4e87e76c17f7daabd98c3c144e602eed930845fc0afcf6dadb417ec5377e4aae",
+      "source": "src/flowjudge/experiment_history.py"
+    },
+    {
+      "bytes": 20005,
+      "path": "reconstruction/flowjudge/hf_eval.py",
+      "sha256": "5c1b1306f823a895c7cf7d300ac39d7bfa548bb4c67b12f86704f6a403d312c9",
+      "source": "src/flowjudge/hf_eval.py"
     },
     {
       "bytes": 33494,
@@ -207,68 +448,343 @@
       "source": "prompts/dialam/judge.txt"
     },
     {
+      "bytes": 864,
+      "path": "reconstruction/prompts/dialam/pairwise_v5.txt",
+      "sha256": "ed20a5edb899c4fb85e7219e1216716162a568bde23efe5fcb90484b14bb2574",
+      "source": "prompts/dialam/pairwise_v5.txt"
+    },
+    {
       "bytes": 2179,
       "path": "reconstruction/BEHAVIOR_SPEC.md",
       "sha256": "5c36854db1590151ed3f0abed7b84971559af93480f9b64d2e6c2b767bfa2064",
       "source": "BEHAVIOR_SPEC.md"
     },
     {
-      "bytes": 3078,
+      "bytes": 98,
+      "path": "reconstruction/eval.py",
+      "sha256": "727ca27a99162ab93e036db9941af6a8999681cfd85c0e73b64004202bc408f1",
+      "source": "eval.py"
+    },
+    {
+      "bytes": 141377,
+      "optional": true,
+      "path": "metadata/dialam_v5_1_calibration.json",
+      "sha256": "f65e780263abe80d19445cb2ddc8638808cd92bd834ac05c998308d4f7f9f90b",
+      "source": "reports/dialam_v5_1_calibration.json"
+    },
+    {
+      "bytes": 2157,
+      "optional": true,
+      "path": "metadata/dialam_v5_1_frozen_application.json",
+      "sha256": "f60f187a089a3f8d0eb32f0e71d216fcfc90c27ebdc1238ede40d5a3d66fd613",
+      "source": "reports/dialam_v5_1_frozen_application.json"
+    },
+    {
+      "bytes": 11889,
+      "optional": true,
+      "path": "evidence/v5_1_n8192_frozen_summary.json",
+      "sha256": "137595e7575170dfe7d46d9ac3b0276b597d416a76548759126742178f255e6f",
+      "source": "results/dialam_model_eval/v5_1_n8192/summary.json"
+    },
+    {
+      "bytes": 737708,
+      "path": "data/train_v1_n256.jsonl",
+      "rows": 256,
+      "sha256": "53ac800e7272c06f8389af55b75061bca883e4dceb3c897c16486e1443579749",
+      "source": "data/dialam/training/dialam_n256.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 1469598,
+      "path": "data/train_v1_n512.jsonl",
+      "rows": 512,
+      "sha256": "5d247618ecfbbf9eca459872eae17fbb3c08a22b01898b4d04c58ca0396ee321",
+      "source": "data/dialam/training/dialam_n512.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 2907592,
+      "path": "data/train_v1_n1024.jsonl",
+      "rows": 1024,
+      "sha256": "12827139d89478949d5b2df04337d6a0afd067e9ae9ab0d598f7b35eb4c08d80",
+      "source": "data/dialam/training/dialam_n1024.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 5835722,
+      "path": "data/train_v1_n2048.jsonl",
+      "rows": 2048,
+      "sha256": "d919466b44b34fde8e43cf8d163cbe4f69886b1af69b95ce87e8133d42151d65",
+      "source": "data/dialam/training/dialam_n2048.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 6502064,
+      "path": "data/train_v2_n2048.jsonl",
+      "rows": 2048,
+      "sha256": "a860eb5ce7847c7ad995f112229d9f7eb67073d220737ddfdda14c0958cbcb08",
+      "source": "data/dialam/training/dialam_v2_n2048.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 13638940,
+      "path": "data/train_v3_n4096.jsonl",
+      "rows": 4096,
+      "sha256": "902bd567df7b6c2cb23c8987dd8bf4284e53e4fbfd2b35de262a811fb16dc3e0",
+      "source": "data/dialam/training/dialam_v3_n4096.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 24266844,
+      "path": "data/train_v5_n8192.jsonl",
+      "rows": 8192,
+      "sha256": "23f4b8d552a6bca16cdb79507d89ec9675bb16a8d2f5b7b573c6a0981a42d8db",
+      "source": "data/dialam/training/dialam_v5_n8192.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 76619,
+      "path": "data/development_eval_30.jsonl",
+      "rows": 30,
+      "sha256": "78f4ccc35312a4e3e74cce062346af040ff4e00b365a1312c2a627d7d0e1ec55",
+      "source": "data/dialam/training/v3_dev_eval_examples.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 75739,
+      "path": "data/frozen_own_eval_30.jsonl",
+      "rows": 30,
+      "sha256": "76badbae23ace13b22822335fa794f7cc796ce0d02753666ebd83c4d7260305b",
+      "source": "data/dialam/balanced_diagnostic_eval_examples.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 167042,
+      "path": "evidence/prompt_ceiling_candidate_and_judge_records.jsonl",
+      "rows": 180,
+      "sha256": "3646c09c13cc5e685055b5aef9c8420418b6f146bb0c1ab0e65687ee8014dca4",
+      "source": "results/dialam_prompt_ceiling/20260823T043624.705184Z/records.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 38947,
+      "path": "evidence/v5_n8192_frozen_raw_scores.jsonl",
+      "rows": 30,
+      "sha256": "076256c9299b16a872ed0216e18f1844c8392f0546bcb634162638cb20548971",
+      "source": "results/dialam_model_generation/v5_n8192_frozen_raw_scores/predictions.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 46795,
+      "path": "evidence/v5_1_n8192_frozen_candidate_transcripts.jsonl",
+      "rows": 30,
+      "sha256": "f03b252bdee6c7e14b8583922a48306bbeab0b79a3648145cf7c20fed8f9a3d0",
+      "source": "results/dialam_model_generation/v5_1_n8192/predictions.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 182802,
+      "path": "evidence/v5_1_n8192_frozen_judge_transcripts.jsonl",
+      "rows": 30,
+      "sha256": "196327a3ec52a803145fb37329b4f8c4995290270b4a25c9f266eeeefcbb51f8",
+      "source": "results/dialam_model_eval/v5_1_n8192/judge_transcripts.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 61182,
+      "path": "evidence/v5_1_n8192_frozen_records.jsonl",
+      "rows": 30,
+      "sha256": "ad21d63a61b702b1d11c21f1653196cc296314c02c2415817eb26f24382c6257",
+      "source": "results/dialam_model_eval/v5_1_n8192/records.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 6831,
+      "path": "evidence/base_candidate_transcripts.jsonl",
+      "rows": 30,
+      "sha256": "3501dc29c8da8517ef3c9ba505546ad4e8da927d690ccdade4b766a80d02ec13",
+      "source": "results/dialam_model_eval/base/predictions.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 182273,
+      "path": "evidence/base_judge_transcripts.jsonl",
+      "rows": 30,
+      "sha256": "40a6971f8a2a1e4e763633d7dc384d946f7144ef6feb6096c55d2bda190ee98b",
+      "source": "results/dialam_model_eval/base/judge_transcripts.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 7910,
+      "path": "evidence/n256_candidate_transcripts.jsonl",
+      "rows": 30,
+      "sha256": "9245a34bfdc5942ce8c76aa40ad98f824577c956225398f4fa096b91d939ece1",
+      "source": "results/dialam_model_eval/n256/predictions.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 183630,
+      "path": "evidence/n256_judge_transcripts.jsonl",
+      "rows": 30,
+      "sha256": "81419ea5ebb4a7f8c4a8e9aff5044b6367ab3cffe8e250564f3fbfec79b3269f",
+      "source": "results/dialam_model_eval/n256/judge_transcripts.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 7913,
+      "path": "evidence/n512_candidate_transcripts.jsonl",
+      "rows": 30,
+      "sha256": "e0ed4fb0684fe907624971fdaf93335333e6fff3ae5bee8f8297100273ee390b",
+      "source": "results/dialam_model_eval/n512/predictions.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 183391,
+      "path": "evidence/n512_judge_transcripts.jsonl",
+      "rows": 30,
+      "sha256": "94b97f0a572cf6f522b8bf4a1c989e4c3fc136e8169b3b6d81a842ed71c98eac",
+      "source": "results/dialam_model_eval/n512/judge_transcripts.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 8268,
+      "path": "evidence/n1024_candidate_transcripts.jsonl",
+      "rows": 30,
+      "sha256": "22a7b165770465ca3c710d36b047e3753d196b92c67a1eadbb139d5598a7858a",
+      "source": "results/dialam_model_eval/n1024/predictions.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 184268,
+      "path": "evidence/n1024_judge_transcripts.jsonl",
+      "rows": 30,
+      "sha256": "e252ff73133b7cd658fa46fa5f9bae1d4a7a6c010a45e20ddd86c15105e9b7b1",
+      "source": "results/dialam_model_eval/n1024/judge_transcripts.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 8338,
+      "path": "evidence/n2048_candidate_transcripts.jsonl",
+      "rows": 30,
+      "sha256": "814b747713857ffdb823b8cba0e86995a1d9abcf3f4375226fb276482357740a",
+      "source": "results/dialam_model_eval/n2048/predictions.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 184381,
+      "path": "evidence/n2048_judge_transcripts.jsonl",
+      "rows": 30,
+      "sha256": "70ea558d5d3a490cf00b75eb6c7175c7f1079fd951492ec876b717cf9136e50d",
+      "source": "results/dialam_model_eval/n2048/judge_transcripts.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 9621,
+      "path": "evidence/v2_n2048_candidate_transcripts.jsonl",
+      "rows": 30,
+      "sha256": "4040cbcf8fda05ec6a113b64c21c1f74f38cfc4337fc91ad0a6a6240462521a1",
+      "source": "results/dialam_model_eval/v2_n2048/predictions.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 183938,
+      "path": "evidence/v2_n2048_judge_transcripts.jsonl",
+      "rows": 30,
+      "sha256": "2bcfa6110ddf94ae905ad21a451924e3ab69b541758b4182ec39d1c37efa61d6",
+      "source": "results/dialam_model_eval/v2_n2048/judge_transcripts.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 9281,
+      "path": "evidence/v3_n4096_candidate_transcripts.jsonl",
+      "rows": 30,
+      "sha256": "ba15885e4fd80ec83eaa43da01d08a298d319a7946cf10cfec5ddfa5a50d3252",
+      "source": "results/dialam_model_eval/v3_n4096/predictions.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 183038,
+      "path": "evidence/v3_n4096_judge_transcripts.jsonl",
+      "rows": 30,
+      "sha256": "724260b96a1b2ab03f0f4c9ec5420fa7d9ecb96eb47017e290da108c185c076c",
+      "source": "results/dialam_model_eval/v3_n4096/judge_transcripts.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 38465,
+      "path": "evidence/v5_n8192_development_predictions.jsonl",
+      "rows": 30,
+      "sha256": "f85e2b11e5d34b935129606f6b32165dd1929ceec5fdf7cbeb38ff71ce718016",
+      "source": "results/dialam_model_generation/v5_n8192_dev/predictions.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 46320,
+      "path": "evidence/v5_1_n8192_development_predictions.jsonl",
+      "rows": 30,
+      "sha256": "ea41e660cafbb567a6048eff773f0695ce40833d9240b4b694d6b0abf6816885",
+      "source": "results/dialam_model_generation/v5_1_n8192_dev/predictions.jsonl",
+      "transformed_qt30": true
+    },
+    {
+      "bytes": 3334,
       "path": "metadata/source_manifest.json",
       "sanitized": true,
-      "sha256": "ab6b351d06b3cf2895f624e15e4df0ae5dfe30f18383aeb6e5e873bea94973e4",
+      "sha256": "0f910a0183e48536c4b2f160158abace5ddf8ea0a54f93389306e49b53f0bb27",
       "source": "data/dialam/source_manifest.json"
     },
     {
-      "bytes": 9225,
+      "bytes": 9231,
       "path": "metadata/corpus_audit_manifest.json",
       "sanitized": true,
-      "sha256": "1e4a22dedc26a7cc137474b478799a46c26f5730d48a2b8f1855640d8d382e43",
+      "sha256": "08c0ec26d2230318aa4fe40f6dfa431b9f40ffa203d078a70b6829bed31c2134",
       "source": "data/dialam/smoke_manifest.json"
     },
     {
-      "bytes": 1535,
+      "bytes": 1541,
       "path": "metadata/eval_summary.json",
       "sanitized": true,
-      "sha256": "1952007f7c83611cd526753f2cf136642388a7617bddb96af96e3c7b14509abc",
+      "sha256": "d0131ca68c677f56d5f75c518a7cacf9ff969b7a94a7862c1d2cef1a03a2106c",
       "source": "data/dialam/eval_summary.json"
     },
     {
-      "bytes": 2850,
+      "bytes": 2856,
       "path": "metadata/frozen_gate_manifest.json",
       "sanitized": true,
-      "sha256": "1f7da4f54e70aff30cb4a9db09e018cd3013700601f3cf456d44087a46fe7b63",
+      "sha256": "4b84b996be3e6db066f9e477798950070f73758f351f176fa80b9714b2fddd1b",
       "source": "data/dialam/frozen_gate/freeze_manifest.json"
     },
     {
-      "bytes": 2135,
+      "bytes": 2141,
       "path": "metadata/prompt_ceiling_run_manifest.json",
       "sanitized": true,
-      "sha256": "dc88998a4f724d6a7ec95de17432d621dc3fdf00d42c82a521afabb197c17951",
+      "sha256": "9d52cf0b3704f22e481a8623604363cd3720dc6a5a49a8ed3d568e7b4eb52f90",
       "source": "data/dialam/frozen_gate/prompt_ceiling_run_manifest.json"
     },
     {
-      "bytes": 13421,
+      "bytes": 13427,
       "path": "metadata/prompt_ceiling_metrics.json",
       "sanitized": true,
-      "sha256": "6900c9754469fc30ed4a3afcdab62c25c8667156ca3c0b1868dd74e6420390bf",
+      "sha256": "23c6b897637d578d126b6fa44e2af73d89af88c54fe2570346d2c4ea21a5341f",
       "source": "data/dialam/frozen_gate/prompt_ceiling_metrics.json"
     },
     {
-      "bytes": 4284,
+      "bytes": 4290,
       "path": "metadata/training_manifest.json",
       "sanitized": true,
-      "sha256": "9dac19bfc7f0b5864cb2cf8b857007bb8486740f5676219a0ea2b5767191f663",
+      "sha256": "09d0f5e2b1d7bd11717f4da09a7cccb2fca3c19bcf7d37d210e144eee42caf57",
       "source": "data/dialam/training/training_manifest.json"
     },
     {
-      "bytes": 3673,
+      "bytes": 5440,
       "path": "README.md",
-      "sha256": "bc69d082d1359af3b8434f51143e89ddcea007178390693576ed17b8dd022f14",
+      "sha256": "a0bc31ee1b05f59a528233347b1582a00bae75d81081d8528499603db79e14bb",
       "source": "hf_dataset/dialam_patch/README.md"
     }
   ],
-  "prepared_at": "2026-08-23T09:16:00.260060+00:00",
-  "publishable_scope": "manifests, metadata, schemas, aggregate statistics, and reconstruction code only",
-  "schema_version": "dialam_hf_dataset_structure_v3"
+  "permission_basis": "Project-specific use and redistribution permission directly attested by the project owner on 2026-08-23; no general QT30 license is claimed.",
+  "prepared_at": "2026-08-23T18:41:33.913937+00:00",
+  "publishable_scope": "curated transformed training/evaluation JSONL, manifests, metadata, schemas, aggregate statistics, and deterministic reconstruction code",
+  "schema_version": "dialam_hf_dataset_structure_v4",
+  "source_code_commit": "b590f55b68712adf66eb11b63a846cffebf70c15"
 }

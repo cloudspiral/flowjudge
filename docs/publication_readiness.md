@@ -1,52 +1,60 @@
-# FlowJudge publication readiness
+# FlowJudge DialAM publication readiness
 
-## Locally verified model artifact
+## Selected artifact
 
-- Best checkpoint: Qwen3 0.6B, v1 n=96 QLoRA adapter.
-- Fused directory: `artifacts/publish/flowjudge-qwen3-0.6b/`.
-- Publication format: dequantized standard safetensors plus Qwen3 config,
-  tokenizer, model card, training manifest, and verification JSON.
-- Size: 1.1 GB.
-- Independent runtime check: Transformers loaded `Qwen3ForCausalLM` on CPU,
-  counted 596,049,920 parameters, and produced nonempty generation.
+- Base: `Qwen/Qwen3-0.6B`.
+- Selected checkpoint: v5 QLoRA adapter trained on 8,192 candidate rows.
+- Selected inference pipeline: v5.1 fixed four-label likelihood scoring with
+  the preregistered 3.0 NONE margin and deterministic patch assembly.
+- Frozen result: 53.3% exact patches, 47.6% edge F1, 47.4% macro-F1, 0.267
+  false edges/update, 0/6 false-positive NONE cases, and 3.03/4 Robustness.
+- Selection: all nine frozen promotion checks pass; the original high
+  reliability bar does not.
 
-The local artifact is ignored because the same bytes belong in the public Hub
-repository, not Git. Recreate and verify it with:
+The publishable local model package is built at
+`artifacts/hf_publish/dialam-qwen3-0.6b-v5-1-n8192/`. Its manifest hashes every
+adapter, tokenizer, calibration, result, and inference-config file. The model
+package contains no raw or transformed QT30 text.
+
+## Dataset artifact
+
+The publishable dataset package is assembled at `hf_dataset/dialam_patch/`.
+Under the project owner's explicit project-specific redistribution permission,
+it includes the actual transformed v1/v2/v3/v5 training JSONL, development and
+frozen evaluation JSONL, prompt-ceiling and base/tuned candidate/judge evidence,
+schemas, manifests, reports, the improvement chart, and reconstruction code.
+
+It deliberately excludes the official QT30 archive and extracted raw maps. The
+package does not claim a general QT30 license. `publish_manifest.json` records
+the permission basis, source-code commit, path, byte count, and SHA-256 for
+every file.
+
+## Reproduce and publish
 
 ```bash
-uv run --group mlx-train python scripts/fuse_mlx_for_hf.py \
-  --model mlx-community/Qwen3-0.6B-4bit \
-  --adapter artifacts/efficiency/n96/adapter \
-  --output-dir artifacts/publish/flowjudge-qwen3-0.6b
+.venv/bin/python scripts/build_dialam_v5_1_report.py
+.venv/bin/python scripts/prepare_dialam_hf_model_v5_1.py
+.venv/bin/python scripts/prepare_dialam_hf_dataset.py
+.venv/bin/pytest
 
-uv run --group train python scripts/verify_hf_checkpoint.py \
-  artifacts/publish/flowjudge-qwen3-0.6b
+.venv/bin/python scripts/publish_dialam_hf.py \
+  --model-repo mr-mc/flowjudge-dialam-qwen3-0.6b-v5-1-n8192 \
+  --dataset-repo mr-mc/flowjudge-dialam
+
+modal deploy scripts/modal_dialam_demo.py
+.venv/bin/python scripts/publish_dialam_space.py
 ```
 
-## Remaining user-owned publication step
+The public demo compares the untouched base with the selected adapter using the
+same complete-block pairwise scorer and fixed margin. The static Hugging Face
+Space calls the scale-to-zero Modal endpoint.
 
-No Hugging Face credential is configured (`hf auth whoami` reports not logged
-in), and repository ownership/names cannot be inferred safely. After logging in,
-choose public repository IDs and run:
+## Remaining external submission actions
 
-```bash
-uv run --group train python scripts/publish_hf.py \
-  --model-dir artifacts/publish/flowjudge-qwen3-0.6b \
-  --model-repo <your-hf-name>/flowjudge-qwen3-0.6b \
-  --dataset-repo <your-hf-name>/flowjudge-v1 \
-  --space-repo <your-hf-name>/flowjudge-demo
-```
+- Run the unchanged `eval.py --model ... --eval-set ...` harness on the
+  staff-held-out JSONL when staff supplies it; that result cannot be precomputed.
+- Record and submit the required three-to-five-minute video. The project owner
+  has explicitly retained that task.
 
-The script creates public model, dataset, and Gradio Space repos; uploads the
-complete model, filtered dataset, efficiency slices, and runnable demo; sets the
-Space's public model-ID variable; and writes all exact final commit hashes to
-`docs/publication_manifest.json`. It never prints the token.
-
-## Other external blockers
-
-- The fixed GPT-5.6 Sol judge cannot finish the remaining rubric rows until the
-  OpenAI account has credit again.
-- The staff-held-out set has not been supplied, so its required results cannot
-  be fabricated or precomputed.
-- The final three-to-five-minute video and live grader prompt are necessarily
-  user/grader actions after publication.
+Exact Hub commits, demo smoke evidence, and the final Git release commit are
+recorded in the publication/status manifests after upload.

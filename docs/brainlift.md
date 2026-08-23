@@ -39,11 +39,17 @@ episodes while six episodes remain untouched for the 30-scenario frozen
 evaluation. The v1 training slices are nested deterministic prefixes at N=256,
 512, 1024, and 2048. V3 removes four of those former training episodes for a
 separate 30-case development set, trains on the remaining 20, and leaves the
-same six frozen episodes untouched. Its 4,096 rows are 2,048 exact same-update
+same six frozen episodes untouched. V3's 4,096 rows are 2,048 exact same-update
 positive/NONE pairs: 2,048 NONE, 914 SUPPORT, 915 REPHRASE, 189 ATTACK, and 30
-mixed-label blocks. QT30-derived text stays private; the public dataset artifact
-contains only allowed aggregate metadata, IDs, schemas, hashes, and
-deterministic reconstruction code.
+mixed-label blocks. V5 has 8,192 candidate-level rows arranged as 4,096 exact
+positive/NONE pairs: 4,096 NONE, 1,365 SUPPORT, 1,366 ATTACK, and 1,365
+REPHRASE. The naturally eligible candidate pool is only 7.379% positive.
+
+The project owner directly attested project-specific redistribution permission
+on 2026-08-23. The public dataset artifact therefore contains the actual curated
+transformed training/evaluation JSONL, IDs, candidate/judge evidence, schemas,
+hashes, and deterministic reconstruction code. It does not mirror the official
+raw archive/maps or claim a general QT30 license.
 
 ## Model and fixed training method
 
@@ -54,8 +60,11 @@ cosine schedule, 5% warmup, `adamw_8bit`, prompt-token masking, and seed
 `20260823`. Only N changes within the v1 efficiency curve. V2 changes negative
 selection; v3 changes paired sampling and replaces the default token-weighted
 reduction with a preregistered per-example assistant-token mean. Training,
-saving, reloading, and deterministic generation ran on an NVIDIA L4 through
-Modal.
+saving, and reloading ran on an NVIDIA L4 through Modal. V5 retains the same
+optimization configuration but changes the target to one of four fixed labels
+per candidate and uses mean label-token log likelihood at inference. V5.1 is a
+preregistered validation-time correction, not another training run: it emits a
+positive label only when its score exceeds NONE by more than 3.0.
 
 ## Results
 
@@ -71,14 +80,17 @@ but not reliable graph recovery.
 | v1 / 1024 | 16.7% | 8.5% | 8.9% | 0.700 | 1.87 |
 | v1 / 2048 | 26.7% | 16.7% | 16.7% | 0.667 | 2.10 |
 | v2 hard-negative / 2048 | 23.3% | 21.4% | 18.8% | 0.867 | 1.43 |
-| **v3 paired-loss / 4096** | **43.3%** | **35.0%** | **33.9%** | **0.300** | **2.97** |
+| v3 paired-loss / 4096 | 43.3% | 35.0% | 33.9% | 0.300 | 2.97 |
+| **v5.1 pairwise / 8192** | **53.3%** | **47.6%** | **47.4%** | **0.267** | **3.03** |
 
 Every tuned checkpoint reached 100% JSON and schema validity with zero invalid
-IDs. V3 is selected because it clears every preregistered material-improvement
-condition over v1/v2. It still misses the original 85% edge-F1, 80% exact-patch,
-75% macro-F1, 0.2 false-edge, and 3.5 Robustness thresholds. Because the v3
-data/loss intervention differs from the fixed v1 curve and no run is reliable,
-the minimum viable dataset size remains **not established**.
+IDs. V5.1 is selected because it clears all nine preregistered frozen promotion
+conditions over v3, including ATTACK F1, false-edge control, and judge
+Robustness. It still misses the original 85% edge-F1, 80% exact-patch, 75%
+macro-F1, 0.2 false-edge, and 3.5 Robustness thresholds. Because v5 changes the
+task formulation and only N=8192 was tested for that formulation, the minimum
+reliable dataset size remains **not established**; 8192 is the smallest tested
+pairwise corpus that earned promotion, not a reliability claim.
 
 ## Error-driven v2, v3, and diagnosis
 
@@ -101,14 +113,9 @@ frozen pass reached 35.0% edge F1 and 0.300 false edges/update. NONE cases with
 false edges fell from 2/6 in v1 and 5/6 in v2 to 0/6.
 
 The paired/loss-balanced intervention therefore fixed much of the dominant
-false-positive SUPPORT calibration problem. The remaining primary failure is
+false-positive SUPPORT calibration problem. Its remaining primary failure was
 conservative underprediction plus relation-label/target confusion: 17 gold
-edges were missed on the frozen set, and ATTACK remains weakest at 18.2% F1.
-Another learning-rate or epoch sweep is lower priority because it would not
-address that semantic bottleneck. If work continues beyond the assignment, the
-strongest next formulation is pairwise edge classification with a fixed-length
-`SUPPORT|ATTACK|REPHRASE|NONE` target followed by deterministic patch assembly;
-that should be registered as a new experiment, not folded into this result.
+edges were missed on the frozen set, and ATTACK was weakest at 18.2% F1.
 
 A subsequent preregistered v4 test doubled training to 8,192 rows, retained all
 v3 rows, balanced single-label positive classes, and added 2,048 hard NONE
@@ -116,9 +123,25 @@ rows. On the separate development set, exact accuracy rose from 26.7% to 30.0%,
 edge F1 from 21.1% to 34.1%, and ATTACK F1 from 0% to 54.5%. However, NONE cases
 with a false edge doubled from 2/6 to 4/6, every such edge was SUPPORT, and
 REPHRASE F1 fell to 0%. V4 failed its development gate, so no reused-frozen or
-judge calls were made and v3 remains selected. This strengthens the
+judge calls were made. This strengthened the
 formulation diagnosis: class balance can repair rare-label recall, but more
 variable-length patch rows do not preserve calibrated sparsity by themselves.
+
+V5 then tested the stronger formulation directly: fixed-length
+`NONE|SUPPORT|ATTACK|REPHRASE` candidate classification followed by
+deterministic patch assembly. On the episode-disjoint development set, raw v5
+raised edge F1 to 48.3% and macro-F1 to 49.5%, but its deliberately balanced
+50% positive training prior caused 0.667 false edges/update and false edges on
+all 6 NONE scenarios. This was a useful failure, not a surprise after seeing
+the natural 7.379% positive candidate rate.
+
+The v5.1 calibration rule and its 0.00–3.00 margin grid were registered before
+any tuned v5 development output existed. Margin 3.0 was the highest-ranked grid
+point passing all seven unchanged development checks. Applied once to frozen
+scores, it improved over v3 by +10.0 percentage points exact accuracy, +12.6
+points edge F1, +13.5 points macro-F1, and +12.6 points ATTACK F1 while reducing
+false edges/update from 0.300 to 0.267 and preserving 0/6 false-positive NONE
+cases. All nine promotion checks and the unchanged blinded judge passed.
 
 ## Public artifacts and reproduction
 
@@ -129,14 +152,15 @@ variable-length patch rows do not preserve calibrated sparsity by themselves.
 
 The assignment-prescribed evaluator auto-detects DialAM `PatchExample` JSONL,
 rejects parent-episode leakage, evaluates both the canonical base and adapter,
-unions block predictions for update-level exact-patch metrics, uses deterministic
-gold scoring for relation correctness, and uses the frozen blinded judge only
-for Spec adherence and Robustness:
+detects the v5.1 inference manifest, scores all four labels for every supplied
+candidate, unions block predictions for update-level exact-patch metrics, uses
+deterministic gold scoring for relation correctness, and uses the frozen blinded
+judge only for Spec adherence and Robustness:
 
 ```bash
 uv sync --group train
 uv run python eval.py \
-  --model mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096 \
+  --model mr-mc/flowjudge-dialam-qwen3-0.6b-v5-1-n8192 \
   --eval-set <dialam-patch-example-jsonl>
 ```
 
@@ -148,9 +172,11 @@ written under the ignored local `results/` tree.
 ## Conclusion
 
 Data produced a real, measurable improvement over the untouched base and made
-the strict output contract reliable. Paired examples plus per-example loss also
-materially corrected false-edge overprediction, validating the post-v2
-diagnosis. Direct relation selection is still not reliable, primarily because
-of missed edges and weak ATTACK discrimination. The defensible submission claim
-is a successful end-to-end specialization experiment with an informative
-negative reliability finding, not a production-ready argument mapper.
+the strict output contract reliable. Paired examples plus per-example loss
+materially corrected false-edge overprediction, and fixed-label candidate
+scoring plus preregistered prior calibration produced a second clear semantic
+gain. Direct relation selection is still not reliable under the original high
+bar, primarily because 14 frozen gold edges remain missed and some relations
+are assigned the wrong label or target. The defensible submission claim is a
+successful end-to-end specialization experiment with a promoted v5.1 artifact
+and an honest negative production-reliability finding.

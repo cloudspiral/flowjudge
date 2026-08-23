@@ -19,35 +19,39 @@ remains authoritative.
   frozen-evaluation pass.
 - V3 material-improvement PASS: 43.3% exact patch accuracy, 35.0% edge F1,
   33.9% macro-F1, 0.300 false edges/update, and 0/6 NONE cases with a false
-  edge. It is the selected direction but does not clear the original frozen
-  reliability bar.
-- Public selected model checkpoint and exact Hub commit:
-  `mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096@56371373be622ea997c5723ceebf35af27cb5711`.
-- Public text-free dataset/reconstruction artifact and exact Hub commit:
-  `mr-mc/flowjudge-dialam-reconstruction-v3@e1dcc6834de431505fc8301a00d950f28506498e`.
-  Automated checks exclude both QT30 text and original identifiers. The earlier
-  identifier-bearing repository was made private rather than destructively
-  deleted, preserving recovery while removing its history from public access.
+  edge. It was the previous selected direction.
+- Preregistered v5 pairwise-classification training at N=8192 and separately
+  preregistered v5.1 prior calibration. Raw v5 exposed the expected 50.0%
+  training-versus-7.379%-natural positive-prior mismatch; the fixed 3.0 NONE
+  margin passed every development check before one frozen evaluation was run.
+- V5.1 frozen promotion PASS: 53.3% exact patch accuracy, 47.6% edge F1,
+  47.4% macro-F1, 30.8% ATTACK F1, 0.267 false edges/update, 0/6 NONE cases
+  with a false edge, and 3.03/4 judge Robustness. It is the selected direction
+  but does not clear the original high reliability bar.
+- Permission-cleared Hugging Face model and transformed-dataset packages are
+  complete locally; exact public Hub commits are recorded after upload in
+  `docs/dialam_hf_publication_manifest.json`.
 - Required `eval.py --model <hf-repo-id> --eval-set <path>` interface, including
-  DialAM schema auto-detection, base-versus-tuned generation, block unioning,
-  deterministic correctness metrics, and blinded frozen-judge transcripts.
-- DialAM Brainlift with the behavior thesis, fixed curve, v1-to-v2-to-v3
+  DialAM schema auto-detection, v5.1 fixed-label likelihood scoring, block
+  unioning, deterministic correctness metrics, and blinded judge transcripts.
+- DialAM Brainlift with the behavior thesis, fixed curve, v1-to-v5.1
   evidence, minimum-viable-N finding, failure diagnosis, and exact public
   artifact commits.
 - Public base-versus-tuned inference demo at
   `mr-mc/flowjudge-dialam-demo@b34685eab4b02044d62dbfdf4c3ab244281a179c`,
   anonymously verified in `RUNNING` state with a successful synthetic v3
   inference. Its public repository contains only `README.md` and `index.html`.
-- Raw QT30-derived training/evaluation text, predictions, records, and judge
-  transcripts remain ignored locally; their paths and hashes are preserved in
-  the aggregate v3 report.
+- The official QT30 raw archive/maps remain ignored. Under the owner's explicit
+  project-specific redistribution permission, the vetted HF dataset package
+  includes transformed training/evaluation JSONL and candidate/judge evidence,
+  with paths and hashes in its publication manifest.
 - Exact evaluation/release-code commit:
   `f881a6b5c0b4fd537b0be34d8543626053e2bdd7`.
-- Post-assignment v4 class-balanced rehearsal experiment at N=8192. It
+- V4 class-balanced rehearsal experiment at N=8192. It
   improved episode-disjoint development edge F1 from 21.1% to 34.1% and ATTACK
   F1 from 0% to 54.5%, but worsened NONE cases with a false edge from 2/6 to
   4/6. It failed its preregistered development gate, so the reused frozen set
-  and judge were not run and the published v3 selection remains unchanged.
+  and judge were not run; the failed point remains visible in the ledger.
 
 ## Still required before final submission
 
@@ -58,13 +62,11 @@ remains authoritative.
 
 ## Honest acceptance finding
 
-The selected v3 model beats the untouched base and both earlier data strategies,
-satisfies the strict JSON contract, and materially fixes the dominant
-false-positive SUPPORT/NONE failure. It still misses too many true relations,
-especially ATTACK edges, so no tested run reliably holds semantic edge
-selection and minimum viable N is not established. The assignment explicitly
-calls for genuine results even when imperfect; the submission should preserve
-that conclusion rather than reinterpret the frozen reliability threshold. V4
-shows that additional class-balanced rows can recover ATTACK edges, but doing so
-without preserving exact positive/NONE pairing reintroduces SUPPORT false
-positives; more rows alone are not the remaining solution.
+The selected v5.1 pipeline beats the untouched base and every earlier trained
+strategy, satisfies the strict JSON contract, improves every primary frozen
+semantic metric over v3, and preserves zero false-positive NONE cases. The
+formulation and prior correction mattered more than blindly adding rows. It
+still misses too many true relations to clear the original reliability bar, so
+minimum reliable N is not established. The assignment calls for genuine
+results even when imperfect; the submission should report both the real v3 to
+v5.1 gain and the remaining reliability shortfall.

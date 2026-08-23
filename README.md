@@ -80,24 +80,41 @@ exact same-update positive/NONE pairs and averages assistant-token loss within
 each row before averaging rows, removing the 4.50× output-length weighting
 imbalance. On the unchanged frozen set, v3 reaches 13/30 exact patches, 35.0%
 edge F1, 33.9% macro-F1, 0.300 false edges/update, 0/6 NONE false-positive
-cases, and 2.97/4 judge Robustness. V3 clears every material-improvement
-condition and is the selected submission direction, although it still fails the
-original high reliability bar. The adapter is public at
-[`mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096`](https://huggingface.co/mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096),
-the text-free dataset/reconstruction artifact is at
-[`mr-mc/flowjudge-dialam-reconstruction-v3`](https://huggingface.co/datasets/mr-mc/flowjudge-dialam-reconstruction-v3),
-and the live base-versus-tuned demo is
+cases, and 2.97/4 judge Robustness. V3 cleared every material-improvement
+condition and became the first selected direction.
+
+The later v5/v5.1 pipeline improves further. V5 trains 8,192 candidate-level
+rows as exact positive/NONE pairs and replaces unconstrained JSON generation
+with fixed four-label likelihood scoring. Raw v5 exposed the expected 50.0%
+training-versus-7.379%-natural prior shift; the preregistered v5.1 3.0 NONE
+margin corrected it without retraining. On the same frozen set, v5.1 reaches
+16/30 exact patches (53.3%), 47.6% edge F1, 47.4% macro-F1, 0.267 false
+edges/update, 0/6 NONE false-positive cases, and 3.03/4 judge Robustness. It
+passes every frozen promotion check and is now selected, while still failing
+the original high reliability bar. The selected adapter is published at
+[`mr-mc/flowjudge-dialam-qwen3-0.6b-v5-1-n8192`](https://huggingface.co/mr-mc/flowjudge-dialam-qwen3-0.6b-v5-1-n8192),
+the permission-cleared transformed dataset is at
+[`mr-mc/flowjudge-dialam`](https://huggingface.co/datasets/mr-mc/flowjudge-dialam),
+and the live base-versus-tuned demo remains
 [`mr-mc/flowjudge-dialam-demo`](https://huggingface.co/spaces/mr-mc/flowjudge-dialam-demo).
 See [`docs/dialam_v1_efficiency_results.md`](docs/dialam_v1_efficiency_results.md),
 [`docs/dialam_v2_hard_negative_results.md`](docs/dialam_v2_hard_negative_results.md),
-and [`docs/dialam_v3_results.md`](docs/dialam_v3_results.md).
+[`docs/dialam_v3_results.md`](docs/dialam_v3_results.md), and
+[`docs/dialam_v5_1_results.md`](docs/dialam_v5_1_results.md).
 
-A post-assignment v4 experiment doubled the corpus to 8,192 rows and balanced
+The versioned [`DialAM experiment history`](docs/dialam_experiment_history.md)
+preserves every base/v1/v2/v3 milestone and every later development gate, with
+a generated two-panel chart that never mixes development-only evidence with
+the frozen benchmark. Regenerate the ledger, Markdown table, and SVG with
+`python scripts/build_dialam_experiment_history.py`.
+
+A v4 experiment doubled the corpus to 8,192 rows and balanced
 SUPPORT, ATTACK, and REPHRASE exposure while retaining the complete v3
 foundation. On the episode-disjoint development set it improved edge F1 from
 21.1% to 34.1% and ATTACK F1 from 0% to 54.5%, but NONE cases with a false edge
 worsened from 2/6 to 4/6. V4 therefore failed its preregistered development
-gate; the reused frozen set and judge were not run, and v3 remains selected.
+gate; the reused frozen set and judge were not run. Its failed point is retained
+in the experiment ledger rather than hidden.
 See [`docs/dialam_v4_results.md`](docs/dialam_v4_results.md).
 
 The assignment-prescribed base-versus-tuned evaluator now auto-detects DialAM
@@ -107,16 +124,16 @@ judge transcripts:
 ```bash
 uv sync --group train
 uv run python eval.py \
-  --model mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096 \
+  --model mr-mc/flowjudge-dialam-qwen3-0.6b-v5-1-n8192 \
   --eval-set <dialam-patch-example-jsonl>
 ```
 
-The private source audit includes three complete maps and therefore remains
-Git-ignored. Its publishable metadata, generated statistics, known source
-defects, permission basis, schemas, and reconstruction scripts are under
-[`hf_dataset/dialam_patch/`](hf_dataset/dialam_patch/). Text-bearing generated
-JSONL is local-only and Git-ignored because project-use approval does not
-establish redistribution rights.
+The official raw archive/maps remain Git-ignored. Under the project owner's
+explicit project-specific redistribution permission, the vetted
+[`hf_dataset/dialam_patch/`](hf_dataset/dialam_patch/) package contains the
+actual transformed training/evaluation JSONL, candidate/judge evidence,
+metadata, schemas, hashes, and reconstruction scripts. No general QT30 license
+is claimed and the package does not mirror the official raw source.
 
 ## Current status: local end-to-end loop completed
 

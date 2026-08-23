@@ -1,0 +1,357 @@
+{
+  "points": [
+    {
+      "evaluation_scope": "frozen_30",
+      "intervention": "Untouched Qwen3-0.6B with block-level free generation",
+      "label": "Base",
+      "metrics": {
+        "attack_f1": 0.0,
+        "edge_f1": 0.0,
+        "edge_precision": 0.0,
+        "edge_recall": 0.0,
+        "exact_patch_accuracy": 0.0,
+        "false_edges_per_update": 0.0,
+        "json_validity_rate": 0.13333333333333333,
+        "judge_robustness_mean": 1.4,
+        "judge_spec_adherence_mean": 0.23333333333333334,
+        "none_scenarios_with_false_edges": null,
+        "relation_macro_f1": 0.0,
+        "rephrase_f1": 0.0,
+        "schema_validity_rate": 0.0,
+        "support_f1": 0.0
+      },
+      "n": null,
+      "run_id": "base-generative-frozen",
+      "source_artifact": "reports/dialam_v1_v2_v3.json",
+      "status": "baseline"
+    },
+    {
+      "evaluation_scope": "frozen_30",
+      "intervention": "Fixed block-level QLoRA data-efficiency curve",
+      "label": "v1/256",
+      "metrics": {
+        "attack_f1": 0.0,
+        "edge_f1": 0.09523809523809525,
+        "edge_precision": 0.1111111111111111,
+        "edge_recall": 0.08333333333333333,
+        "exact_patch_accuracy": 0.16666666666666666,
+        "false_edges_per_update": 0.5333333333333333,
+        "json_validity_rate": 1.0,
+        "judge_robustness_mean": 2.466666666666667,
+        "judge_spec_adherence_mean": 4.0,
+        "none_scenarios_with_false_edges": 3,
+        "relation_macro_f1": 0.05555555555555555,
+        "rephrase_f1": 0.0,
+        "schema_validity_rate": 1.0,
+        "support_f1": 0.16666666666666666
+      },
+      "n": 256,
+      "run_id": "v1-n256-frozen",
+      "source_artifact": "reports/dialam_v1_efficiency_curve.json",
+      "status": "v1 smoke"
+    },
+    {
+      "evaluation_scope": "frozen_30",
+      "intervention": "Fixed block-level QLoRA data-efficiency curve",
+      "label": "v1/512",
+      "metrics": {
+        "attack_f1": 0.0,
+        "edge_f1": 0.09523809523809525,
+        "edge_precision": 0.1111111111111111,
+        "edge_recall": 0.08333333333333333,
+        "exact_patch_accuracy": 0.16666666666666666,
+        "false_edges_per_update": 0.5333333333333333,
+        "json_validity_rate": 1.0,
+        "judge_robustness_mean": 2.1666666666666665,
+        "judge_spec_adherence_mean": 4.0,
+        "none_scenarios_with_false_edges": 3,
+        "relation_macro_f1": 0.0634920634920635,
+        "rephrase_f1": 0.0,
+        "schema_validity_rate": 1.0,
+        "support_f1": 0.1904761904761905
+      },
+      "n": 512,
+      "run_id": "v1-n512-frozen",
+      "source_artifact": "reports/dialam_v1_efficiency_curve.json",
+      "status": "v1 curve"
+    },
+    {
+      "evaluation_scope": "frozen_30",
+      "intervention": "Fixed block-level QLoRA data-efficiency curve",
+      "label": "v1/1024",
+      "metrics": {
+        "attack_f1": 0.0,
+        "edge_f1": 0.0851063829787234,
+        "edge_precision": 0.08695652173913043,
+        "edge_recall": 0.08333333333333333,
+        "exact_patch_accuracy": 0.16666666666666666,
+        "false_edges_per_update": 0.7,
+        "json_validity_rate": 1.0,
+        "judge_robustness_mean": 1.8666666666666667,
+        "judge_spec_adherence_mean": 4.0,
+        "none_scenarios_with_false_edges": 3,
+        "relation_macro_f1": 0.08888888888888889,
+        "rephrase_f1": 0.26666666666666666,
+        "schema_validity_rate": 1.0,
+        "support_f1": 0.0
+      },
+      "n": 1024,
+      "run_id": "v1-n1024-frozen",
+      "source_artifact": "reports/dialam_v1_efficiency_curve.json",
+      "status": "v1 curve"
+    },
+    {
+      "evaluation_scope": "frozen_30",
+      "intervention": "Fixed block-level QLoRA data-efficiency curve",
+      "label": "v1/2048",
+      "metrics": {
+        "attack_f1": 0.26666666666666666,
+        "edge_f1": 0.16666666666666666,
+        "edge_precision": 0.16666666666666666,
+        "edge_recall": 0.16666666666666666,
+        "exact_patch_accuracy": 0.26666666666666666,
+        "false_edges_per_update": 0.6666666666666666,
+        "json_validity_rate": 1.0,
+        "judge_robustness_mean": 2.1,
+        "judge_spec_adherence_mean": 4.0,
+        "none_scenarios_with_false_edges": 2,
+        "relation_macro_f1": 0.16732026143790849,
+        "rephrase_f1": 0.23529411764705882,
+        "schema_validity_rate": 1.0,
+        "support_f1": 0.0
+      },
+      "n": 2048,
+      "run_id": "v1-n2048-frozen",
+      "source_artifact": "reports/dialam_v1_efficiency_curve.json",
+      "status": "v1 curve"
+    },
+    {
+      "evaluation_scope": "frozen_30",
+      "intervention": "More difficult NONE blocks",
+      "label": "v2/2048",
+      "metrics": {
+        "attack_f1": 0.0,
+        "edge_f1": 0.21428571428571427,
+        "edge_precision": 0.1875,
+        "edge_recall": 0.25,
+        "exact_patch_accuracy": 0.23333333333333334,
+        "false_edges_per_update": 0.8666666666666667,
+        "json_validity_rate": null,
+        "judge_robustness_mean": 1.4333333333333333,
+        "judge_spec_adherence_mean": 4.0,
+        "none_scenarios_with_false_edges": 5,
+        "relation_macro_f1": 0.18803418803418803,
+        "rephrase_f1": 0.33333333333333326,
+        "schema_validity_rate": null,
+        "support_f1": 0.23076923076923078
+      },
+      "n": 2048,
+      "run_id": "v2-n2048-frozen",
+      "source_artifact": "reports/dialam_v1_v2_v3.json",
+      "status": "rejected: false edges worsened"
+    },
+    {
+      "evaluation_scope": "frozen_30",
+      "intervention": "Same-update contrast pairs plus per-example loss",
+      "label": "v3/4096",
+      "metrics": {
+        "attack_f1": 0.18181818181818182,
+        "edge_f1": 0.35000000000000003,
+        "edge_precision": 0.4375,
+        "edge_recall": 0.2916666666666667,
+        "exact_patch_accuracy": 0.43333333333333335,
+        "false_edges_per_update": 0.3,
+        "json_validity_rate": 1.0,
+        "judge_robustness_mean": 2.966666666666667,
+        "judge_spec_adherence_mean": 4.0,
+        "none_scenarios_with_false_edges": 0,
+        "relation_macro_f1": 0.33945221445221446,
+        "rephrase_f1": 0.375,
+        "schema_validity_rate": 1.0,
+        "support_f1": 0.4615384615384615
+      },
+      "n": 4096,
+      "run_id": "v3-n4096-frozen",
+      "source_artifact": "reports/dialam_v1_v2_v3.json",
+      "status": "previous selected model"
+    },
+    {
+      "evaluation_scope": "episode_disjoint_development_30",
+      "intervention": "Same-update contrast pairs plus per-example loss",
+      "label": "v3/4096",
+      "metrics": {
+        "attack_f1": 0.0,
+        "edge_f1": 0.2105263157894737,
+        "edge_precision": 0.2857142857142857,
+        "edge_recall": 0.16666666666666666,
+        "exact_patch_accuracy": 0.26666666666666666,
+        "false_edges_per_update": 0.3333333333333333,
+        "json_validity_rate": 1.0,
+        "judge_robustness_mean": null,
+        "judge_spec_adherence_mean": null,
+        "none_scenarios_with_false_edges": 2,
+        "relation_macro_f1": 0.173202614379085,
+        "rephrase_f1": 0.16666666666666666,
+        "schema_validity_rate": 1.0,
+        "support_f1": 0.35294117647058826
+      },
+      "n": 4096,
+      "run_id": "v3-n4096-development",
+      "source_artifact": "reports/dialam_v4_class_balanced_rehearsal.json",
+      "status": "development baseline"
+    },
+    {
+      "evaluation_scope": "episode_disjoint_development_30",
+      "intervention": "Class-balanced block-level rehearsal",
+      "label": "v4/8192",
+      "metrics": {
+        "attack_f1": 0.5454545454545454,
+        "edge_f1": 0.34146341463414637,
+        "edge_precision": 0.4117647058823529,
+        "edge_recall": 0.2916666666666667,
+        "exact_patch_accuracy": 0.3,
+        "false_edges_per_update": 0.3333333333333333,
+        "json_validity_rate": 1.0,
+        "judge_robustness_mean": null,
+        "judge_spec_adherence_mean": null,
+        "none_scenarios_with_false_edges": 4,
+        "relation_macro_f1": 0.3151515151515151,
+        "rephrase_f1": 0.0,
+        "schema_validity_rate": 1.0,
+        "support_f1": 0.4
+      },
+      "n": 8192,
+      "run_id": "v4-n8192-development",
+      "source_artifact": "reports/dialam_v4_class_balanced_rehearsal.json",
+      "status": "failed development NONE-calibration gate"
+    },
+    {
+      "evaluation_scope": "episode_disjoint_development_30",
+      "intervention": "Complete-block pairwise four-label classification",
+      "label": "Pairwise base",
+      "metrics": {
+        "attack_f1": 0.0,
+        "edge_f1": 0.10778443113772457,
+        "edge_precision": 0.06293706293706294,
+        "edge_recall": 0.375,
+        "exact_patch_accuracy": 0.03333333333333333,
+        "false_edges_per_update": 4.466666666666667,
+        "json_validity_rate": 1.0,
+        "judge_robustness_mean": null,
+        "judge_spec_adherence_mean": null,
+        "none_scenarios_with_false_edges": 6,
+        "relation_macro_f1": 0.07547169811320754,
+        "rephrase_f1": 0.11320754716981134,
+        "schema_validity_rate": 1.0,
+        "support_f1": 0.11320754716981131
+      },
+      "n": null,
+      "run_id": "base-pairwise-development",
+      "source_artifact": "reports/dialam_v5_pairwise_classification.json",
+      "status": "v5 formulation baseline"
+    },
+    {
+      "evaluation_scope": "episode_disjoint_development_30",
+      "intervention": "Complete-block pairwise four-label classification",
+      "label": "v5/8192",
+      "metrics": {
+        "attack_f1": 0.5714285714285715,
+        "edge_f1": 0.4827586206896552,
+        "edge_precision": 0.4117647058823529,
+        "edge_recall": 0.5833333333333334,
+        "exact_patch_accuracy": 0.4,
+        "false_edges_per_update": 0.6666666666666666,
+        "json_validity_rate": 1.0,
+        "judge_robustness_mean": null,
+        "judge_spec_adherence_mean": null,
+        "none_scenarios_with_false_edges": 6,
+        "relation_macro_f1": 0.4954870837223779,
+        "rephrase_f1": 0.47058823529411764,
+        "schema_validity_rate": 1.0,
+        "support_f1": 0.44444444444444436
+      },
+      "n": 8192,
+      "run_id": "v5-n8192-development",
+      "source_artifact": "reports/dialam_v5_pairwise_classification.json",
+      "status": "RETAIN_V3_V5_FAILED_DEVELOPMENT_GATE"
+    },
+    {
+      "evaluation_scope": "episode_disjoint_development_30",
+      "intervention": "Preregistered fixed-grid NONE-margin calibration over v5 scores",
+      "label": "v5.1/8192",
+      "metrics": {
+        "attack_f1": 0.6666666666666666,
+        "edge_f1": 0.5333333333333333,
+        "edge_precision": 0.5714285714285714,
+        "edge_recall": 0.5,
+        "exact_patch_accuracy": 0.5333333333333333,
+        "false_edges_per_update": 0.3,
+        "json_validity_rate": 1.0,
+        "judge_robustness_mean": null,
+        "judge_spec_adherence_mean": null,
+        "none_scenarios_with_false_edges": 2,
+        "relation_macro_f1": 0.5427350427350427,
+        "rephrase_f1": 0.4615384615384615,
+        "schema_validity_rate": 1.0,
+        "support_f1": 0.5
+      },
+      "n": 8192,
+      "run_id": "v5-1-n8192-development",
+      "source_artifact": "reports/dialam_v5_1_calibration.json",
+      "status": "PASS_RUN_REUSED_FROZEN_BENCHMARK"
+    },
+    {
+      "evaluation_scope": "frozen_30",
+      "intervention": "Pairwise four-label scoring plus preregistered fixed NONE margin",
+      "label": "v5.1/8192",
+      "metrics": {
+        "attack_f1": 0.3076923076923077,
+        "edge_f1": 0.4761904761904762,
+        "edge_precision": 0.5555555555555556,
+        "edge_recall": 0.4166666666666667,
+        "exact_patch_accuracy": 0.5333333333333333,
+        "false_edges_per_update": 0.26666666666666666,
+        "json_validity_rate": 1.0,
+        "judge_robustness_mean": 3.033333333333333,
+        "judge_spec_adherence_mean": 4.0,
+        "none_scenarios_with_false_edges": 0,
+        "relation_macro_f1": 0.4743589743589744,
+        "rephrase_f1": 0.5,
+        "schema_validity_rate": 1.0,
+        "support_f1": 0.6153846153846154
+      },
+      "n": 8192,
+      "run_id": "v5-1-n8192-frozen",
+      "source_artifact": "reports/dialam_v5_1_result.json",
+      "status": "PROMOTE_V5_1_AS_FINAL_DIRECTION"
+    }
+  ],
+  "schema_version": "dialam_experiment_history_v1",
+  "scope_warning": "Compare points only within one evaluation_scope. Development-only results are not frozen-benchmark claims.",
+  "source_artifacts": [
+    {
+      "path": "reports/dialam_v1_v2_v3.json",
+      "sha256": "64ef55d7a07fd1ae861f8ee842b7ecb154c9e8cd87fc0635a3ab8257a77a7c74"
+    },
+    {
+      "path": "reports/dialam_v1_efficiency_curve.json",
+      "sha256": "c6b1596d368b4c0db754bf5a909b7c1af5745d26f187f76ee1afc022c3a87894"
+    },
+    {
+      "path": "reports/dialam_v4_class_balanced_rehearsal.json",
+      "sha256": "cdfa3da5c0f244b8bafa18a739d58e390d42074018600428d70eed2099022073"
+    },
+    {
+      "path": "reports/dialam_v5_pairwise_classification.json",
+      "sha256": "414ff8f7357a07554851d7e5420f53c7d7a6e0c7d66d7ac7589acaf9b47796da"
+    },
+    {
+      "path": "reports/dialam_v5_1_calibration.json",
+      "sha256": "f65e780263abe80d19445cb2ddc8638808cd92bd834ac05c998308d4f7f9f90b"
+    },
+    {
+      "path": "reports/dialam_v5_1_result.json",
+      "sha256": "9a0bbd3b28b5dc377b023cb4d713c80777bb36df7e7997088ffea1281c6f774d"
+    }
+  ]
+}

@@ -26,7 +26,7 @@ def main() -> None:
             PROJECT_ROOT
             / "artifacts"
             / "hf_publish"
-            / "dialam-qwen3-0.6b-v1-n2048"
+            / "dialam-qwen3-0.6b-v3-n4096"
         ),
     )
     parser.add_argument(
@@ -35,6 +35,16 @@ def main() -> None:
         default=PROJECT_ROOT / "hf_dataset" / "dialam_patch",
     )
     parser.add_argument("--private", action="store_true")
+    parser.add_argument(
+        "--skip-model-upload",
+        action="store_true",
+        help="Reuse the existing model revision while updating only the dataset artifact",
+    )
+    parser.add_argument(
+        "--output-manifest",
+        type=Path,
+        default=PROJECT_ROOT / "docs" / "dialam_hf_publication_manifest.json",
+    )
     args = parser.parse_args()
 
     model_manifest = _validate_manifest(args.model_dir)
@@ -45,6 +55,8 @@ def main() -> None:
         raise ValueError("model package redistribution boundary is not safe")
     if dataset_manifest.get("contains_raw_or_transformed_qt30_text") is not False:
         raise ValueError("dataset package redistribution boundary is not safe")
+    if dataset_manifest.get("contains_original_qt30_identifiers") is not False:
+        raise ValueError("dataset package still contains uncleared QT30 identifiers")
 
     load_dotenv(PROJECT_ROOT / ".env", override=False)
     token = os.getenv("HF_TOKEN", "").strip() or None
@@ -53,21 +65,21 @@ def main() -> None:
     except ImportError as exc:
         raise RuntimeError("huggingface_hub is required for publication") from exc
     api = HfApi(token=token)
-    api.create_repo(
-        args.model_repo,
-        repo_type="model",
-        private=args.private,
-        exist_ok=True,
-    )
-    model_commit = api.upload_folder(
-        repo_id=args.model_repo,
-        repo_type="model",
-        folder_path=args.model_dir,
-        commit_message=(
-            "Publish selected Qwen3-0.6B DialAM v1 n=2048 QLoRA adapter, "
-            "fixed efficiency-curve evidence, and failed v2 comparison"
-        ),
-    )
+    if args.skip_model_upload:
+        model_commit = api.model_info(args.model_repo).sha
+    else:
+        api.create_repo(
+            args.model_repo,
+            repo_type="model",
+            private=args.private,
+            exist_ok=True,
+        )
+        model_commit = api.upload_folder(
+            repo_id=args.model_repo,
+            repo_type="model",
+            folder_path=args.model_dir,
+            commit_message=f"Publish selected {model_manifest['model']} and frozen evaluation evidence",
+        ).oid
     api.create_repo(
         args.dataset_repo,
         repo_type="dataset",
@@ -80,16 +92,23 @@ def main() -> None:
         folder_path=args.dataset_dir,
         commit_message="Publish text-free DialAM reconstruction manifests, schemas, and scripts",
     )
-    output = PROJECT_ROOT / "docs" / "dialam_hf_publication_manifest.json"
+    output = args.output_manifest
+    output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(
         json.dumps(
             {
                 "published_at": datetime.now(UTC).isoformat(),
                 "private": args.private,
                 "model_repo": args.model_repo,
-                "model_commit": model_commit.oid,
+                "model_commit": model_commit,
                 "dataset_repo": args.dataset_repo,
                 "dataset_commit": dataset_commit.oid,
+                "dataset_contains_raw_or_transformed_qt30_text": dataset_manifest[
+                    "contains_raw_or_transformed_qt30_text"
+                ],
+                "dataset_contains_original_qt30_identifiers": dataset_manifest[
+                    "contains_original_qt30_identifiers"
+                ],
             },
             indent=2,
             sort_keys=True,
@@ -105,16 +124,31 @@ def _validate_manifest(directory: Path) -> dict:
     if not path.is_file():
         raise FileNotFoundError(path)
     manifest = json.loads(path.read_text(encoding="utf-8"))
+    declared: set[Path] = set()
     for entry in manifest["files"]:
         relative = Path(entry["path"])
         if relative.is_absolute() or ".." in relative.parts or relative.suffix == ".jsonl":
             raise ValueError(f"unsafe publication path: {relative}")
+        if relative in declared:
+            raise ValueError(f"duplicate publication path: {relative}")
+        declared.add(relative)
         artifact = directory / relative
         if not artifact.is_file():
             raise FileNotFoundError(artifact)
         observed = hashlib.sha256(artifact.read_bytes()).hexdigest()
         if observed != entry["sha256"]:
             raise ValueError(f"publication hash mismatch: {relative}")
+    actual = {
+        path.relative_to(directory)
+        for path in directory.rglob("*")
+        if path.is_file() and path.name != "publish_manifest.json"
+    }
+    if actual != declared:
+        missing = sorted(str(path) for path in declared - actual)
+        undeclared = sorted(str(path) for path in actual - declared)
+        raise ValueError(
+            f"publication tree mismatch; missing={missing}, undeclared={undeclared}"
+        )
     return manifest
 
 

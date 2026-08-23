@@ -23,14 +23,7 @@
     "sha256": "8e959ff0a1b58fc4ed9929f5c9259d70598a50d5f928e67b408cd1e35cf154a5",
     "source_eval_sha256": "76badbae23ace13b22822335fa794f7cc796ce0d02753666ebd83c4d7260305b"
   },
-  "heldout_parent_episode_ids": [
-    "qt02092021wtxt",
-    "qt05082021wtxt",
-    "qt16092021wtxt",
-    "qt19082021wtxt",
-    "qt22072021wtxt",
-    "qt30092021wtxt"
-  ],
+  "heldout_parent_episode_count": 6,
   "max_examples": 2048,
   "nested_sizes": [
     256,
@@ -40,6 +33,13 @@
   ],
   "privacy": "The JSONL slices contain transformed QT30 text and remain private/local. This text-free manifest and schema may be published.",
   "prompt": "prompts/dialam/zero_shot.txt",
+  "publication_redaction": {
+    "policy": "Original QT30 episode, map, proposition, and example identifiers are omitted because IDs/labels-only redistribution remains unclear.",
+    "removed_fields": [
+      "identifier-bearing fields and per-example inventories where present"
+    ],
+    "source_sha256": "a68668fc0537f627beb465e165c0b0cc2611a71d743de97d58f25a51f2420fd2"
+  },
   "schema": {
     "path": "data/dialam/training/training_example.schema.json",
     "sha256": "d30c83e49a4ea6b590a0188c8c08a653d6201c12fffd259ec14cf2cfed4b7828"
@@ -135,30 +135,5 @@
     "eval_summary_sha256": "72c737361081962a68c692311a012db73e8b187331a43b68d2463f3a6ce33ba2"
   },
   "split_unit": "original_parent_episode",
-  "training_parent_episode_ids": [
-    "cutiestestrun10December2020",
-    "cutiestestrun14January2021",
-    "cutiestestrun15april2021",
-    "cutiestestrun18february2021",
-    "cutiestestrun18march2021",
-    "cutiestestrun19November2020",
-    "cutiestestrun28january2021",
-    "cutiestestrun29april2021",
-    "cutiestestrun4march2021",
-    "cutiestestrun5November2020",
-    "cutietestrun10June2021",
-    "cutietestrun18June2020",
-    "cutietestrun20may2021",
-    "cutietestrun22October2020",
-    "cutietestrun24June2021",
-    "cutietestrun27may2021",
-    "cutietestrun28May2020",
-    "cutietestrun2September2020",
-    "cutietestrun30July2020",
-    "cutietestrun4June2020",
-    "cutietestrun8july2021",
-    "qt11112021wtxt",
-    "qt14102021wtxt",
-    "qt28102021wtxt"
-  ]
+  "training_parent_episode_count": 24
 }

@@ -4,7 +4,7 @@ from __future__ import annotations
 import modal
 
 
-MODEL_ID = "mr-mc/flowjudge-dialam-qwen3-0.6b-v1-n2048"
+MODEL_ID = "mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096"
 BASE_MODEL_ID = "Qwen/Qwen3-0.6B"
 
 image = (
@@ -139,8 +139,9 @@ def web():
                 "tuned": generate(prompt, tuned=True),
                 "model": MODEL_ID,
                 "note": (
-                    "Same prompt and greedy decoding. The tuned checkpoint did not "
-                    "clear the frozen semantic-reliability threshold."
+                    "Same prompt and greedy decoding. V3 materially improved held-out "
+                    "edge metrics and false-edge calibration, but did not clear the "
+                    "frozen semantic-reliability threshold."
                 ),
             }
         except ValueError as exc:

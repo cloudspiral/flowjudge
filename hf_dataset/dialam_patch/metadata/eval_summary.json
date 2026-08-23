@@ -2,14 +2,7 @@
   "balanced_diagnostic": {
     "all_negative_scenario_count": 6,
     "block_example_count": 30,
-    "dialogue_ids": [
-      "qt02092021wtxt",
-      "qt05082021wtxt",
-      "qt16092021wtxt",
-      "qt19082021wtxt",
-      "qt22072021wtxt",
-      "qt30092021wtxt"
-    ],
+    "parent_episode_count": 6,
     "positive_scenario_count": 24,
     "relation_counts": {
       "ATTACK": 8,
@@ -29,25 +22,11 @@
     "scenario_count": 30
   },
   "frozen_split_unit": "original QT30 parent episode/subcorpus",
-  "heldout_dialogue_ids": [
-    "qt30092021wtxt",
-    "qt16092021wtxt",
-    "qt02092021wtxt",
-    "qt19082021wtxt",
-    "qt05082021wtxt",
-    "qt22072021wtxt"
-  ],
+  "heldout_parent_episode_count": 6,
   "natural_distribution": {
     "all_negative_scenario_count": 1488,
     "block_example_count": 4820,
-    "dialogue_ids": [
-      "qt02092021wtxt",
-      "qt05082021wtxt",
-      "qt16092021wtxt",
-      "qt19082021wtxt",
-      "qt22072021wtxt",
-      "qt30092021wtxt"
-    ],
+    "parent_episode_count": 6,
     "positive_scenario_count": 1661,
     "relation_counts": {
       "ATTACK": 178,
@@ -60,5 +39,12 @@
       "REPHRASE": 772,
       "SUPPORT": 767
     }
+  },
+  "publication_redaction": {
+    "policy": "Original QT30 episode, map, proposition, and example identifiers are omitted because IDs/labels-only redistribution remains unclear.",
+    "removed_fields": [
+      "identifier-bearing fields and per-example inventories where present"
+    ],
+    "source_sha256": "72c737361081962a68c692311a012db73e8b187331a43b68d2463f3a6ce33ba2"
   }
 }

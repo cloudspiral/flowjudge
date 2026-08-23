@@ -70,32 +70,27 @@ reloaded, and completed the unchanged frozen evaluation. It raised schema
 validity from 0% to 100%, but edge F1 is only 9.5%; see
 [`docs/dialam_qlora_smoke_results.md`](docs/dialam_qlora_smoke_results.md).
 
-The fixed v1 curve is now complete. n=2048 is the best v1 point with 8/30 exact
-patches, 16.7% edge F1, 16.7% relation macro-F1, and 0.667 false edges per
-update; no tested N clears the frozen reliability bar. SUPPORT remains the
-largest false-positive class. A single controlled v2 n=2048 run replaced
-random NONE selection with 1,024 topically overlapping no-edge blocks, but it
-did not clear the preregistered improvement rule: edge F1 rose to 21.4% while
-false edges worsened to 0.867/update, exact accuracy fell to 7/30, and judge
-Robustness fell to 1.43/4. The v2 checkpoint is preserved but is not promoted
-or used for submission. The selected v1/n=2048 adapter is public at
-[`mr-mc/flowjudge-dialam-qwen3-0.6b-v1-n2048`](https://huggingface.co/mr-mc/flowjudge-dialam-qwen3-0.6b-v1-n2048),
-and the text-free dataset/reconstruction artifact is public at
-[`mr-mc/flowjudge-dialam-reconstruction`](https://huggingface.co/datasets/mr-mc/flowjudge-dialam-reconstruction).
-The public base-versus-tuned demo is
-[`mr-mc/flowjudge-dialam-demo`](https://huggingface.co/spaces/mr-mc/flowjudge-dialam-demo).
-See
-[`docs/dialam_v1_efficiency_results.md`](docs/dialam_v1_efficiency_results.md)
-and [`docs/dialam_v2_hard_negative_results.md`](docs/dialam_v2_hard_negative_results.md).
+The fixed v1 curve is complete. Its best point, n=2048, reached 8/30 exact
+patches, 16.7% edge F1, and 0.667 false edges/update. A controlled v2 n=2048
+hard-negative run raised edge F1 to 21.4% but worsened false edges to
+0.867/update and was rejected by its preregistered gate.
 
-A single v3 correction is preregistered before training. It uses 4,096 rows as
-2,048 exact same-update positive/NONE pairs and changes only the loss reduction:
-assistant-token loss is averaged within each row before rows are averaged. This
-removes the 4.50× positive-to-NONE supervised-character imbalance while keeping
-the Qwen base and every optimization hyperparameter fixed. Four parent episodes
-are reserved for a new 30-case development check; the original frozen set will
-be used once afterward. See
-[`docs/dialam_v3_preregistration.md`](docs/dialam_v3_preregistration.md).
+The preregistered v3 correction then succeeded. It uses 4,096 rows as 2,048
+exact same-update positive/NONE pairs and averages assistant-token loss within
+each row before averaging rows, removing the 4.50× output-length weighting
+imbalance. On the unchanged frozen set, v3 reaches 13/30 exact patches, 35.0%
+edge F1, 33.9% macro-F1, 0.300 false edges/update, 0/6 NONE false-positive
+cases, and 2.97/4 judge Robustness. V3 clears every material-improvement
+condition and is the selected submission direction, although it still fails the
+original high reliability bar. The adapter is public at
+[`mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096`](https://huggingface.co/mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096),
+the text-free dataset/reconstruction artifact is at
+[`mr-mc/flowjudge-dialam-reconstruction-v3`](https://huggingface.co/datasets/mr-mc/flowjudge-dialam-reconstruction-v3),
+and the live base-versus-tuned demo is
+[`mr-mc/flowjudge-dialam-demo`](https://huggingface.co/spaces/mr-mc/flowjudge-dialam-demo).
+See [`docs/dialam_v1_efficiency_results.md`](docs/dialam_v1_efficiency_results.md),
+[`docs/dialam_v2_hard_negative_results.md`](docs/dialam_v2_hard_negative_results.md),
+and [`docs/dialam_v3_results.md`](docs/dialam_v3_results.md).
 
 The assignment-prescribed base-versus-tuned evaluator now auto-detects DialAM
 `PatchExample` JSONL and writes the complete deterministic table plus blinded
@@ -104,7 +99,7 @@ judge transcripts:
 ```bash
 uv sync --group train
 uv run python eval.py \
-  --model mr-mc/flowjudge-dialam-qwen3-0.6b-v1-n2048 \
+  --model mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096 \
   --eval-set <dialam-patch-example-jsonl>
 ```
 

@@ -1,0 +1,10 @@
+{
+  "dataset_commit": "e1dcc6834de431505fc8301a00d950f28506498e",
+  "dataset_contains_original_qt30_identifiers": false,
+  "dataset_contains_raw_or_transformed_qt30_text": false,
+  "dataset_repo": "mr-mc/flowjudge-dialam-reconstruction-v3",
+  "model_commit": "56371373be622ea997c5723ceebf35af27cb5711",
+  "model_repo": "mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096",
+  "private": false,
+  "published_at": "2026-08-23T09:17:00.569970+00:00"
+}

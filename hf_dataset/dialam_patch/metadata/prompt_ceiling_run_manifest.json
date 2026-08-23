@@ -3,44 +3,8 @@
   "block_example_count": 30,
   "completed_at": "2026-08-23T04:41:42.928902+00:00",
   "created_at": "2026-08-23T04:36:24.713849+00:00",
-  "example_ids": [
-    "qt30:qt30092021wtxt:nodeset23719:812450:b01",
-    "qt30:qt30092021wtxt:nodeset23710:811355:b01",
-    "qt30:qt30092021wtxt:nodeset23740:814437:b01",
-    "qt30:qt30092021wtxt:nodeset23753:815767:b01",
-    "qt30:qt30092021wtxt:nodeset23735:813973:b01",
-    "qt30:qt16092021wtxt:nodeset23784:819988:b01",
-    "qt30:qt16092021wtxt:nodeset23787:820340:b01",
-    "qt30:qt16092021wtxt:nodeset23788:820559:b01",
-    "qt30:qt16092021wtxt:nodeset23786:820261:b01",
-    "qt30:qt16092021wtxt:nodeset23771:818605:b01",
-    "qt30:qt02092021wtxt:nodeset23810:866117:b01",
-    "qt30:qt02092021wtxt:nodeset23827:826569:b01",
-    "qt30:qt02092021wtxt:nodeset23805:824182:b01",
-    "qt30:qt02092021wtxt:nodeset23832:826961:b01",
-    "qt30:qt02092021wtxt:nodeset23838:827497:b01",
-    "qt30:qt19082021wtxt:nodeset23861:829797:b01",
-    "qt30:qt19082021wtxt:nodeset23881:831639:b01",
-    "qt30:qt19082021wtxt:nodeset25391:831004:b01",
-    "qt30:qt19082021wtxt:nodeset23854:829004:b01",
-    "qt30:qt19082021wtxt:nodeset23880:831590:b01",
-    "qt30:qt05082021wtxt:nodeset23901:834095:b01",
-    "qt30:qt05082021wtxt:nodeset23888:832098:b01",
-    "qt30:qt05082021wtxt:nodeset23922:836801:b01",
-    "qt30:qt05082021wtxt:nodeset25506:831695:b01",
-    "qt30:qt05082021wtxt:nodeset23904:834719:b01",
-    "qt30:qt22072021wtxt:nodeset23962:675582:b01",
-    "qt30:qt22072021wtxt:nodeset23972:841792:b01",
-    "qt30:qt22072021wtxt:nodeset23940:838550:b01",
-    "qt30:qt22072021wtxt:nodeset23973:841843:b01",
-    "qt30:qt22072021wtxt:nodeset23950:839618:b01"
-  ],
-  "few_shot_example_ids": [
-    "qt30:cutiestestrun10December2020:nodeset19351:607554:b01",
-    "qt30:cutiestestrun4march2021:nodeset20494:664679:b01",
-    "qt30:cutiestestrun14January2021:nodeset19757:632460:b02",
-    "qt30:cutiestestrun15april2021:nodeset20841:681849:b01"
-  ],
+  "example_id_count": 30,
+  "few_shot_example_id_count": 4,
   "frozen_judge_rubric_sha256": "b27fe77a9adce4fe586327fa556a51352efb76d402b93676df2173225be35f66",
   "judge_call_count": 180,
   "judge_identity_blinded": true,
@@ -61,6 +25,13 @@
     "openai",
     "anthropic"
   ],
+  "publication_redaction": {
+    "policy": "Original QT30 episode, map, proposition, and example identifiers are omitted because IDs/labels-only redistribution remains unclear.",
+    "removed_fields": [
+      "identifier-bearing fields and per-example inventories where present"
+    ],
+    "source_sha256": "8edde847dee55166093d3b9cc3ddf291fa83cb67c856a5c89b1fbbdd5026e9d3"
+  },
   "reliability_threshold": {
     "direction_accuracy_min": 0.95,
     "edge_f1_min": 0.85,

@@ -11,22 +11,38 @@ remains authoritative.
   reconstruction scripts.
 - Untouched Qwen3-0.6B base evaluation and four fixed QLoRA checkpoints at
   N=256/512/1024/2048 on the same 30-scenario held-out set.
-- Performance-versus-N curve, honest finding that no tested N is reliable, and
-  one controlled error-driven v2 data experiment.
+- Complete fixed-v1 performance-versus-N curve and one controlled v2
+  hard-negative experiment.
+- Preregistered v3 paired-loss experiment at N=4096: a 20-train / 4-development
+  / 6-frozen parent-episode split, 2,048 exact same-update positive/NONE pairs,
+  per-example assistant-token loss, one development pass, and one unchanged
+  frozen-evaluation pass.
+- V3 material-improvement PASS: 43.3% exact patch accuracy, 35.0% edge F1,
+  33.9% macro-F1, 0.300 false edges/update, and 0/6 NONE cases with a false
+  edge. It is the selected direction but does not clear the original frozen
+  reliability bar.
 - Public selected model checkpoint and exact Hub commit:
-  `mr-mc/flowjudge-dialam-qwen3-0.6b-v1-n2048@18ee7ee16a48159e8a18997c4719c5dd87d54a6f`.
+  `mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096@56371373be622ea997c5723ceebf35af27cb5711`.
 - Public text-free dataset/reconstruction artifact and exact Hub commit:
-  `mr-mc/flowjudge-dialam-reconstruction@649950879893bfcc1b5b6fb53ec5feff77ab3e66`.
+  `mr-mc/flowjudge-dialam-reconstruction-v3@e1dcc6834de431505fc8301a00d950f28506498e`.
+  Automated checks exclude both QT30 text and original identifiers. The earlier
+  identifier-bearing repository was made private rather than destructively
+  deleted, preserving recovery while removing its history from public access.
 - Required `eval.py --model <hf-repo-id> --eval-set <path>` interface, including
   DialAM schema auto-detection, base-versus-tuned generation, block unioning,
   deterministic correctness metrics, and blinded frozen-judge transcripts.
-- DialAM Brainlift with the behavior thesis, curve, minimum-viable-N finding,
-  v1-to-v2 evidence, failure diagnosis, and exact public artifact commits.
+- DialAM Brainlift with the behavior thesis, fixed curve, v1-to-v2-to-v3
+  evidence, minimum-viable-N finding, failure diagnosis, and exact public
+  artifact commits.
 - Public base-versus-tuned inference demo at
-  `mr-mc/flowjudge-dialam-demo@13edded07c43faf456c08462039c37c56efda26c`,
-  anonymously verified in `RUNNING` state with a successful synthetic inference.
-- Exact evaluation-code commit:
-  `f414e1173218fcd977d5833d52282d85a9cbb50b`.
+  `mr-mc/flowjudge-dialam-demo@b34685eab4b02044d62dbfdf4c3ab244281a179c`,
+  anonymously verified in `RUNNING` state with a successful synthetic v3
+  inference. Its public repository contains only `README.md` and `index.html`.
+- Raw QT30-derived training/evaluation text, predictions, records, and judge
+  transcripts remain ignored locally; their paths and hashes are preserved in
+  the aggregate v3 report.
+- Exact evaluation/release-code commit will be pinned here immediately after
+  the final verified release commit is created.
 
 ## Still required before final submission
 
@@ -37,8 +53,10 @@ remains authoritative.
 
 ## Honest acceptance finding
 
-The tuned model beats the untouched base numerically and satisfies the strict
-JSON contract, but no tested N reliably holds semantic edge selection. The
-assignment explicitly calls for genuine results even when unimpressive, so the
-submission should preserve this negative conclusion rather than substitute an
-unregistered model or reinterpret the frozen reliability threshold.
+The selected v3 model beats the untouched base and both earlier data strategies,
+satisfies the strict JSON contract, and materially fixes the dominant
+false-positive SUPPORT/NONE failure. It still misses too many true relations,
+especially ATTACK edges, so no tested run reliably holds semantic edge
+selection and minimum viable N is not established. The assignment explicitly
+calls for genuine results even when imperfect; the submission should preserve
+that conclusion rather than reinterpret the frozen reliability threshold.

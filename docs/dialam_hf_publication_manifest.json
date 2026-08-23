@@ -1,9 +1,11 @@
 {
   "dataset_commit": "649950879893bfcc1b5b6fb53ec5feff77ab3e66",
   "dataset_repo": "mr-mc/flowjudge-dialam-reconstruction",
+  "private_now": true,
+  "superseded_by": "mr-mc/flowjudge-dialam-reconstruction-v3",
   "eval_code_commit": "f414e1173218fcd977d5833d52282d85a9cbb50b",
   "model_commit": "18ee7ee16a48159e8a18997c4719c5dd87d54a6f",
   "model_repo": "mr-mc/flowjudge-dialam-qwen3-0.6b-v1-n2048",
-  "private": false,
+  "private_at_publish": false,
   "published_at": "2026-08-23T07:41:58.695333+00:00"
 }

@@ -10,11 +10,11 @@
     "predict_status": 200,
     "url": "https://cloudspiral--flowjudge-dialam-public-demo-web.modal.run"
   },
-  "checked_at": "2026-08-23T07:53:04Z",
+  "checked_at": "2026-08-23T09:10:37Z",
   "hf_gradio_blocker": "HF returned 402 because dynamic Gradio CPU Spaces require Pro; no subscription was started. The public interface uses a free static Space instead.",
-  "model": "mr-mc/flowjudge-dialam-qwen3-0.6b-v1-n2048",
+  "model": "mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096",
   "public_space": {
-    "commit": "13edded07c43faf456c08462039c37c56efda26c",
+    "commit": "b34685eab4b02044d62dbfdf4c3ab244281a179c",
     "private": false,
     "runtime_stage": "RUNNING",
     "sdk": "static",
@@ -22,13 +22,13 @@
   },
   "smoke_response": {
     "base": "```json\n[]",
-    "note": "The smoke proves runtime wiring, not semantic correctness.",
-    "tuned": "{\"relations\":[{\"source\":\"P4\",\"target\":\"P1\",\"type\":\"ATTACK\"}]}"
+    "note": "Same prompt and greedy decoding. V3 materially improved held-out edge metrics and false-edge calibration, but did not clear the frozen semantic-reliability threshold.",
+    "tuned": "{\"relations\":[{\"source\":\"P3\",\"target\":\"P1\",\"type\":\"SUPPORT\"}]}"
   },
   "synthetic_expected_relation": {
-    "source": "P4",
+    "source": "P3",
     "target": "P1",
     "type": "SUPPORT"
   },
-  "verdict": "RUNTIME_PASS_SEMANTIC_FAILURE_VISIBLE"
+  "verdict": "RUNTIME_PASS_SYNTHETIC_OUTPUT_MATCH"
 }

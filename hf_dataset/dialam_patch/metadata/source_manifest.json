@@ -1,42 +1,49 @@
 {
   "corpus": "QT30 via DialAM-2024",
-  "retrieved_at": "2026-08-22",
-  "publisher": "ARG-tech, University of Dundee",
-  "landing_page": "http://dialam.arg.tech/",
-  "training_archive": {
-    "url": "http://dialam.arg.tech/res/files/dataset.zip",
-    "http_last_modified": "Thu, 15 Feb 2024 21:45:17 GMT",
-    "http_etag": "\"4d3421-611728b0e30f9\"",
-    "bytes": 5059617,
-    "sha256": "9d3d70c5ad86c815f821928dc515ee80a8e2a24d3f5d224557045f50f7a73791",
-    "json_map_count": 1478
+  "dialogue_metadata": {
+    "archive_metadata_discrepancy": "One archive-versus-current-API episode mismatch is documented in the private dialogue manifest; its original identifiers are omitted.",
+    "dialogue_count": 30,
+    "snapshot": "dialogues.json",
+    "source": "http://corpora.aifdb.org/api/getCorpusSubcorpora.php?shortname=qt30"
   },
   "format": {
-    "name": "Argument Interchange Format JSON",
+    "annotation_guide": "http://dialam.arg.tech/res/files/annotation-details.pdf",
+    "annotation_guide_sha256": "046bd113c99de379063af0bf05508cde27575f7bac80550f807290731c34f12c",
     "format_guide": "http://dialam.arg.tech/res/files/data-format.pdf",
     "format_guide_sha256": "1be6ac044f87e33cd5cb0fa0238e5d7890e58177c51efb47181088ec2dc431e4",
-    "annotation_guide": "http://dialam.arg.tech/res/files/annotation-details.pdf",
-    "annotation_guide_sha256": "046bd113c99de379063af0bf05508cde27575f7bac80550f807290731c34f12c"
+    "name": "Argument Interchange Format JSON"
   },
-  "dialogue_metadata": {
-    "source": "http://corpora.aifdb.org/api/getCorpusSubcorpora.php?shortname=qt30",
-    "snapshot": "dialogues.json",
-    "dialogue_count": 30,
-    "archive_metadata_discrepancy": "The archive contains nodeset19149 while current AIFdb subcorpus metadata lists absent nodeset19137. The explicit override and evidence are recorded in dialogues.json."
-  },
+  "landing_page": "http://dialam.arg.tech/",
   "license_and_permission": {
-    "official_corpus_license": null,
     "aifdb_license_field_as_retrieved": "",
     "aifdb_license_url_as_retrieved": "",
+    "official_corpus_license": null,
     "permission_basis": "The project owner reported on 2026-08-22 that they obtained approval to use QT30 for this educational toy project.",
-    "scope_note": "This manifest records project-specific permission as reported by the project owner. It does not claim that QT30 has a general public redistribution license.",
     "publication_matrix": {
-      "raw_corpus_text": "NOT CLEARED: project-specific use approval is not evidence of redistribution permission.",
-      "transformed_jsonl_with_text": "NOT CLEARED: transformed examples reproduce raw locution and reconstructed proposition text.",
+      "aggregate_manifests_and_statistics": "CLEARED TO PUBLISH as project-generated factual metadata, with source citation and no corpus text.",
       "ids_and_labels_only": "UNCLEAR: no express dataset license or redistribution grant was found; obtain written clarification before publication.",
       "original_project_scripts": "CLEARED TO PUBLISH by the project owner, provided they contain no corpus text or secrets.",
-      "aggregate_manifests_and_statistics": "CLEARED TO PUBLISH as project-generated factual metadata, with source citation and no corpus text."
-    }
+      "raw_corpus_text": "NOT CLEARED: project-specific use approval is not evidence of redistribution permission.",
+      "transformed_jsonl_with_text": "NOT CLEARED: transformed examples reproduce raw locution and reconstructed proposition text."
+    },
+    "scope_note": "This manifest records project-specific permission as reported by the project owner. It does not claim that QT30 has a general public redistribution license."
   },
-  "raw_data_policy": "The source archive, extracted maps, and text-bearing generated JSONL are reproducibly generated but excluded from Git. Only original transformation code and text-free manifests/statistics are publication-ready under the recorded evidence."
+  "publication_redaction": {
+    "policy": "Original QT30 episode, map, proposition, and example identifiers are omitted because IDs/labels-only redistribution remains unclear.",
+    "removed_fields": [
+      "identifier-bearing fields and per-example inventories where present"
+    ],
+    "source_sha256": "ebc5a11f729eb50f2514a74f295d20f7c245b078a56785c1d2313e028a2da6ea"
+  },
+  "publisher": "ARG-tech, University of Dundee",
+  "raw_data_policy": "The source archive, extracted maps, and text-bearing generated JSONL are reproducibly generated but excluded from Git. Only original transformation code and text-free manifests/statistics are publication-ready under the recorded evidence.",
+  "retrieved_at": "2026-08-22",
+  "training_archive": {
+    "bytes": 5059617,
+    "http_etag": "\"4d3421-611728b0e30f9\"",
+    "http_last_modified": "Thu, 15 Feb 2024 21:45:17 GMT",
+    "json_map_count": 1478,
+    "sha256": "9d3d70c5ad86c815f821928dc515ee80a8e2a24d3f5d224557045f50f7a73791",
+    "url": "http://dialam.arg.tech/res/files/dataset.zip"
+  }
 }

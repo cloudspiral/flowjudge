@@ -1,7 +1,7 @@
 {
-  "model_repo": "mr-mc/flowjudge-dialam-qwen3-0.6b-v1-n2048",
+  "model_repo": "mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096",
   "public": true,
-  "published_at": "2026-08-23T07:53:52.058131+00:00",
-  "space_commit": "13edded07c43faf456c08462039c37c56efda26c",
+  "published_at": "2026-08-23T09:10:08.287002+00:00",
+  "space_commit": "b34685eab4b02044d62dbfdf4c3ab244281a179c",
   "space_repo": "mr-mc/flowjudge-dialam-demo"
 }

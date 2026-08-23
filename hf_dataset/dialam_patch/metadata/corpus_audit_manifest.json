@@ -44,39 +44,13 @@
     "incomplete_relation_count": 132,
     "inspected_map_count": 1478,
     "invalid_locution_metadata_record_count": 5,
-    "maps_by_dialogue": {
-      "cutiestestrun10December2020": 45,
-      "cutiestestrun14January2021": 40,
-      "cutiestestrun15april2021": 74,
-      "cutiestestrun18february2021": 45,
-      "cutiestestrun18march2021": 47,
-      "cutiestestrun19November2020": 36,
-      "cutiestestrun28january2021": 43,
-      "cutiestestrun29april2021": 85,
-      "cutiestestrun4march2021": 56,
-      "cutiestestrun5November2020": 42,
-      "cutietestrun10June2021": 56,
-      "cutietestrun18June2020": 46,
-      "cutietestrun20may2021": 60,
-      "cutietestrun22October2020": 44,
-      "cutietestrun24June2021": 48,
-      "cutietestrun27may2021": 58,
-      "cutietestrun28May2020": 37,
-      "cutietestrun2September2020": 50,
-      "cutietestrun30July2020": 50,
-      "cutietestrun4June2020": 47,
-      "cutietestrun8july2021": 41,
-      "qt02092021wtxt": 44,
-      "qt05082021wtxt": 45,
-      "qt11112021wtxt": 42,
-      "qt14102021wtxt": 40,
-      "qt16092021wtxt": 48,
-      "qt19082021wtxt": 42,
-      "qt22072021wtxt": 49,
-      "qt28102021wtxt": 59,
-      "qt30092021wtxt": 59
+    "maps_per_parent_episode": {
+      "maximum": 85,
+      "mean": 49.266666666666666,
+      "minimum": 36
     },
     "nary_relation_count": 674,
+    "parent_episode_count": 30,
     "proposition_endpoint_arity": {
       "0x0": 33,
       "0x1": 55,
@@ -205,58 +179,19 @@
     "dialogue_level_leakage": false,
     "direct_edge_negatives": true,
     "edge_direction": true,
-    "eval_dialogue_ids": [
-      "qt02092021wtxt",
-      "qt05082021wtxt",
-      "qt16092021wtxt",
-      "qt19082021wtxt",
-      "qt22072021wtxt",
-      "qt30092021wtxt"
-    ],
     "gold_target_presence": true,
     "grounding": true,
+    "heldout_parent_episode_count": 6,
     "ids": true,
     "parent_episode_level_split": true,
     "split_unit": "original_parent_episode",
-    "train_dialogue_ids": [
-      "cutiestestrun10December2020",
-      "cutiestestrun14January2021",
-      "cutiestestrun15april2021",
-      "cutiestestrun18february2021",
-      "cutiestestrun18march2021",
-      "cutiestestrun19November2020",
-      "cutiestestrun28january2021",
-      "cutiestestrun29april2021",
-      "cutiestestrun4march2021",
-      "cutiestestrun5November2020",
-      "cutietestrun10June2021",
-      "cutietestrun18June2020",
-      "cutietestrun20may2021",
-      "cutietestrun22October2020",
-      "cutietestrun24June2021",
-      "cutietestrun27may2021",
-      "cutietestrun28May2020",
-      "cutietestrun2September2020",
-      "cutietestrun30July2020",
-      "cutietestrun4June2020",
-      "cutietestrun8july2021",
-      "qt11112021wtxt",
-      "qt14102021wtxt",
-      "qt28102021wtxt"
-    ]
+    "training_parent_episode_count": 24
   },
   "eval_summary": {
     "balanced_diagnostic": {
       "all_negative_scenario_count": 6,
       "block_example_count": 30,
-      "dialogue_ids": [
-        "qt02092021wtxt",
-        "qt05082021wtxt",
-        "qt16092021wtxt",
-        "qt19082021wtxt",
-        "qt22072021wtxt",
-        "qt30092021wtxt"
-      ],
+      "parent_episode_count": 6,
       "positive_scenario_count": 24,
       "relation_counts": {
         "ATTACK": 8,
@@ -276,25 +211,11 @@
       "scenario_count": 30
     },
     "frozen_split_unit": "original QT30 parent episode/subcorpus",
-    "heldout_dialogue_ids": [
-      "qt30092021wtxt",
-      "qt16092021wtxt",
-      "qt02092021wtxt",
-      "qt19082021wtxt",
-      "qt05082021wtxt",
-      "qt22072021wtxt"
-    ],
+    "heldout_parent_episode_count": 6,
     "natural_distribution": {
       "all_negative_scenario_count": 1488,
       "block_example_count": 4820,
-      "dialogue_ids": [
-        "qt02092021wtxt",
-        "qt05082021wtxt",
-        "qt16092021wtxt",
-        "qt19082021wtxt",
-        "qt22072021wtxt",
-        "qt30092021wtxt"
-      ],
+      "parent_episode_count": 6,
       "positive_scenario_count": 1661,
       "relation_counts": {
         "ATTACK": 178,
@@ -325,6 +246,13 @@
     "train_examples": "smoke_train.jsonl"
   },
   "permission_basis": "Project owner reported direct approval for this educational toy-project use on 2026-08-22; this is not represented as an official public corpus license.",
+  "publication_redaction": {
+    "policy": "Original QT30 episode, map, proposition, and example identifiers are omitted because IDs/labels-only redistribution remains unclear.",
+    "removed_fields": [
+      "identifier-bearing fields and per-example inventories where present"
+    ],
+    "source_sha256": "4bbf6418bdd2ccfaa1dac0d77b5e2f07036506d705270656e727bcc35110e2f8"
+  },
   "schema_version": "dialam_incremental_patch_v1",
   "selection_seed": "dialam-qt30-smoke-v1",
   "source_archive_sha256": "9d3d70c5ad86c815f821928dc515ee80a8e2a24d3f5d224557045f50f7a73791",
@@ -356,44 +284,12 @@
     "dialogue_level_leakage": false,
     "direct_edge_negatives": true,
     "edge_direction": true,
-    "eval_dialogue_ids": [
-      "qt02092021wtxt",
-      "qt05082021wtxt",
-      "qt16092021wtxt",
-      "qt19082021wtxt",
-      "qt22072021wtxt",
-      "qt30092021wtxt"
-    ],
     "gold_target_presence": true,
     "grounding": true,
+    "heldout_parent_episode_count": 6,
     "ids": true,
     "parent_episode_level_split": true,
     "split_unit": "original_parent_episode",
-    "train_dialogue_ids": [
-      "cutiestestrun10December2020",
-      "cutiestestrun14January2021",
-      "cutiestestrun15april2021",
-      "cutiestestrun18february2021",
-      "cutiestestrun18march2021",
-      "cutiestestrun19November2020",
-      "cutiestestrun28january2021",
-      "cutiestestrun29april2021",
-      "cutiestestrun4march2021",
-      "cutiestestrun5November2020",
-      "cutietestrun10June2021",
-      "cutietestrun18June2020",
-      "cutietestrun20may2021",
-      "cutietestrun22October2020",
-      "cutietestrun24June2021",
-      "cutietestrun27may2021",
-      "cutietestrun28May2020",
-      "cutietestrun2September2020",
-      "cutietestrun30July2020",
-      "cutietestrun4June2020",
-      "cutietestrun8july2021",
-      "qt11112021wtxt",
-      "qt14102021wtxt",
-      "qt28102021wtxt"
-    ]
+    "training_parent_episode_count": 24
   }
 }

@@ -1,0 +1,579 @@
+{
+  "base": {
+    "deterministic_metrics": {
+      "block_example_count": 30,
+      "direction_accuracy": null,
+      "direction_evaluable_edge_count": 0,
+      "edge_f1": 0.0,
+      "edge_precision": 0.0,
+      "edge_recall": 0.0,
+      "exact_patch_accuracy": 0.0,
+      "exact_scenario_patch_accuracy": 0.0,
+      "exact_scenario_patch_count": 0,
+      "example_count": 30,
+      "false_edges_per_update": 0.0,
+      "false_negative_edges": 24,
+      "false_positive_edges": 0,
+      "invalid_id_count": 0,
+      "invalid_relation_count": 0,
+      "json_validity_rate": 0.13333333333333333,
+      "relation_macro_f1": 0.0,
+      "relation_metrics": {
+        "ATTACK": {
+          "f1": 0.0,
+          "false_negative": 8,
+          "false_positive": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "true_positive": 0
+        },
+        "REPHRASE": {
+          "f1": 0.0,
+          "false_negative": 8,
+          "false_positive": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "true_positive": 0
+        },
+        "SUPPORT": {
+          "f1": 0.0,
+          "false_negative": 8,
+          "false_positive": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "true_positive": 0
+        }
+      },
+      "scenario_count": 30,
+      "schema_validity_rate": 0.0,
+      "true_positive_edges": 0,
+      "update_count": 30
+    },
+    "judge_metrics": {
+      "judge_validity_rate": 1.0,
+      "mean_robustness": 1.4,
+      "mean_spec_adherence": 0.23333333333333334,
+      "valid_judgments": 30
+    }
+  },
+  "controlled_variables": {
+    "base_model": "Qwen/Qwen3-0.6B",
+    "declared_interventions": [
+      "same-update positive/NONE paired sampling at n=4096",
+      "per-example assistant-token mean loss before batch mean",
+      "four parent episodes removed from training for development evaluation"
+    ],
+    "eval_sha256": "76badbae23ace13b22822335fa794f7cc796ce0d02753666ebd83c4d7260305b",
+    "eval_unchanged": true,
+    "judge_rubric_sha256": "b27fe77a9adce4fe586327fa556a51352efb76d402b93676df2173225be35f66",
+    "judge_rubric_unchanged": true,
+    "optimization_config_sha256": "2cbf97d0f552f70df423283aad5bca589189857edb8b3f257561082eda16aa9f",
+    "optimization_config_unchanged": true
+  },
+  "data": {
+    "category_counts": {
+      "ATTACK": 189,
+      "MIXED": 30,
+      "NONE": 2048,
+      "REPHRASE": 915,
+      "SUPPORT": 914
+    },
+    "development_parent_episode_count": 4,
+    "dialogue_leakage": false,
+    "frozen_parent_episode_count": 6,
+    "loss_policy": {
+      "assistant_loss_weight_per_row": 1.0,
+      "description": "Mask every prompt token, average causal cross-entropy over each row's assistant tokens, then average rows. This gives a short NONE JSON answer the same configured example weight as its longer positive sibling.",
+      "name": "per_example_assistant_token_mean_then_batch_mean",
+      "positive_to_none_row_ratio": 1.0,
+      "unbalanced_positive_to_none_supervised_character_ratio": 4.4976806640625
+    },
+    "pair_count": 2048,
+    "pair_policy": {
+      "description": "Select one positive block and one all-negative block from the exact same update, use each update at most once, exhaust paired ATTACK/MIXED coverage, and rank the NONE sibling by deterministic lexical hardness.",
+      "duplicates": false,
+      "one_pair_per_update": true,
+      "overlap_coefficient": {
+        "maximum": 1.0,
+        "mean": 0.25567809469176656,
+        "minimum": 0.0
+      },
+      "pairs_with_one_or_more_shared_content_tokens": 1421,
+      "pairs_with_two_or_more_shared_content_tokens": 729,
+      "positive_target_counts": {
+        "ATTACK": 189,
+        "MIXED": 30,
+        "REPHRASE": 915,
+        "SUPPORT": 914
+      },
+      "same_update_for_every_pair": true,
+      "semantic_candidate_retrieval": false,
+      "shared_content_tokens": {
+        "maximum": 13,
+        "mean": 1.283203125,
+        "minimum": 0
+      }
+    },
+    "private_jsonl_sha256": "902bd567df7b6c2cb23c8987dd8bf4284e53e4fbfd2b35de262a811fb16dc3e0",
+    "relation_counts": {
+      "ATTACK": 198,
+      "REPHRASE": 945,
+      "SUPPORT": 964
+    },
+    "size": 4096,
+    "training_parent_episode_count": 20
+  },
+  "decision": "PROMOTE_V3_AS_FINAL_DIRECTION",
+  "delta_v3_minus_v1": {
+    "edge_f1": 0.18333333333333338,
+    "edge_precision": 0.27083333333333337,
+    "edge_recall": 0.12500000000000003,
+    "exact_patch_accuracy": 0.16666666666666669,
+    "false_edges_per_update": -0.36666666666666664,
+    "false_negative_edges": -3,
+    "false_positive_edges": -11,
+    "mean_judge_robustness": 0.8666666666666667,
+    "none_scenarios_with_false_edges": -2,
+    "relation_macro_f1": 0.17213195301430598
+  },
+  "delta_v3_minus_v2": {
+    "edge_f1": 0.13571428571428576,
+    "edge_precision": 0.25,
+    "edge_recall": 0.041666666666666685,
+    "exact_patch_accuracy": 0.2,
+    "false_edges_per_update": -0.5666666666666667,
+    "false_negative_edges": -1,
+    "false_positive_edges": -17,
+    "mean_judge_robustness": 1.5333333333333334,
+    "none_scenarios_with_false_edges": -5,
+    "relation_macro_f1": 0.15141802641802643
+  },
+  "experiment": "v3/n4096 paired-loss correction versus v1/v2 n2048",
+  "failure_diagnosis": {
+    "interpretation": "Pairing and equal per-example loss fixed much of the calibration problem, but 0.6B capacity and sparse paired ATTACK coverage still limit reliable semantics.",
+    "remaining_primary_failure": "false negatives and relation-label/target confusions; ATTACK remains the weakest class at 18.2% F1",
+    "resolved_primary_failure": "false-positive SUPPORT overprediction on NONE cases fell from 2/6 in v1 and 5/6 in v2 to 0/6 in v3"
+  },
+  "material_improvement": true,
+  "material_improvement_checks": {
+    "edge_f1": true,
+    "false_edges_per_update": true,
+    "json_validity": true,
+    "none_scenarios_with_false_edges": true,
+    "schema_validity": true
+  },
+  "preregistered_criterion": {
+    "false_edge_baseline": "v1/n2048 false_edges_per_update=0.6666666666666666",
+    "json_and_schema_validity_must_remain": 1.0,
+    "maximum_false_edges_per_update": 0.6666666666666666,
+    "maximum_none_scenarios_with_false_edges": 2,
+    "minimum_edge_f1": 0.2642857142857143,
+    "semantic_baseline": "v2/n2048 edge_f1=0.21428571428571427"
+  },
+  "private_artifacts": {
+    "checkpoint": {
+      "path": "artifacts/dialam_qlora/v3_n4096/adapter",
+      "redistribution": "publishable model adapter; local copy remains ignored",
+      "tree_sha256": "83594e9cf7f6ab520b6dd9d5c6492e60c60149cce62fb6d24475f21f424964ee"
+    },
+    "development_gold": {
+      "bytes": 76619,
+      "path": "data/dialam/training/v3_dev_eval_examples.jsonl",
+      "redistribution": "private/local only",
+      "sha256": "78f4ccc35312a4e3e74cce062346af040ff4e00b365a1312c2a627d7d0e1ec55"
+    },
+    "development_predictions": {
+      "bytes": 9821,
+      "path": "results/dialam_model_generation/v3_n4096_dev/predictions.jsonl",
+      "redistribution": "private/local only",
+      "sha256": "058b1112139902003f1e91ab0fc02dec103cd9b035a5d09a92940bf1680c6c6c"
+    },
+    "frozen_predictions": {
+      "bytes": 9281,
+      "path": "results/dialam_model_eval/v3_n4096/predictions.jsonl",
+      "redistribution": "private/local only",
+      "sha256": "ba15885e4fd80ec83eaa43da01d08a298d319a7946cf10cfec5ddfa5a50d3252"
+    },
+    "frozen_records": {
+      "bytes": 23852,
+      "path": "results/dialam_model_eval/v3_n4096/records.jsonl",
+      "redistribution": "private/local only",
+      "sha256": "42d1365a2d4a28a499d15c0eca5c14612adc1c3255db0541cc4f5392b0d59b2a"
+    },
+    "judge_transcripts": {
+      "bytes": 183038,
+      "path": "results/dialam_model_eval/v3_n4096/judge_transcripts.jsonl",
+      "redistribution": "private/local only",
+      "sha256": "724260b96a1b2ab03f0f4c9ec5420fa7d9ecb96eb47017e290da108c185c076c"
+    },
+    "training_jsonl": {
+      "bytes": 13638940,
+      "path": "data/dialam/training/dialam_v3_n4096.jsonl",
+      "redistribution": "private/local only",
+      "sha256": "902bd567df7b6c2cb23c8987dd8bf4284e53e4fbfd2b35de262a811fb16dc3e0"
+    },
+    "training_log": {
+      "bytes": 52973,
+      "path": "artifacts/dialam_qlora/v3_n4096/training_manifest.json",
+      "redistribution": "private/local only",
+      "sha256": "498759636dc89dbea73eea6be318ae942e0700992972adbc74c86ae21c0c01ed"
+    }
+  },
+  "reproduction_commands": [
+    ".venv/bin/python scripts/build_dialam_training_v3.py",
+    "modal run scripts/modal_dialam_qlora.py --action train --size 4096 --dataset-version v3",
+    "modal run scripts/modal_dialam_qlora.py --action evaluate --target tuned --size 4096 --dataset-version v3 --eval-split v3_dev --output-path results/dialam_model_generation/v3_n4096_dev/predictions.jsonl",
+    ".venv/bin/python scripts/score_dialam_predictions.py results/dialam_model_generation/v3_n4096_dev/predictions.jsonl --examples data/dialam/training/v3_dev_eval_examples.jsonl",
+    "modal run scripts/modal_dialam_qlora.py --action evaluate --target tuned --size 4096 --dataset-version v3 --eval-split frozen --output-path results/dialam_model_generation/v3_n4096/predictions.jsonl",
+    ".venv/bin/python scripts/evaluate_dialam_model.py --predictions results/dialam_model_generation/v3_n4096/predictions.jsonl --output-dir results/dialam_model_eval/v3_n4096 --approval APPROVE_DIALAM_MODEL_JUDGING",
+    ".venv/bin/python scripts/build_dialam_v3_report.py"
+  ],
+  "schema_version": "dialam_v1_v2_v3_comparison_v1",
+  "training": {
+    "assistant_token_counts": {
+      "maximum": 77,
+      "mean": 18.299560546875,
+      "minimum": 6
+    },
+    "checkpoint_files": [
+      {
+        "bytes": 5234,
+        "path": "README.md",
+        "sha256": "34ab0170dfe77802e9df8dd644e7b26f9fb5f66f84daa9100de4d0d78fd2794a"
+      },
+      {
+        "bytes": 1202,
+        "path": "adapter_config.json",
+        "sha256": "b5216b5678c0a00b17b35abb96f02b2f90751d209298a39002b4a69c894efdbc"
+      },
+      {
+        "bytes": 40422168,
+        "path": "adapter_model.safetensors",
+        "sha256": "963cfec371bc3ddad89de2e6b4c772ab418806ff4ce0d2cba020f7cd389252ce"
+      },
+      {
+        "bytes": 734,
+        "path": "added_tokens.json",
+        "sha256": "7a208f10d02bfdf1708662e42ade85ea67af7158ab941bc5432bd715f4911216"
+      },
+      {
+        "bytes": 4905,
+        "path": "chat_template.jinja",
+        "sha256": "5da44855ab7e0641774d5ed0ff0b4f89671d01df7d316e54d06557a962211cb4"
+      },
+      {
+        "bytes": 1671853,
+        "path": "merges.txt",
+        "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+      },
+      {
+        "bytes": 499,
+        "path": "special_tokens_map.json",
+        "sha256": "8c8752b0d30549fb854ffee2d43b787c0053f507dfde7e0ccb6d1b42a8ae75ec"
+      },
+      {
+        "bytes": 11422943,
+        "path": "tokenizer.json",
+        "sha256": "64af246a059e79ec2e7641c4e0551eab01df498b032efe58881de2cc7aec6427"
+      },
+      {
+        "bytes": 5610,
+        "path": "tokenizer_config.json",
+        "sha256": "28d5debb24b06a4f905a086a7e58c384cafcc9188555736d7b813ed1d6f96baa"
+      },
+      {
+        "bytes": 2776833,
+        "path": "vocab.json",
+        "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      }
+    ],
+    "checkpoint_tree_sha256": "83594e9cf7f6ab520b6dd9d5c6492e60c60149cce62fb6d24475f21f424964ee",
+    "fixed_config": {
+      "base_model": "Qwen/Qwen3-0.6B",
+      "effective_batch_size": 8,
+      "epochs": 3.0,
+      "gradient_accumulation_steps": 4,
+      "learning_rate": 0.0002,
+      "load_in_4bit": true,
+      "lora_alpha": 32,
+      "lora_dropout": 0.0,
+      "lora_r": 16,
+      "lr_scheduler_type": "cosine",
+      "max_seq_length": 2048,
+      "method": "Unsloth QLoRA",
+      "optimizer": "adamw_8bit",
+      "packing": false,
+      "per_device_batch_size": 2,
+      "prompt_masking": true,
+      "seed": 20260823,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ],
+      "warmup_ratio": 0.05
+    },
+    "loss_config": {
+      "assistant_loss_weight_per_example": 1.0,
+      "name": "per_example_assistant_token_mean_then_batch_mean"
+    },
+    "metrics": {
+      "epoch": 3.0,
+      "total_flos": 2.425207504896e+16,
+      "train_loss": 0.21299154833529124,
+      "train_runtime": 1948.0796,
+      "train_samples_per_second": 6.308,
+      "train_steps_per_second": 0.788
+    },
+    "reload_verified": true,
+    "train_sha256": "902bd567df7b6c2cb23c8987dd8bf4284e53e4fbfd2b35de262a811fb16dc3e0",
+    "training_manifest_sha256": "498759636dc89dbea73eea6be318ae942e0700992972adbc74c86ae21c0c01ed"
+  },
+  "v1_n2048": {
+    "edge_f1": 0.16666666666666666,
+    "edge_precision": 0.16666666666666666,
+    "edge_recall": 0.16666666666666666,
+    "exact_patch_accuracy": 0.26666666666666666,
+    "false_edges_per_update": 0.6666666666666666,
+    "false_negative_edges": 20,
+    "false_positive_edges": 20,
+    "json_validity_rate": 1.0,
+    "judge_metrics": {
+      "judge_validity_rate": 1.0,
+      "mean_robustness": 2.1,
+      "mean_spec_adherence": 4.0,
+      "valid_judgments": 30
+    },
+    "none_diagnostics": {
+      "false_edge_labels": {
+        "REPHRASE": 1,
+        "SUPPORT": 2
+      },
+      "false_positive_rate": 0.3333333333333333,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 2
+    },
+    "relation_macro_f1": 0.16732026143790849,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.26666666666666666,
+        "false_negative": 6,
+        "false_positive": 5,
+        "precision": 0.2857142857142857,
+        "recall": 0.25,
+        "true_positive": 2
+      },
+      "REPHRASE": {
+        "f1": 0.23529411764705882,
+        "false_negative": 6,
+        "false_positive": 7,
+        "precision": 0.2222222222222222,
+        "recall": 0.25,
+        "true_positive": 2
+      },
+      "SUPPORT": {
+        "f1": 0.0,
+        "false_negative": 8,
+        "false_positive": 8,
+        "precision": 0.0,
+        "recall": 0.0,
+        "true_positive": 0
+      }
+    },
+    "schema_validity_rate": 1.0
+  },
+  "v2_n2048": {
+    "edge_f1": 0.21428571428571427,
+    "edge_precision": 0.1875,
+    "edge_recall": 0.25,
+    "exact_patch_accuracy": 0.23333333333333334,
+    "false_edges_per_update": 0.8666666666666667,
+    "false_negative_edges": 18,
+    "false_positive_edges": 26,
+    "judge_metrics": {
+      "judge_validity_rate": 1.0,
+      "mean_robustness": 1.4333333333333333,
+      "mean_spec_adherence": 4.0,
+      "valid_judgments": 30
+    },
+    "none_diagnostics": {
+      "false_edge_labels": {
+        "REPHRASE": 1,
+        "SUPPORT": 5
+      },
+      "false_positive_rate": 0.8333333333333334,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 5
+    },
+    "relation_macro_f1": 0.18803418803418803,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.0,
+        "false_negative": 8,
+        "false_positive": 4,
+        "precision": 0.0,
+        "recall": 0.0,
+        "true_positive": 0
+      },
+      "REPHRASE": {
+        "f1": 0.33333333333333326,
+        "false_negative": 5,
+        "false_positive": 7,
+        "precision": 0.3,
+        "recall": 0.375,
+        "true_positive": 3
+      },
+      "SUPPORT": {
+        "f1": 0.23076923076923078,
+        "false_negative": 5,
+        "false_positive": 15,
+        "precision": 0.16666666666666666,
+        "recall": 0.375,
+        "true_positive": 3
+      }
+    }
+  },
+  "v3_clears_frozen_reliability_bar": false,
+  "v3_development_n4096": {
+    "block_example_count": 30,
+    "direction_accuracy": 1.0,
+    "direction_evaluable_edge_count": 4,
+    "edge_f1": 0.2105263157894737,
+    "edge_precision": 0.2857142857142857,
+    "edge_recall": 0.16666666666666666,
+    "exact_patch_accuracy": 0.26666666666666666,
+    "exact_scenario_patch_accuracy": 0.26666666666666666,
+    "exact_scenario_patch_count": 8,
+    "example_count": 30,
+    "false_edges_per_update": 0.3333333333333333,
+    "false_negative_edges": 20,
+    "false_positive_edges": 10,
+    "invalid_id_count": 0,
+    "invalid_relation_count": 0,
+    "json_validity_rate": 1.0,
+    "none_diagnostics": {
+      "false_edge_labels": {
+        "SUPPORT": 2
+      },
+      "false_positive_rate": 0.3333333333333333,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 2
+    },
+    "relation_macro_f1": 0.173202614379085,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.0,
+        "false_negative": 8,
+        "false_positive": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "true_positive": 0
+      },
+      "REPHRASE": {
+        "f1": 0.16666666666666666,
+        "false_negative": 7,
+        "false_positive": 3,
+        "precision": 0.25,
+        "recall": 0.125,
+        "true_positive": 1
+      },
+      "SUPPORT": {
+        "f1": 0.35294117647058826,
+        "false_negative": 5,
+        "false_positive": 6,
+        "precision": 0.3333333333333333,
+        "recall": 0.375,
+        "true_positive": 3
+      }
+    },
+    "scenario_count": 30,
+    "schema_validity_rate": 1.0,
+    "true_positive_edges": 4,
+    "update_count": 30
+  },
+  "v3_failed_reliability_thresholds": [
+    "edge_f1",
+    "exact_patch_accuracy",
+    "false_edges_per_update",
+    "judge_robustness_mean",
+    "relation_macro_f1"
+  ],
+  "v3_frozen_n4096": {
+    "block_example_count": 30,
+    "direction_accuracy": 1.0,
+    "direction_evaluable_edge_count": 7,
+    "edge_f1": 0.35000000000000003,
+    "edge_precision": 0.4375,
+    "edge_recall": 0.2916666666666667,
+    "exact_patch_accuracy": 0.43333333333333335,
+    "exact_scenario_patch_accuracy": 0.43333333333333335,
+    "exact_scenario_patch_count": 13,
+    "example_count": 30,
+    "false_edges_per_update": 0.3,
+    "false_negative_edges": 17,
+    "false_positive_edges": 9,
+    "invalid_id_count": 0,
+    "invalid_relation_count": 0,
+    "json_validity_rate": 1.0,
+    "judge_metrics": {
+      "judge_validity_rate": 1.0,
+      "mean_robustness": 2.966666666666667,
+      "mean_spec_adherence": 4.0,
+      "valid_judgments": 30
+    },
+    "none_diagnostics": {
+      "false_edge_labels": {},
+      "false_positive_rate": 0.0,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 0
+    },
+    "relation_macro_f1": 0.33945221445221446,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.18181818181818182,
+        "false_negative": 7,
+        "false_positive": 2,
+        "precision": 0.3333333333333333,
+        "recall": 0.125,
+        "true_positive": 1
+      },
+      "REPHRASE": {
+        "f1": 0.375,
+        "false_negative": 5,
+        "false_positive": 5,
+        "precision": 0.375,
+        "recall": 0.375,
+        "true_positive": 3
+      },
+      "SUPPORT": {
+        "f1": 0.4615384615384615,
+        "false_negative": 5,
+        "false_positive": 2,
+        "precision": 0.6,
+        "recall": 0.375,
+        "true_positive": 3
+      }
+    },
+    "reliability_checks": {
+      "direction_accuracy": true,
+      "edge_f1": false,
+      "exact_patch_accuracy": false,
+      "false_edges_per_update": false,
+      "invalid_id_count": true,
+      "json_validity_rate": true,
+      "judge_robustness_mean": false,
+      "judge_spec_adherence_mean": true,
+      "judge_validity_rate": true,
+      "relation_macro_f1": false,
+      "schema_validity_rate": true
+    },
+    "scenario_count": 30,
+    "schema_validity_rate": 1.0,
+    "true_positive_edges": 7,
+    "update_count": 30
+  }
+}

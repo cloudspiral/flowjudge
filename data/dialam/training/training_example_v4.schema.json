@@ -1,0 +1,185 @@
+{
+  "$defs": {
+    "TrainingMessage": {
+      "additionalProperties": false,
+      "properties": {
+        "content": {
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "user",
+            "assistant"
+          ],
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "content"
+      ],
+      "title": "TrainingMessage",
+      "type": "object"
+    },
+    "V4NegativeMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "closest_turn_gap": {
+          "exclusiveMinimum": 0,
+          "title": "Closest Turn Gap",
+          "type": "integer"
+        },
+        "kind": {
+          "enum": [
+            "direct_edge_elsewhere",
+            "all_negative_update"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "max_jaccard_similarity": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Max Jaccard Similarity",
+          "type": "number"
+        },
+        "max_overlap_coefficient": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Max Overlap Coefficient",
+          "type": "number"
+        },
+        "max_shared_content_tokens": {
+          "minimum": 0,
+          "title": "Max Shared Content Tokens",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "kind",
+        "max_shared_content_tokens",
+        "max_overlap_coefficient",
+        "max_jaccard_similarity",
+        "closest_turn_gap"
+      ],
+      "title": "V4NegativeMetadata",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "assistant_loss_weight": {
+      "const": 1.0,
+      "title": "Assistant Loss Weight",
+      "type": "number"
+    },
+    "category": {
+      "enum": [
+        "NONE",
+        "SUPPORT",
+        "ATTACK",
+        "REPHRASE",
+        "MIXED"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "dialogue_id": {
+      "title": "Dialogue Id",
+      "type": "string"
+    },
+    "example_id": {
+      "title": "Example Id",
+      "type": "string"
+    },
+    "is_repeated_copy": {
+      "title": "Is Repeated Copy",
+      "type": "boolean"
+    },
+    "messages": {
+      "items": {
+        "$ref": "#/$defs/TrainingMessage"
+      },
+      "maxItems": 2,
+      "minItems": 2,
+      "title": "Messages",
+      "type": "array"
+    },
+    "negative_metadata": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/V4NegativeMetadata"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "repetition_index": {
+      "minimum": 0,
+      "title": "Repetition Index",
+      "type": "integer"
+    },
+    "sampling_role": {
+      "enum": [
+        "POSITIVE",
+        "NONE"
+      ],
+      "title": "Sampling Role",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "dialam_qlora_chat_v4",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_pair_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Pair Id"
+    },
+    "source_stage": {
+      "enum": [
+        "V3_FOUNDATION",
+        "V4_CLASS_BALANCE"
+      ],
+      "title": "Source Stage",
+      "type": "string"
+    },
+    "training_row_id": {
+      "title": "Training Row Id",
+      "type": "string"
+    },
+    "update_id": {
+      "title": "Update Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "training_row_id",
+    "example_id",
+    "update_id",
+    "dialogue_id",
+    "category",
+    "source_stage",
+    "sampling_role",
+    "repetition_index",
+    "is_repeated_copy",
+    "assistant_loss_weight",
+    "messages"
+  ],
+  "title": "DialAMTrainingRowV4",
+  "type": "object"
+}

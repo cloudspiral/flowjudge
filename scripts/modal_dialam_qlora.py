@@ -13,14 +13,15 @@ REMOTE_DATA_DIR = Path("/workspace/dialam_data")
 PERSISTENT_ROOT = Path("/workspace/persistent")
 CHECKPOINT_ROOT = PERSISTENT_ROOT / "checkpoints"
 BASE_MODEL = "Qwen/Qwen3-0.6B"
-SIZES = (256, 512, 1024, 2048, 4096, 8192)
-DATASET_VERSIONS = ("v1", "v2", "v3", "v4", "v5")
+SIZES = (256, 512, 1024, 2048, 4096, 8192, 12288)
+DATASET_VERSIONS = ("v1", "v2", "v3", "v4", "v5", "v6")
 VALID_SIZES_BY_VERSION = {
     "v1": (256, 512, 1024, 2048),
     "v2": (2048,),
     "v3": (4096,),
     "v4": (8192,),
     "v5": (8192,),
+    "v6": (12288,),
 }
 EVAL_INPUT_FILENAMES = {
     "frozen": "frozen_eval_inputs.jsonl",
@@ -84,6 +85,14 @@ V5_LOSS_CONFIG = {
     "per_device_batch_layout": ["POSITIVE", "NONE"],
     "inference": "highest mean allowed-label token log probability",
     "tie_break_order": list(PAIRWISE_LABELS),
+}
+V6_LOSS_CONFIG = {
+    **V5_LOSS_CONFIG,
+    "curriculum": [
+        {"stage": "vives_warmup", "rows": 4096},
+        {"stage": "qt30_target", "rows": 8192},
+    ],
+    "target_stage_is_exact_v5_corpus": True,
 }
 
 image = (
@@ -231,13 +240,17 @@ def train_checkpoint(size: int, dataset_version: str = "v1") -> dict:
     rows = _load_rows(train_path)
     if len(rows) != size:
         raise ValueError(f"expected {size} training rows, found {len(rows)}")
-    if dataset_version == "v5":
+    if dataset_version in {"v5", "v6"}:
         for index in range(0, len(rows), 2):
             pair = rows[index : index + 2]
             if len(pair) != 2 or [item["pair_role"] for item in pair] != ["POSITIVE", "NONE"]:
-                raise ValueError(f"v5 rows {index}:{index + 2} are not a positive/NONE batch")
+                raise ValueError(
+                    f"{dataset_version} rows {index}:{index + 2} are not a positive/NONE batch"
+                )
             if len({item["pair_group_id"] for item in pair}) != 1:
-                raise ValueError(f"v5 rows {index}:{index + 2} cross pair groups")
+                raise ValueError(
+                    f"{dataset_version} rows {index}:{index + 2} cross pair groups"
+                )
     checkpoint_dir = CHECKPOINT_ROOT / checkpoint_label
     adapter_dir = checkpoint_dir / "adapter"
     if checkpoint_dir.exists():
@@ -359,7 +372,7 @@ def train_checkpoint(size: int, dataset_version: str = "v1") -> dict:
 
     trainer_class = (
         PairedSequentialLossTrainer
-        if dataset_version == "v5"
+        if dataset_version in {"v5", "v6"}
         else PerExampleAssistantLossTrainer
         if dataset_version in {"v3", "v4"}
         else Trainer
@@ -390,7 +403,7 @@ def train_checkpoint(size: int, dataset_version: str = "v1") -> dict:
     )
     FastLanguageModel.for_inference(reloaded_model)
     reload_scores = None
-    if dataset_version == "v5":
+    if dataset_version in {"v5", "v6"}:
         reload_probe, reload_scores = _score_pairwise_labels(
             reloaded_model,
             reloaded_tokenizer,
@@ -419,6 +432,8 @@ def train_checkpoint(size: int, dataset_version: str = "v1") -> dict:
             if dataset_version == "v4"
             else V5_LOSS_CONFIG
             if dataset_version == "v5"
+            else V6_LOSS_CONFIG
+            if dataset_version == "v6"
             else {"name": "assistant_token_mean"}
         ),
         "assistant_token_counts": {
@@ -485,13 +500,15 @@ def generate_model_eval(
         tokenizer.pad_token = tokenizer.eos_token
     FastLanguageModel.for_inference(model)
     input_filenames = (
-        V5_EVAL_INPUT_FILENAMES if dataset_version == "v5" else EVAL_INPUT_FILENAMES
+        V5_EVAL_INPUT_FILENAMES
+        if dataset_version in {"v5", "v6"}
+        else EVAL_INPUT_FILENAMES
     )
     rows = _load_rows(REMOTE_DATA_DIR / input_filenames[eval_split])
     predictions = []
     for index, row in enumerate(rows, start=1):
         pairwise_decisions = None
-        if dataset_version == "v5":
+        if dataset_version in {"v5", "v6"}:
             pairwise_decisions = []
             relations = []
             for candidate in row["candidates"]:

@@ -46,7 +46,10 @@ def calibrate_prediction_rows(
     predictions: list[dict[str, Any]],
     *,
     margin: float,
+    dataset_version: str = "v5.1",
 ) -> list[dict[str, Any]]:
+    if not dataset_version.strip():
+        raise ValueError("calibrated dataset version must be nonempty")
     examples_by_id = {item.example_id: item for item in examples}
     if len(examples_by_id) != len(examples):
         raise ValueError("calibration examples contain duplicate IDs")
@@ -82,7 +85,7 @@ def calibrate_prediction_rows(
             labels,
         )
         row["pairwise_decisions"] = ordered_decisions
-        row["dataset_version"] = "v5.1"
+        row["dataset_version"] = dataset_version
         row["calibration_margin"] = margin
         calibrated.append(row)
     return calibrated
@@ -153,13 +156,19 @@ def select_none_margin(
     *,
     thresholds: dict[str, Any],
     margins: tuple[float, ...] = CALIBRATION_MARGINS,
+    dataset_version: str = "v5.1",
 ) -> dict[str, Any]:
     if not margins or tuple(sorted(set(margins))) != margins:
         raise ValueError("calibration margins must be unique and increasing")
     candidates: list[dict[str, Any]] = []
     rows_by_margin: dict[float, list[dict[str, Any]]] = {}
     for margin in margins:
-        rows = calibrate_prediction_rows(examples, predictions, margin=margin)
+        rows = calibrate_prediction_rows(
+            examples,
+            predictions,
+            margin=margin,
+            dataset_version=dataset_version,
+        )
         metrics = deterministic_model_metrics(examples, rows)
         none = none_diagnostics(examples, rows)
         checks = development_gate_checks(metrics, none, thresholds)

@@ -1,0 +1,154 @@
+{
+  "base_model": "Qwen/Qwen3-0.6B",
+  "created_at": "2026-08-23T20:19:30.157856+00:00",
+  "curriculum": [
+    {
+      "language": "Spanish",
+      "pair_count": 2048,
+      "rows": 4096,
+      "source": "VivesDebate version 3",
+      "stage": "vives_warmup"
+    },
+    {
+      "pair_count": 4096,
+      "rows": 8192,
+      "source": "exact unchanged DialAM v5 corpus",
+      "stage": "qt30_target"
+    }
+  ],
+  "dataset_version": "v6-vives-warmup-then-qt30-pairwise",
+  "development_gate": {
+    "edge_f1_min": 0.56,
+    "exact_patch_accuracy_min": 0.5333333333333333,
+    "false_edges_per_update_max": 0.3,
+    "json_validity_rate_min": 1.0,
+    "none_scenarios_with_false_edges_max": 2,
+    "relation_macro_f1_min": 0.5427350427350427,
+    "schema_validity_rate_min": 1.0
+  },
+  "frozen_promotion_gate": {
+    "attack_f1_min": 0.3076923076923077,
+    "edge_f1_min": 0.5061904761904762,
+    "exact_patch_accuracy_min": 0.5333333333333333,
+    "false_edges_per_update_max": 0.26666666666666666,
+    "json_validity_rate_min": 1.0,
+    "none_scenarios_with_false_edges_max": 0,
+    "relation_macro_f1_min": 0.4743589743589744,
+    "schema_validity_rate_min": 1.0
+  },
+  "leakage_policy": {
+    "frozen_qt30_examples_in_training": false,
+    "qt30_parent_episode_split_unchanged": true,
+    "qt30_target_rows_are_byte_content_equivalent_to_v5_messages": true,
+    "vives_and_qt30_are_separate_source_corpora": true
+  },
+  "loss_policy": {
+    "assistant_loss_weight_per_row": 1.0,
+    "fixed_qlora_config_unchanged_from_v5": true,
+    "name": "paired_sequential_per_example_assistant_token_mean",
+    "positive_to_none_row_ratio": 1.0,
+    "shuffle": false
+  },
+  "objective": {
+    "assistant_target": "one exact class label",
+    "external_behavior_unchanged": true,
+    "labels": [
+      "NONE",
+      "SUPPORT",
+      "ATTACK",
+      "REPHRASE"
+    ],
+    "patch_assembly": "unchanged deterministic v5 supplied-ID union",
+    "prompt_sha256": "ed20a5edb899c4fb85e7219e1216716162a568bde23efe5fcb90484b14bb2574"
+  },
+  "output": {
+    "path": "data/dialam/training/dialam_v6_n12288.jsonl",
+    "sha256": "29cf6eff6da61f9cb87cc8752336caf0e309b024b156c8eecb19d2af83362d14"
+  },
+  "pair_policy": {
+    "binary_direct_source_relations_only": true,
+    "negative_overlap_coefficient": {
+      "maximum": 1.0,
+      "mean": 0.404837631967192,
+      "minimum": 0.0
+    },
+    "negative_semantic_retrieval": "deterministic lexical hardness within the same source debate",
+    "negative_shared_content_tokens": {
+      "maximum": 21,
+      "mean": 2.0537109375,
+      "minimum": 0
+    },
+    "one_positive_and_one_none_per_device_batch": true,
+    "same_complete_block_within_each_pair": true
+  },
+  "publication": "VivesDebate-derived rows are governed by CC BY-NC-SA 4.0. QT30-derived rows remain governed by the owner's project-specific redistribution permission. The combined JSONL stays ignored until selected.",
+  "row_label_counts": {
+    "ATTACK": 2049,
+    "NONE": 6144,
+    "REPHRASE": 2048,
+    "SUPPORT": 2047
+  },
+  "row_source_counts": {
+    "DialAM-QT30": 8192,
+    "VivesDebate": 4096
+  },
+  "schema": {
+    "path": "data/dialam/training/training_example_v6.schema.json",
+    "sha256": "84ca5578b8fe8be94fb5b88191866485097104d535b8a0e4f813eeaf1100f53b"
+  },
+  "schema_version": "dialam_training_manifest_v6",
+  "selection_seed": "dialam-v6-vives-warmup-then-qt30-pairwise",
+  "size": 12288,
+  "source": {
+    "v5_manifest_sha256": "624a196c35e47de658ad9fc1d2bd1887cc1e875b021ea4a6891469a9b9882c24",
+    "v5_training_path": "data/dialam/training/dialam_v5_n8192.jsonl",
+    "v5_training_sha256": "23f4b8d552a6bca16cdb79507d89ec9675bb16a8d2f5b7b573c6a0981a42d8db",
+    "vives_license": "CC BY-NC-SA 4.0",
+    "vives_manifest": "data/source/vivesdebate/manifest.json",
+    "vives_source_hashes": {
+      "Debate1.csv": "ba5f566b5eae4cb6ce8fa88d4f6d3454e19b7d51ab30b907a6cb0053f233ac41",
+      "Debate10.csv": "b57b815974239e56f97147dce093931a083330b2f3b7b806afbff64ce4f11470",
+      "Debate2.csv": "6a09f852ccdc64d9506d029d26e4320456910114bb70d608adb05468ec501160",
+      "Debate3.csv": "a0043996e0d5f3ace01478e0dde0c18c68e8491bd494fab05db5706ca16a0ad2",
+      "Debate4.csv": "b24d0c17147fa9ce2a5f8cda057ae89f9e26d2ef937b356bf91998214ab1b3b9",
+      "Debate5.csv": "fc369df04fb5c2088b396a3db51b398f152f3a73a58d7b02717716303d834532",
+      "Debate6.csv": "4fb27de4217c89d0ab14f3b863589ad76eb5a86a31a058af70e1967aae0b1b6b",
+      "Debate7.csv": "c5a2c10716fccd9dca129e3226a74f8f246329477754a098042a29fccac23e89",
+      "Debate8.csv": "39f5ac400b769f5d8e32bae0b8205950f135978738539b00c1fd757705986070",
+      "Debate9.csv": "64bd61d1b568b83641b346647072185d95bab38d9a3e54dd0c1097fd39133325",
+      "manifest.json": "2bd0080a3c0785b5e76b3180734d522ca3c63a315cfafd1ba1388994277b950c"
+    }
+  },
+  "vives_available_unique_positive_relations": {
+    "ATTACK": 151,
+    "REPHRASE": 262,
+    "SUPPORT": 1452
+  },
+  "vives_positive_target_counts": {
+    "ATTACK": 683,
+    "REPHRASE": 683,
+    "SUPPORT": 682
+  },
+  "vives_repetition": {
+    "maximum_positive_occurrences": 5,
+    "repeated_positive_rows": 953,
+    "unique_positive_relations_used": 1095
+  },
+  "vives_source_audit": {
+    "ambiguous_same_pair_relations_excluded": 0,
+    "duplicate_relation_annotations_removed": 0,
+    "eligible_attack": 151,
+    "eligible_rephrase": 263,
+    "eligible_support": 1457,
+    "eligible_unique_attack": 151,
+    "eligible_unique_binary_relations": 1871,
+    "eligible_unique_rephrase": 263,
+    "eligible_unique_support": 1457,
+    "forward_direction_relations_excluded": 7,
+    "incomplete_relation_slots_excluded": 1,
+    "multi_target_edges_excluded": 964,
+    "multi_target_slots_excluded": 312,
+    "relation_slots_seen": 2191,
+    "source_units": 2932
+  }
+}

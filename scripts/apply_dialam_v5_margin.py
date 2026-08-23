@@ -25,6 +25,7 @@ def main() -> None:
     parser.add_argument("--predictions", type=Path, required=True)
     parser.add_argument("--examples", type=Path, required=True)
     parser.add_argument("--margin", type=float, required=True)
+    parser.add_argument("--dataset-version", default="v5.1")
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--summary", type=Path, required=True)
     args = parser.parse_args()
@@ -35,6 +36,7 @@ def main() -> None:
         examples,
         predictions,
         margin=args.margin,
+        dataset_version=args.dataset_version,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)
     with args.output.open("w", encoding="utf-8") as handle:
@@ -42,7 +44,12 @@ def main() -> None:
             handle.write(json.dumps(row, ensure_ascii=False) + "\n")
     metrics = deterministic_model_metrics(examples, calibrated)
     summary = {
-        "schema_version": "dialam_v5_1_fixed_margin_application_v1",
+        "schema_version": (
+            "dialam_v5_1_fixed_margin_application_v1"
+            if args.dataset_version == "v5.1"
+            else "dialam_fixed_margin_application_v1"
+        ),
+        "dataset_version": args.dataset_version,
         "margin": args.margin,
         "input_predictions": str(args.predictions),
         "input_predictions_sha256": _sha256(args.predictions),

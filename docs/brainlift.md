@@ -86,16 +86,21 @@ usually did not receive the intended matched contrast between "same update,
 wrong block" and "same update, correct target block." The low training loss
 (0.087 for v1 and 0.081 for v2) combined with weak held-out metrics also points
 to data/formulation mismatch or annotation ambiguity rather than simple
-undertraining.
+undertraining. Row balance also overstated negative training weight: in v2,
+positive/mixed assistant targets contain 4.77 times as many characters as all
+NONE targets combined (7.10 times in v1). Because loss is computed over
+unmasked answer tokens, the short `{"relations":[]}` target receives much less
+supervision than its 50% row share suggests.
 
 If another training run is justified, the highest-value change is a paired
 contrastive v3 dataset: include each difficult negative with its exact positive
-sibling and preserve class balance at the update level. A learning-rate or
-epoch sweep is lower priority because it would optimize already-low training
+sibling, preserve class balance at the update level, and use per-example or
+class-weighted loss so short NONE answers are not underweighted. A learning-rate
+or epoch sweep is lower priority because it would optimize already-low training
 loss without fixing the missing contrast. A pairwise edge-classification
-objective with deterministic block assembly is a stronger redesign, but it
-should be treated as a new formulation rather than silently mixed into the
-completed fixed experiment.
+objective with one fixed-length class target and deterministic block assembly
+is a stronger redesign, but it should be treated as a new formulation rather
+than silently mixed into the completed fixed experiment.
 
 ## Public artifacts and reproduction
 

@@ -176,6 +176,26 @@ def _write_doc(report: dict[str, Any]) -> None:
     for name, passed in report["development_gate_checks"].items():
         lines.append(f"- {'PASS' if passed else 'FAIL'}: `{name}`")
 
+    diagnosis = report["failure_diagnosis"]
+    lines.extend(
+        [
+            "",
+            "## Failure diagnosis",
+            "",
+            f"V6 produced {diagnosis['v6_false_positive_edges']} false-positive edges versus {diagnosis['v6_false_negative_edges']} false negatives. "
+            f"SUPPORT accounted for {diagnosis['v6_support_false_positive_edges']} of the false positives ({diagnosis['v6_support_false_positive_share']:.0%}). "
+            f"Compared with v5.1 development, false positives rose from {diagnosis['v5_1_false_positive_edges']} to {diagnosis['v6_false_positive_edges']} and NONE cases with any false edge rose from {diagnosis['v5_1_none_scenarios_with_false_edges']}/6 to {diagnosis['v6_none_scenarios_with_false_edges']}/6.",
+            "",
+            "The observed regression is consistent with cross-domain relation warm-up",
+            "strengthening the model's tendency to choose a semantic relation when the",
+            "correct direct-edge label is NONE. It does not prove a language-transfer",
+            "cause, but it rules out this naive Vives curriculum as the next direction.",
+            "The next controlled experiment should stay QT30-only and optimize the",
+            "known decision boundary directly with hard candidate-level preference or",
+            "margin pairs, keeping the same development-first gate.",
+        ]
+    )
+
     if "v6_1_frozen_n12288" not in report:
         lines.extend(
             [
@@ -283,6 +303,32 @@ def build_report() -> dict[str, Any]:
             "none_diagnostics": selected["none_diagnostics"],
         },
         "v5_1_frozen_n8192": baseline["v5_1_frozen_n8192"],
+        "failure_diagnosis": {
+            "dominant_error": "false_positive",
+            "dominant_false_positive_relation": "SUPPORT",
+            "v5_1_false_positive_edges": baseline["v5_1_development_n8192"][
+                "false_positive_edges"
+            ],
+            "v6_false_positive_edges": selected["metrics"]["false_positive_edges"],
+            "v6_false_negative_edges": selected["metrics"]["false_negative_edges"],
+            "v6_support_false_positive_edges": selected["metrics"][
+                "relation_metrics"
+            ]["SUPPORT"]["false_positive"],
+            "v6_support_false_positive_share": (
+                selected["metrics"]["relation_metrics"]["SUPPORT"]["false_positive"]
+                / selected["metrics"]["false_positive_edges"]
+            ),
+            "v5_1_none_scenarios_with_false_edges": baseline[
+                "v5_1_development_n8192"
+            ]["none_diagnostics"]["scenarios_with_false_edges"],
+            "v6_none_scenarios_with_false_edges": selected["none_diagnostics"][
+                "scenarios_with_false_edges"
+            ],
+            "next_controlled_intervention": (
+                "QT30-only hard candidate-level preference or margin training; no new "
+                "source corpus"
+            ),
+        },
         "training": {
             "base_model": training["fixed_config"]["base_model"],
             "size": training["size"],

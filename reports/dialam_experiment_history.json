@@ -324,6 +324,31 @@
       "run_id": "v5-1-n8192-frozen",
       "source_artifact": "reports/dialam_v5_1_result.json",
       "status": "PROMOTE_V5_1_AS_FINAL_DIRECTION"
+    },
+    {
+      "evaluation_scope": "episode_disjoint_development_30",
+      "intervention": "VivesDebate pairwise warm-up, exact QT30 v5 target stage, and development-only NONE calibration",
+      "label": "v6.1/12288",
+      "metrics": {
+        "attack_f1": 0.3076923076923077,
+        "edge_f1": 0.39999999999999997,
+        "edge_precision": 0.3548387096774194,
+        "edge_recall": 0.4583333333333333,
+        "exact_patch_accuracy": 0.3333333333333333,
+        "false_edges_per_update": 0.6666666666666666,
+        "json_validity_rate": 1.0,
+        "judge_robustness_mean": null,
+        "judge_spec_adherence_mean": null,
+        "none_scenarios_with_false_edges": 5,
+        "relation_macro_f1": 0.3974358974358974,
+        "rephrase_f1": 0.5,
+        "schema_validity_rate": 1.0,
+        "support_f1": 0.3846153846153846
+      },
+      "n": 12288,
+      "run_id": "v6-1-n12288-development",
+      "source_artifact": "reports/dialam_v6_calibration.json",
+      "status": "RETAIN_V5_1_V6_FAILED_DEVELOPMENT_GATE"
     }
   ],
   "schema_version": "dialam_experiment_history_v1",
@@ -352,6 +377,14 @@
     {
       "path": "reports/dialam_v5_1_result.json",
       "sha256": "9a0bbd3b28b5dc377b023cb4d713c80777bb36df7e7997088ffea1281c6f774d"
+    },
+    {
+      "path": "reports/dialam_v6_calibration.json",
+      "sha256": "3a16e7db8ab285ee78f3f1a761695c8684677739444cc926db5c5c6bb8608de4"
+    },
+    {
+      "path": "reports/dialam_v6_result.json",
+      "sha256": "b0d531022b12579a68ae725fe29b311641ea9e2c6a74d0adbd468aecb07f7b00"
     }
   ]
 }

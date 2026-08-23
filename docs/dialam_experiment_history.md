@@ -27,6 +27,7 @@ results are deliberately separated; they are not interchangeable evaluation sets
 | Pairwise base | — | 3.3% | 10.8% | 7.5% | 4.467 | 6 | v5 formulation baseline |
 | v5/8192 | 8192 | 40.0% | 48.3% | 49.5% | 0.667 | 6 | RETAIN_V3_V5_FAILED_DEVELOPMENT_GATE |
 | v5.1/8192 | 8192 | 53.3% | 53.3% | 54.3% | 0.300 | 2 | PASS_RUN_REUSED_FROZEN_BENCHMARK |
+| v6.1/12288 | 12288 | 33.3% | 40.0% | 39.7% | 0.667 | 5 | RETAIN_V5_1_V6_FAILED_DEVELOPMENT_GATE |
 
 ## Interpretation
 

@@ -174,6 +174,7 @@ def evaluate_prediction_file(
         "target": predictions[0].get("target"),
         "model": predictions[0].get("model"),
         "adapter_size": predictions[0].get("adapter_size"),
+        "dataset_version": predictions[0].get("dataset_version"),
     }
     summary = {
         "schema_version": "dialam_model_eval_v1",

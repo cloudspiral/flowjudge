@@ -70,6 +70,18 @@ reloaded, and completed the unchanged frozen evaluation. It raised schema
 validity from 0% to 100%, but edge F1 is only 9.5%; see
 [`docs/dialam_qlora_smoke_results.md`](docs/dialam_qlora_smoke_results.md).
 
+The fixed v1 curve is now complete. n=2048 is the best v1 point with 8/30 exact
+patches, 16.7% edge F1, 16.7% relation macro-F1, and 0.667 false edges per
+update; no tested N clears the frozen reliability bar. SUPPORT remains the
+largest false-positive class. A single controlled v2 n=2048 run replaced
+random NONE selection with 1,024 topically overlapping no-edge blocks, but it
+did not clear the preregistered improvement rule: edge F1 rose to 21.4% while
+false edges worsened to 0.867/update, exact accuracy fell to 7/30, and judge
+Robustness fell to 1.43/4. The v2 checkpoint is preserved but is not promoted
+or packaged for Hugging Face. See
+[`docs/dialam_v1_efficiency_results.md`](docs/dialam_v1_efficiency_results.md)
+and [`docs/dialam_v2_hard_negative_results.md`](docs/dialam_v2_hard_negative_results.md).
+
 The private source audit includes three complete maps and therefore remains
 Git-ignored. Its publishable metadata, generated statistics, known source
 defects, permission basis, schemas, and reconstruction scripts are under

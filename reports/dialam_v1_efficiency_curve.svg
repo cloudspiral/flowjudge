@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="660" height="330" viewBox="0 0 660 330" role="img" aria-labelledby="title desc">
+  <title id="title">DialAM v1 performance versus training examples</title>
+  <desc id="desc">Exact patch accuracy and edge F1 for QLoRA checkpoints trained on 256, 512, 1024, and 2048 examples.</desc>
+  <rect width="660" height="330" fill="white"/>
+  <line x1="70" y1="35" x2="70" y2="255" stroke="#555"/>
+  <line x1="70" y1="255" x2="600" y2="255" stroke="#555"/>
+  <line x1="70" y1="145" x2="600" y2="145" stroke="#ddd" stroke-dasharray="4 4"/>
+  <text x="55" y="260" text-anchor="end">0%</text>
+  <text x="55" y="150" text-anchor="end">15%</text>
+  <text x="55" y="40" text-anchor="end">30%</text>
+  <text x="90" y="282" text-anchor="middle">256</text><text x="250" y="282" text-anchor="middle">512</text><text x="410" y="282" text-anchor="middle">1024</text><text x="570" y="282" text-anchor="middle">2048</text>
+  <text x="335" y="310" text-anchor="middle">Training examples (N)</text>
+  <polyline points="90,132.8 250,132.8 410,132.8 570,59.4" fill="none" stroke="#2563eb" stroke-width="3"/>
+  <polyline points="90,185.2 250,185.2 410,192.6 570,132.8" fill="none" stroke="#dc2626" stroke-width="3"/>
+  <line x1="255" y1="18" x2="285" y2="18" stroke="#2563eb" stroke-width="3"/>
+  <text x="291" y="22">Exact patch accuracy</text>
+  <line x1="465" y1="18" x2="495" y2="18" stroke="#dc2626" stroke-width="3"/>
+  <text x="501" y="22">Edge F1</text>
+</svg>

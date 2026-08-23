@@ -1,0 +1,225 @@
+{
+  "controlled_variables": {
+    "base_model": "Qwen/Qwen3-0.6B",
+    "eval_sha256": "76badbae23ace13b22822335fa794f7cc796ce0d02753666ebd83c4d7260305b",
+    "eval_unchanged": true,
+    "judge_rubric_sha256": "b27fe77a9adce4fe586327fa556a51352efb76d402b93676df2173225be35f66",
+    "judge_rubric_unchanged": true,
+    "n": 2048,
+    "training_config_sha256": "2cbf97d0f552f70df423283aad5bca589189857edb8b3f257561082eda16aa9f",
+    "training_config_unchanged": true
+  },
+  "data_change": {
+    "hard_negative_policy": {
+      "description": "Select an all-negative fixed block only when the same update has a direct gold edge in a different block, then rank without embeddings by content-word overlap, shared-token count, Jaccard similarity, recency, and seeded hash.",
+      "duplicates": false,
+      "kind": "positive_sibling_lexical_no_edge",
+      "overlap_coefficient": {
+        "maximum": 1.0,
+        "mean": 0.4733097956730769,
+        "minimum": 0.125
+      },
+      "positive_sibling_count": 1024,
+      "selected_count": 1024,
+      "semantic_candidate_retrieval": false,
+      "shared_content_tokens": {
+        "maximum": 13,
+        "mean": 2.4560546875,
+        "minimum": 1
+      },
+      "with_two_or_more_shared_content_tokens": 906
+    },
+    "v1_none_examples": 819,
+    "v2_category_counts": {
+      "ATTACK": 256,
+      "MIXED": 103,
+      "NONE": 1024,
+      "REPHRASE": 307,
+      "SUPPORT": 358
+    },
+    "v2_none_examples": 1024,
+    "v2_private_jsonl_sha256": "a860eb5ce7847c7ad995f112229d9f7eb67073d220737ddfdda14c0958cbcb08",
+    "v2_relation_counts": {
+      "ATTACK": 294,
+      "REPHRASE": 388,
+      "SUPPORT": 459
+    }
+  },
+  "decision": "V2_DID_NOT_CLEAR_MATERIAL_IMPROVEMENT_BAR",
+  "delta_v2_minus_v1": {
+    "edge_f1": 0.047619047619047616,
+    "edge_precision": 0.020833333333333343,
+    "edge_recall": 0.08333333333333334,
+    "exact_patch_accuracy": -0.033333333333333326,
+    "false_edges_per_update": 0.20000000000000007,
+    "false_positive_edges": 6,
+    "mean_judge_robustness": -0.6666666666666667,
+    "none_scenarios_with_false_edges": 3,
+    "relation_macro_f1": 0.020713926596279547
+  },
+  "experiment": "v2/n2048 hard-negative correction versus v1/n2048",
+  "material_improvement": false,
+  "preregistered_criterion": {
+    "baseline": "v1/n2048",
+    "false_edges_per_update_must_not_increase": true,
+    "json_and_schema_validity_must_remain": 1.0,
+    "minimum_absolute_edge_f1_gain": 0.05
+  },
+  "private_artifacts": {
+    "checkpoint": {
+      "path": "artifacts/dialam_qlora/v2_n2048/adapter",
+      "redistribution": "private/local checkpoint pending publication",
+      "tree_sha256": "13e8a60233eee5c70f37ab6992595c8bfb01595b2efda30db4e15d7905c9efcb"
+    },
+    "judge_transcripts": {
+      "path": "results/dialam_model_eval/v2_n2048/judge_transcripts.jsonl",
+      "redistribution": "private/local only",
+      "sha256": "2bcfa6110ddf94ae905ad21a451924e3ab69b541758b4182ec39d1c37efa61d6"
+    },
+    "predictions": {
+      "path": "results/dialam_model_eval/v2_n2048/predictions.jsonl",
+      "redistribution": "private/local only",
+      "sha256": "4040cbcf8fda05ec6a113b64c21c1f74f38cfc4337fc91ad0a6a6240462521a1"
+    },
+    "records": {
+      "path": "results/dialam_model_eval/v2_n2048/records.jsonl",
+      "redistribution": "private/local only",
+      "sha256": "14dbc02d0d26d87740c5391eaf305d50f97381eb37681a4a21f8f8a61384af04"
+    },
+    "training_jsonl": {
+      "path": "data/dialam/training/dialam_v2_n2048.jsonl",
+      "redistribution": "private/local only",
+      "sha256": "a860eb5ce7847c7ad995f112229d9f7eb67073d220737ddfdda14c0958cbcb08"
+    }
+  },
+  "reproduction_commands": [
+    ".venv/bin/python scripts/build_dialam_training_v2.py",
+    "modal run scripts/modal_dialam_qlora.py --action train --size 2048 --dataset-version v2",
+    "modal run scripts/modal_dialam_qlora.py --action evaluate --target tuned --size 2048 --dataset-version v2 --output-path results/dialam_model_generation/v2_n2048/predictions.jsonl",
+    ".venv/bin/python scripts/evaluate_dialam_model.py --predictions results/dialam_model_generation/v2_n2048/predictions.jsonl --output-dir results/dialam_model_eval/v2_n2048 --approval APPROVE_DIALAM_MODEL_JUDGING",
+    ".venv/bin/python scripts/build_dialam_v2_report.py"
+  ],
+  "schema_version": "dialam_v1_to_v2_comparison_v1",
+  "training": {
+    "checkpoint_tree_sha256": "13e8a60233eee5c70f37ab6992595c8bfb01595b2efda30db4e15d7905c9efcb",
+    "metrics": {
+      "epoch": 3.0,
+      "total_flos": 1.230332116992e+16,
+      "train_loss": 0.0809513545051838,
+      "train_runtime": 1302.4078,
+      "train_samples_per_second": 4.717,
+      "train_steps_per_second": 0.59
+    },
+    "reload_verified": true,
+    "train_sha256": "a860eb5ce7847c7ad995f112229d9f7eb67073d220737ddfdda14c0958cbcb08",
+    "training_manifest_sha256": "5e3589d27d5092ae84ca2a167534d05ef3f37e1fd0b22307e7ad0abe0d527012"
+  },
+  "v1_n2048": {
+    "edge_f1": 0.16666666666666666,
+    "edge_precision": 0.16666666666666666,
+    "edge_recall": 0.16666666666666666,
+    "exact_patch_accuracy": 0.26666666666666666,
+    "false_edges_per_update": 0.6666666666666666,
+    "false_positive_edges": 20,
+    "judge_metrics": {
+      "judge_validity_rate": 1.0,
+      "mean_robustness": 2.1,
+      "mean_spec_adherence": 4.0,
+      "valid_judgments": 30
+    },
+    "none_diagnostics": {
+      "false_edge_labels": {
+        "REPHRASE": 1,
+        "SUPPORT": 2
+      },
+      "false_positive_rate": 0.3333333333333333,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 2
+    },
+    "relation_macro_f1": 0.16732026143790849,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.26666666666666666,
+        "false_negative": 6,
+        "false_positive": 5,
+        "precision": 0.2857142857142857,
+        "recall": 0.25,
+        "true_positive": 2
+      },
+      "REPHRASE": {
+        "f1": 0.23529411764705882,
+        "false_negative": 6,
+        "false_positive": 7,
+        "precision": 0.2222222222222222,
+        "recall": 0.25,
+        "true_positive": 2
+      },
+      "SUPPORT": {
+        "f1": 0.0,
+        "false_negative": 8,
+        "false_positive": 8,
+        "precision": 0.0,
+        "recall": 0.0,
+        "true_positive": 0
+      }
+    }
+  },
+  "v2_clears_frozen_reliability_bar": false,
+  "v2_failed_reliability_thresholds": [
+    "edge_f1",
+    "exact_patch_accuracy",
+    "false_edges_per_update",
+    "judge_robustness_mean",
+    "relation_macro_f1"
+  ],
+  "v2_n2048": {
+    "edge_f1": 0.21428571428571427,
+    "edge_precision": 0.1875,
+    "edge_recall": 0.25,
+    "exact_patch_accuracy": 0.23333333333333334,
+    "false_edges_per_update": 0.8666666666666667,
+    "false_positive_edges": 26,
+    "judge_metrics": {
+      "judge_validity_rate": 1.0,
+      "mean_robustness": 1.4333333333333333,
+      "mean_spec_adherence": 4.0,
+      "valid_judgments": 30
+    },
+    "none_diagnostics": {
+      "false_edge_labels": {
+        "REPHRASE": 1,
+        "SUPPORT": 5
+      },
+      "false_positive_rate": 0.8333333333333334,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 5
+    },
+    "relation_macro_f1": 0.18803418803418803,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.0,
+        "false_negative": 8,
+        "false_positive": 4,
+        "precision": 0.0,
+        "recall": 0.0,
+        "true_positive": 0
+      },
+      "REPHRASE": {
+        "f1": 0.33333333333333326,
+        "false_negative": 5,
+        "false_positive": 7,
+        "precision": 0.3,
+        "recall": 0.375,
+        "true_positive": 3
+      },
+      "SUPPORT": {
+        "f1": 0.23076923076923078,
+        "false_negative": 5,
+        "false_positive": 15,
+        "precision": 0.16666666666666666,
+        "recall": 0.375,
+        "true_positive": 3
+      }
+    }
+  }
+}

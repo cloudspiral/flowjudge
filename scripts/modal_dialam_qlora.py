@@ -14,6 +14,7 @@ PERSISTENT_ROOT = Path("/workspace/persistent")
 CHECKPOINT_ROOT = PERSISTENT_ROOT / "checkpoints"
 BASE_MODEL = "Qwen/Qwen3-0.6B"
 SIZES = (256, 512, 1024, 2048)
+DATASET_VERSIONS = ("v1", "v2")
 MAX_SEQ_LENGTH = 2048
 SEED = 20260823
 
@@ -60,6 +61,19 @@ def _load_rows(path: Path) -> list[dict]:
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines() if line]
 
 
+def _checkpoint_label(size: int, dataset_version: str) -> str:
+    if dataset_version not in DATASET_VERSIONS:
+        raise ValueError(f"dataset_version must be one of {DATASET_VERSIONS}")
+    if dataset_version == "v2" and size != 2048:
+        raise ValueError("the fixed v2 experiment is registered only for n=2048")
+    return f"n{size}" if dataset_version == "v1" else f"v2_n{size}"
+
+
+def _train_filename(size: int, dataset_version: str) -> str:
+    _checkpoint_label(size, dataset_version)
+    return f"dialam_n{size}.jsonl" if dataset_version == "v1" else f"dialam_v2_n{size}.jsonl"
+
+
 def _generate(model: object, tokenizer: object, prompt: str, max_new_tokens: int = 256) -> str:
     import torch
 
@@ -87,7 +101,7 @@ def _generate(model: object, tokenizer: object, prompt: str, max_new_tokens: int
     timeout=60 * 60 * 2,
     volumes={str(PERSISTENT_ROOT): volume},
 )
-def train_checkpoint(size: int) -> dict:
+def train_checkpoint(size: int, dataset_version: str = "v1") -> dict:
     if size not in SIZES:
         raise ValueError(f"size must be one of {SIZES}")
 
@@ -106,11 +120,12 @@ def train_checkpoint(size: int) -> dict:
     from unsloth import FastLanguageModel
 
     set_seed(SEED)
-    train_path = REMOTE_DATA_DIR / f"dialam_n{size}.jsonl"
+    checkpoint_label = _checkpoint_label(size, dataset_version)
+    train_path = REMOTE_DATA_DIR / _train_filename(size, dataset_version)
     rows = _load_rows(train_path)
     if len(rows) != size:
         raise ValueError(f"expected {size} training rows, found {len(rows)}")
-    checkpoint_dir = CHECKPOINT_ROOT / f"n{size}"
+    checkpoint_dir = CHECKPOINT_ROOT / checkpoint_label
     adapter_dir = checkpoint_dir / "adapter"
     if checkpoint_dir.exists():
         raise FileExistsError(
@@ -227,6 +242,7 @@ def train_checkpoint(size: int) -> dict:
         "schema_version": "dialam_modal_qlora_run_v1",
         "completed_at": datetime.now(UTC).isoformat(),
         "size": size,
+        "dataset_version": dataset_version,
         "train_sha256": hashlib.sha256(train_path.read_bytes()).hexdigest(),
         "fixed_config": FIXED_CONFIG,
         "gpu": torch.cuda.get_device_name(0),
@@ -256,7 +272,11 @@ def train_checkpoint(size: int) -> dict:
     timeout=60 * 60,
     volumes={str(PERSISTENT_ROOT): volume},
 )
-def generate_frozen_eval(target: str, size: int = 256) -> list[dict]:
+def generate_frozen_eval(
+    target: str,
+    size: int = 256,
+    dataset_version: str = "v1",
+) -> list[dict]:
     import torch
     from unsloth import FastLanguageModel
 
@@ -264,10 +284,11 @@ def generate_frozen_eval(target: str, size: int = 256) -> list[dict]:
         raise ValueError("target must be base or tuned")
     if target == "tuned" and size not in SIZES:
         raise ValueError(f"size must be one of {SIZES}")
+    checkpoint_label = _checkpoint_label(size, dataset_version)
     model_name = (
         BASE_MODEL
         if target == "base"
-        else str(CHECKPOINT_ROOT / f"n{size}" / "adapter")
+        else str(CHECKPOINT_ROOT / checkpoint_label / "adapter")
     )
     if target == "tuned" and not Path(model_name).is_dir():
         raise FileNotFoundError(f"missing trained adapter: {model_name}")
@@ -291,6 +312,7 @@ def generate_frozen_eval(target: str, size: int = 256) -> list[dict]:
                 "target": target,
                 "model": BASE_MODEL,
                 "adapter_size": size if target == "tuned" else None,
+                "dataset_version": dataset_version if target == "tuned" else None,
                 "raw_response": response,
             }
         )
@@ -305,14 +327,22 @@ def main(
     action: str,
     size: int = 256,
     target: str = "base",
+    dataset_version: str = "v1",
     output_path: str = "",
 ) -> None:
     if action == "train":
-        result = train_checkpoint.remote(size)
-        default = PROJECT_ROOT / "artifacts" / "dialam_qlora" / f"n{size}" / "remote_training_result.json"
+        checkpoint_label = _checkpoint_label(size, dataset_version)
+        result = train_checkpoint.remote(size, dataset_version)
+        default = (
+            PROJECT_ROOT
+            / "artifacts"
+            / "dialam_qlora"
+            / checkpoint_label
+            / "remote_training_result.json"
+        )
     elif action == "evaluate":
-        result = generate_frozen_eval.remote(target, size)
-        label = "base" if target == "base" else f"n{size}"
+        result = generate_frozen_eval.remote(target, size, dataset_version)
+        label = "base" if target == "base" else _checkpoint_label(size, dataset_version)
         default = PROJECT_ROOT / "results" / "dialam_model_eval" / label / "predictions.jsonl"
     else:
         raise ValueError("action must be train or evaluate")

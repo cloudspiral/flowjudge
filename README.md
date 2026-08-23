@@ -92,6 +92,14 @@ See [`docs/dialam_v1_efficiency_results.md`](docs/dialam_v1_efficiency_results.m
 [`docs/dialam_v2_hard_negative_results.md`](docs/dialam_v2_hard_negative_results.md),
 and [`docs/dialam_v3_results.md`](docs/dialam_v3_results.md).
 
+A post-assignment v4 experiment doubled the corpus to 8,192 rows and balanced
+SUPPORT, ATTACK, and REPHRASE exposure while retaining the complete v3
+foundation. On the episode-disjoint development set it improved edge F1 from
+21.1% to 34.1% and ATTACK F1 from 0% to 54.5%, but NONE cases with a false edge
+worsened from 2/6 to 4/6. V4 therefore failed its preregistered development
+gate; the reused frozen set and judge were not run, and v3 remains selected.
+See [`docs/dialam_v4_results.md`](docs/dialam_v4_results.md).
+
 The assignment-prescribed base-versus-tuned evaluator now auto-detects DialAM
 `PatchExample` JSONL and writes the complete deterministic table plus blinded
 judge transcripts:

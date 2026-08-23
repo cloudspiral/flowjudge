@@ -43,6 +43,11 @@ remains authoritative.
   the aggregate v3 report.
 - Exact evaluation/release-code commit:
   `f881a6b5c0b4fd537b0be34d8543626053e2bdd7`.
+- Post-assignment v4 class-balanced rehearsal experiment at N=8192. It
+  improved episode-disjoint development edge F1 from 21.1% to 34.1% and ATTACK
+  F1 from 0% to 54.5%, but worsened NONE cases with a false edge from 2/6 to
+  4/6. It failed its preregistered development gate, so the reused frozen set
+  and judge were not run and the published v3 selection remains unchanged.
 
 ## Still required before final submission
 
@@ -59,4 +64,7 @@ false-positive SUPPORT/NONE failure. It still misses too many true relations,
 especially ATTACK edges, so no tested run reliably holds semantic edge
 selection and minimum viable N is not established. The assignment explicitly
 calls for genuine results even when imperfect; the submission should preserve
-that conclusion rather than reinterpret the frozen reliability threshold.
+that conclusion rather than reinterpret the frozen reliability threshold. V4
+shows that additional class-balanced rows can recover ATTACK edges, but doing so
+without preserving exact positive/NONE pairing reintroduces SUPPORT false
+positives; more rows alone are not the remaining solution.

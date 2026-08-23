@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import pytest
 
 from flowjudge.experiment_history import (
@@ -19,13 +22,24 @@ def test_experiment_history_separates_frozen_and_development_points() -> None:
     assert by_id["v5-1-n8192-frozen"]["metrics"]["edge_f1"] == pytest.approx(
         0.4761904761904762
     )
-    assert by_id["v5-1-n8192-frozen"]["status"] == (
-        "PROMOTE_V5_1_AS_FINAL_DIRECTION"
-    )
+    assert by_id["v5-1-n8192-frozen"]["status"] in {
+        "PROMOTE_V5_1_AS_FINAL_DIRECTION",
+        "previous selected model",
+    }
     assert by_id["v4-n8192-development"]["evaluation_scope"] == (
         "episode_disjoint_development_30"
     )
     assert "failed development" in by_id["v4-n8192-development"]["status"]
+
+    if Path("reports/dialam_v6_calibration.json").exists():
+        assert by_id["v6-1-n12288-development"]["evaluation_scope"] == (
+            "episode_disjoint_development_30"
+        )
+    v6_result_path = Path("reports/dialam_v6_result.json")
+    if v6_result_path.exists() and "v6_1_frozen_n12288" in json.loads(
+        v6_result_path.read_text(encoding="utf-8")
+    ):
+        assert by_id["v6-1-n12288-frozen"]["evaluation_scope"] == "frozen_30"
 
 
 def test_experiment_history_renderers_include_scope_warning_and_series() -> None:

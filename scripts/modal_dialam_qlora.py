@@ -534,13 +534,7 @@ def train_preference_checkpoint(
 
     from datetime import UTC, datetime
 
-    import torch
-    from datasets import Dataset
-    from transformers import Trainer, TrainerCallback, TrainingArguments, set_seed
-    from unsloth import FastLanguageModel
-
     volume.reload()
-    set_seed(SEED)
     checkpoint_label = _checkpoint_label(size, dataset_version)
     train_path = REMOTE_DATA_DIR / _train_filename(size, dataset_version)
     rows = _load_rows(train_path)
@@ -596,6 +590,13 @@ def train_preference_checkpoint(
         )
         completed["idempotent_reuse"] = True
         return completed
+
+    import torch
+    from datasets import Dataset
+    from unsloth import FastLanguageModel
+    from transformers import Trainer, TrainerCallback, TrainingArguments, set_seed
+
+    set_seed(SEED)
 
     progress_path = run_dir / PROGRESS_FILENAME
     progress = (

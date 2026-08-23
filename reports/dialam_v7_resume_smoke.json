@@ -1,0 +1,53 @@
+{
+  "all_checks_passed": true,
+  "checks": {
+    "completed_rerun_was_idempotent": true,
+    "final_adapter_reloaded": true,
+    "first_invocation_created_new_run": true,
+    "full_trainer_state_was_persisted": true,
+    "idempotent_rerun_preserved_adapter_hash": true,
+    "idempotent_rerun_preserved_step": true,
+    "nested_smoke_size_is_256": true,
+    "run_completed_step_32": true,
+    "second_invocation_resumed_step_8": true,
+    "source_adapter_matches_frozen_v5": true,
+    "volume_was_committed_on_every_save": true
+  },
+  "data_manifest_sha256": "21aed808fec3ef37fc34c164ef720ccaa09a5e8f956fd926985f7be21d08cbea",
+  "decision": "PASS",
+  "experiment": "v7/n256 intentional interruption and exact-state resume",
+  "frozen_eval_touched": false,
+  "idempotent_reuse": {
+    "adapter_tree_sha256": "c0d71b7273aac44f314ab692f3a015eac60c3ca8b823bb8ca40ab8c6b698c341",
+    "global_step": 32,
+    "modal_app_id": "ap-x0dm0Ybn8Bka8iZxgPh5Ix",
+    "returned_without_training": true
+  },
+  "intentional_interruption": {
+    "committed_global_step": 8,
+    "expected_error": "INTENTIONAL_RESUME_SMOKE_INTERRUPTION_AFTER_COMMITTED_CHECKPOINT",
+    "modal_app_id": "ap-ApDIPOywqombJddDd9QdzV"
+  },
+  "judge_calls": 0,
+  "preregistration_sha256": "23ea2df015c3f48d222f3d506765e1ad6d5c142703d68c461e6302aeb34610ed",
+  "private_local_artifacts": {
+    "idempotent_result": {
+      "path": "artifacts/dialam_qlora/v7_resume_smoke_n256/idempotent_reuse_result.json",
+      "sha256": "dad83fc0b6b7b9133364970c139874cf1d2be8adb62ee06300609af181c6adb3"
+    },
+    "modal_checkpoint_root": "/workspace/persistent/checkpoints/v7_resume_smoke_n256",
+    "training_result": {
+      "path": "artifacts/dialam_qlora/v7_resume_smoke_n256/remote_training_result.json",
+      "sha256": "76b9ee9ef96ab81f8b9f33ef629fd761649ede2598ed92e880fa5d72ff9eaade"
+    }
+  },
+  "resume_completion": {
+    "adapter_tree_sha256": "c0d71b7273aac44f314ab692f3a015eac60c3ca8b823bb8ca40ab8c6b698c341",
+    "completed_global_step": 32,
+    "modal_app_id": "ap-nS3VP1GS16RPfKQg90wQ2E",
+    "reload_verified": true,
+    "resumed_from_step": 8,
+    "train_loss": 0.11695492547005415
+  },
+  "schema_version": "dialam_v7_resume_smoke_result_v1"
+}

@@ -1,0 +1,380 @@
+{
+  "controlled_variables": {
+    "base_model": "Qwen/Qwen3-0.6B",
+    "declared_intervention": "double training rows to 8192; balance single-label positive rows; retain v3 foundation; add unique hard NONE rehearsal; repeat only ATTACK",
+    "development_eval_sha256": "78f4ccc35312a4e3e74cce062346af040ff4e00b365a1312c2a627d7d0e1ec55",
+    "development_eval_unchanged_from_v3": true,
+    "loss_reduction_unchanged_from_v3": true,
+    "optimization_config_unchanged_from_v3": true
+  },
+  "data": {
+    "category_counts": {
+      "ATTACK": 1344,
+      "MIXED": 64,
+      "NONE": 4096,
+      "REPHRASE": 1344,
+      "SUPPORT": 1344
+    },
+    "category_unique_example_counts": {
+      "ATTACK": 483,
+      "MIXED": 64,
+      "NONE": 4096,
+      "REPHRASE": 1344,
+      "SUPPORT": 1344
+    },
+    "development_parent_episode_count": 4,
+    "dialogue_leakage": false,
+    "frozen_parent_episode_count": 6,
+    "private_jsonl_sha256": "2f66d56f509c13c5b8b3120f4c5d3c5e1fdd28f7f3e3dbf543d34d2a6b277045",
+    "relation_counts": {
+      "ATTACK": 1373,
+      "REPHRASE": 1411,
+      "SUPPORT": 1443
+    },
+    "repetition_policy": {
+      "categories_with_repeated_examples": [
+        "ATTACK"
+      ],
+      "description": "Retain every v3 foundation row; add every unused ATTACK block before deterministically cycling ATTACK examples to class balance. Other supplemental positive classes and every NONE supplement remain unique.",
+      "maximum_occurrences_of_one_example": 3,
+      "repeated_copy_count": 861,
+      "unique_example_count": 7331
+    },
+    "sampling_role_counts": {
+      "NONE": 4096,
+      "POSITIVE": 4096
+    },
+    "size": 8192,
+    "source_stage_counts": {
+      "V3_FOUNDATION": 4096,
+      "V4_CLASS_BALANCE": 4096
+    },
+    "supplement_policy": {
+      "description": "Use all available positive-class diversity before deterministic ATTACK repetition. Exhaust unused no-edge blocks whose update has a direct edge elsewhere, then fill with the hardest unused all-negative blocks ranked only by within-block lexical overlap and chronology.",
+      "none_count": 2048,
+      "none_kind_counts": {
+        "all_negative_update": 1531,
+        "direct_edge_elsewhere": 517
+      },
+      "none_shared_content_tokens": {
+        "maximum": 15,
+        "mean": 2.4912109375,
+        "minimum": 0
+      },
+      "positive_target_counts": {
+        "ATTACK": 1155,
+        "MIXED": 34,
+        "REPHRASE": 429,
+        "SUPPORT": 430
+      },
+      "semantic_candidate_retrieval": false
+    },
+    "training_parent_episode_count": 20
+  },
+  "decision": "RETAIN_V3_V4_FAILED_DEVELOPMENT_GATE",
+  "delta_v4_minus_v3_development": {
+    "attack_f1": 0.5454545454545454,
+    "edge_f1": 0.13093709884467267,
+    "edge_precision": 0.12605042016806722,
+    "edge_recall": 0.12500000000000003,
+    "exact_patch_accuracy": 0.033333333333333326,
+    "false_edges_per_update": 0.0,
+    "false_negative_edges": -3,
+    "false_positive_edges": 0,
+    "none_scenarios_with_false_edges": 2,
+    "relation_macro_f1": 0.14194890077243014,
+    "rephrase_f1": -0.16666666666666666,
+    "support_f1": 0.047058823529411764
+  },
+  "development_gate_checks": {
+    "attack_f1": true,
+    "edge_f1": true,
+    "exact_patch_accuracy": true,
+    "false_edges_per_update": true,
+    "json_validity": true,
+    "none_scenarios_with_false_edges": false,
+    "schema_validity": true
+  },
+  "development_gate_passed": false,
+  "experiment": "v4/n8192 class-balanced rehearsal versus v3/n4096",
+  "failed_development_conditions": [
+    "none_scenarios_with_false_edges"
+  ],
+  "failure_diagnosis": {
+    "blocking_regression": "NONE cases with a false edge doubled from 2/6 to 4/6; every false edge on those cases was SUPPORT. REPHRASE F1 also fell to 0.0%.",
+    "interpretation": "Class balance repaired rare ATTACK recall but did not preserve v3's paired calibration. More rows alone are not the limiting factor; the joint variable-length patch target still trades relation recall against NONE precision and label discrimination.",
+    "recommended_next_experiment": "If work continues, preregister pairwise SUPPORT/ATTACK/REPHRASE/NONE classification with deterministic patch assembly, while retaining v3 as the selected published model.",
+    "successful_effect": "ATTACK F1 rose from 0.0% to 54.5% and total edge F1 rose from 21.1% to 34.1% on the episode-disjoint development set."
+  },
+  "private_artifacts": {
+    "checkpoint": {
+      "path": "artifacts/dialam_qlora/v4_n8192/adapter",
+      "redistribution": "publishable model adapter; preserved locally and in Modal, not promoted because the development gate failed",
+      "tree_sha256": "3efc81cd9d61e2173dd86441f01914c7724ec41a336c95c6ed8c3942fe2becfa"
+    },
+    "development_gold": {
+      "bytes": 76619,
+      "path": "data/dialam/training/v3_dev_eval_examples.jsonl",
+      "redistribution": "private/local only",
+      "sha256": "78f4ccc35312a4e3e74cce062346af040ff4e00b365a1312c2a627d7d0e1ec55"
+    },
+    "development_predictions": {
+      "bytes": 10015,
+      "path": "results/dialam_model_generation/v4_n8192_dev/predictions.jsonl",
+      "redistribution": "private/local only",
+      "sha256": "a2e030b508a5ac52c1082da4fcadc52c6209d898481b668bc7a70f65f08d74bd"
+    },
+    "training_jsonl": {
+      "bytes": 26516549,
+      "path": "data/dialam/training/dialam_v4_n8192.jsonl",
+      "redistribution": "private/local only",
+      "sha256": "2f66d56f509c13c5b8b3120f4c5d3c5e1fdd28f7f3e3dbf543d34d2a6b277045"
+    },
+    "training_log": {
+      "bytes": 104618,
+      "path": "artifacts/dialam_qlora/v4_n8192/training_manifest.json",
+      "redistribution": "private/local only",
+      "sha256": "23d4cd2089636337d079b6faabf5a368f1ae75d4c29d58cef42b7d0d6853000f"
+    }
+  },
+  "reproduction_commands": [
+    ".venv/bin/python scripts/build_dialam_training_v4.py",
+    "modal run scripts/modal_dialam_qlora.py --action train --size 8192 --dataset-version v4",
+    "modal run scripts/modal_dialam_qlora.py --action evaluate --target tuned --size 8192 --dataset-version v4 --eval-split v3_dev --output-path results/dialam_model_generation/v4_n8192_dev/predictions.jsonl",
+    ".venv/bin/python scripts/score_dialam_predictions.py results/dialam_model_generation/v4_n8192_dev/predictions.jsonl --examples data/dialam/training/v3_dev_eval_examples.jsonl",
+    ".venv/bin/python scripts/build_dialam_v4_report.py"
+  ],
+  "reused_frozen_benchmark": {
+    "candidate_calls": 0,
+    "eval_sha256": "76badbae23ace13b22822335fa794f7cc796ce0d02753666ebd83c4d7260305b",
+    "judge_calls": 0,
+    "judge_rubric_sha256": "b27fe77a9adce4fe586327fa556a51352efb76d402b93676df2173225be35f66",
+    "status": "NOT_RUN_PREREGISTERED_DEVELOPMENT_GATE_FAILED"
+  },
+  "schema_version": "dialam_v4_class_balanced_rehearsal_result_v1",
+  "training": {
+    "assistant_token_counts": {
+      "maximum": 123,
+      "mean": 18.21923828125,
+      "minimum": 6
+    },
+    "checkpoint_files": [
+      {
+        "bytes": 5234,
+        "path": "README.md",
+        "sha256": "34ab0170dfe77802e9df8dd644e7b26f9fb5f66f84daa9100de4d0d78fd2794a"
+      },
+      {
+        "bytes": 1202,
+        "path": "adapter_config.json",
+        "sha256": "29c0cde4805a1131636eb2de32c72aa45a5359d2a18963aa73e3fba808f73e04"
+      },
+      {
+        "bytes": 40422168,
+        "path": "adapter_model.safetensors",
+        "sha256": "e5dad574cd71250332c21633523d57084f1f9ab3b6805b26f6ce82df70255f87"
+      },
+      {
+        "bytes": 734,
+        "path": "added_tokens.json",
+        "sha256": "7a208f10d02bfdf1708662e42ade85ea67af7158ab941bc5432bd715f4911216"
+      },
+      {
+        "bytes": 4905,
+        "path": "chat_template.jinja",
+        "sha256": "5da44855ab7e0641774d5ed0ff0b4f89671d01df7d316e54d06557a962211cb4"
+      },
+      {
+        "bytes": 1671853,
+        "path": "merges.txt",
+        "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+      },
+      {
+        "bytes": 499,
+        "path": "special_tokens_map.json",
+        "sha256": "8c8752b0d30549fb854ffee2d43b787c0053f507dfde7e0ccb6d1b42a8ae75ec"
+      },
+      {
+        "bytes": 11422943,
+        "path": "tokenizer.json",
+        "sha256": "64af246a059e79ec2e7641c4e0551eab01df498b032efe58881de2cc7aec6427"
+      },
+      {
+        "bytes": 5610,
+        "path": "tokenizer_config.json",
+        "sha256": "28d5debb24b06a4f905a086a7e58c384cafcc9188555736d7b813ed1d6f96baa"
+      },
+      {
+        "bytes": 2776833,
+        "path": "vocab.json",
+        "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      }
+    ],
+    "checkpoint_tree_sha256": "3efc81cd9d61e2173dd86441f01914c7724ec41a336c95c6ed8c3942fe2becfa",
+    "fixed_config": {
+      "base_model": "Qwen/Qwen3-0.6B",
+      "effective_batch_size": 8,
+      "epochs": 3.0,
+      "gradient_accumulation_steps": 4,
+      "learning_rate": 0.0002,
+      "load_in_4bit": true,
+      "lora_alpha": 32,
+      "lora_dropout": 0.0,
+      "lora_r": 16,
+      "lr_scheduler_type": "cosine",
+      "max_seq_length": 2048,
+      "method": "Unsloth QLoRA",
+      "optimizer": "adamw_8bit",
+      "packing": false,
+      "per_device_batch_size": 2,
+      "prompt_masking": true,
+      "seed": 20260823,
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ],
+      "warmup_ratio": 0.05
+    },
+    "loss_config": {
+      "assistant_loss_weight_per_example": 1.0,
+      "class_balance": {
+        "ATTACK": 1344,
+        "MIXED": 64,
+        "NONE": 4096,
+        "REPHRASE": 1344,
+        "SUPPORT": 1344
+      },
+      "name": "per_example_assistant_token_mean_then_batch_mean"
+    },
+    "metrics": {
+      "epoch": 3.0,
+      "total_flos": 4.742448218112e+16,
+      "train_loss": 0.21416823725788467,
+      "train_runtime": 3990.5378,
+      "train_samples_per_second": 6.159,
+      "train_steps_per_second": 0.77
+    },
+    "reload_verified": true,
+    "train_sha256": "2f66d56f509c13c5b8b3120f4c5d3c5e1fdd28f7f3e3dbf543d34d2a6b277045",
+    "training_manifest_sha256": "23d4cd2089636337d079b6faabf5a368f1ae75d4c29d58cef42b7d0d6853000f"
+  },
+  "v3_development_n4096": {
+    "block_example_count": 30,
+    "direction_accuracy": 1.0,
+    "direction_evaluable_edge_count": 4,
+    "edge_f1": 0.2105263157894737,
+    "edge_precision": 0.2857142857142857,
+    "edge_recall": 0.16666666666666666,
+    "exact_patch_accuracy": 0.26666666666666666,
+    "exact_scenario_patch_accuracy": 0.26666666666666666,
+    "exact_scenario_patch_count": 8,
+    "example_count": 30,
+    "false_edges_per_update": 0.3333333333333333,
+    "false_negative_edges": 20,
+    "false_positive_edges": 10,
+    "invalid_id_count": 0,
+    "invalid_relation_count": 0,
+    "json_validity_rate": 1.0,
+    "none_diagnostics": {
+      "false_edge_labels": {
+        "SUPPORT": 2
+      },
+      "false_positive_rate": 0.3333333333333333,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 2
+    },
+    "relation_macro_f1": 0.173202614379085,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.0,
+        "false_negative": 8,
+        "false_positive": 1,
+        "precision": 0.0,
+        "recall": 0.0,
+        "true_positive": 0
+      },
+      "REPHRASE": {
+        "f1": 0.16666666666666666,
+        "false_negative": 7,
+        "false_positive": 3,
+        "precision": 0.25,
+        "recall": 0.125,
+        "true_positive": 1
+      },
+      "SUPPORT": {
+        "f1": 0.35294117647058826,
+        "false_negative": 5,
+        "false_positive": 6,
+        "precision": 0.3333333333333333,
+        "recall": 0.375,
+        "true_positive": 3
+      }
+    },
+    "scenario_count": 30,
+    "schema_validity_rate": 1.0,
+    "true_positive_edges": 4,
+    "update_count": 30
+  },
+  "v4_development_n8192": {
+    "block_example_count": 30,
+    "direction_accuracy": 1.0,
+    "direction_evaluable_edge_count": 7,
+    "edge_f1": 0.34146341463414637,
+    "edge_precision": 0.4117647058823529,
+    "edge_recall": 0.2916666666666667,
+    "exact_patch_accuracy": 0.3,
+    "exact_scenario_patch_accuracy": 0.3,
+    "exact_scenario_patch_count": 9,
+    "example_count": 30,
+    "false_edges_per_update": 0.3333333333333333,
+    "false_negative_edges": 17,
+    "false_positive_edges": 10,
+    "invalid_id_count": 0,
+    "invalid_relation_count": 0,
+    "json_validity_rate": 1.0,
+    "none_diagnostics": {
+      "false_edge_labels": {
+        "SUPPORT": 4
+      },
+      "false_positive_rate": 0.6666666666666666,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 4
+    },
+    "relation_macro_f1": 0.3151515151515151,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.5454545454545454,
+        "false_negative": 5,
+        "false_positive": 0,
+        "precision": 1.0,
+        "recall": 0.375,
+        "true_positive": 3
+      },
+      "REPHRASE": {
+        "f1": 0.0,
+        "false_negative": 8,
+        "false_positive": 2,
+        "precision": 0.0,
+        "recall": 0.0,
+        "true_positive": 0
+      },
+      "SUPPORT": {
+        "f1": 0.4,
+        "false_negative": 4,
+        "false_positive": 8,
+        "precision": 0.3333333333333333,
+        "recall": 0.5,
+        "true_positive": 4
+      }
+    },
+    "scenario_count": 30,
+    "schema_validity_rate": 1.0,
+    "true_positive_edges": 7,
+    "update_count": 30
+  }
+}

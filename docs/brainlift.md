@@ -110,6 +110,16 @@ strongest next formulation is pairwise edge classification with a fixed-length
 `SUPPORT|ATTACK|REPHRASE|NONE` target followed by deterministic patch assembly;
 that should be registered as a new experiment, not folded into this result.
 
+A subsequent preregistered v4 test doubled training to 8,192 rows, retained all
+v3 rows, balanced single-label positive classes, and added 2,048 hard NONE
+rows. On the separate development set, exact accuracy rose from 26.7% to 30.0%,
+edge F1 from 21.1% to 34.1%, and ATTACK F1 from 0% to 54.5%. However, NONE cases
+with a false edge doubled from 2/6 to 4/6, every such edge was SUPPORT, and
+REPHRASE F1 fell to 0%. V4 failed its development gate, so no reused-frozen or
+judge calls were made and v3 remains selected. This strengthens the
+formulation diagnosis: class balance can repair rare-label recall, but more
+variable-length patch rows do not preserve calibrated sparsity by themselves.
+
 ## Public artifacts and reproduction
 
 - Model: [mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096](https://huggingface.co/mr-mc/flowjudge-dialam-qwen3-0.6b-v3-n4096), commit `56371373be622ea997c5723ceebf35af27cb5711`.

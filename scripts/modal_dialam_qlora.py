@@ -13,12 +13,13 @@ REMOTE_DATA_DIR = Path("/workspace/dialam_data")
 PERSISTENT_ROOT = Path("/workspace/persistent")
 CHECKPOINT_ROOT = PERSISTENT_ROOT / "checkpoints"
 BASE_MODEL = "Qwen/Qwen3-0.6B"
-SIZES = (256, 512, 1024, 2048, 4096)
-DATASET_VERSIONS = ("v1", "v2", "v3")
+SIZES = (256, 512, 1024, 2048, 4096, 8192)
+DATASET_VERSIONS = ("v1", "v2", "v3", "v4")
 VALID_SIZES_BY_VERSION = {
     "v1": (256, 512, 1024, 2048),
     "v2": (2048,),
     "v3": (4096,),
+    "v4": (8192,),
 }
 EVAL_INPUT_FILENAMES = {
     "frozen": "frozen_eval_inputs.jsonl",
@@ -59,6 +60,17 @@ FIXED_CONFIG = {
 V3_LOSS_CONFIG = {
     "name": "per_example_assistant_token_mean_then_batch_mean",
     "assistant_loss_weight_per_example": 1.0,
+}
+V4_LOSS_CONFIG = {
+    "name": "per_example_assistant_token_mean_then_batch_mean",
+    "assistant_loss_weight_per_example": 1.0,
+    "class_balance": {
+        "NONE": 4096,
+        "SUPPORT": 1344,
+        "ATTACK": 1344,
+        "REPHRASE": 1344,
+        "MIXED": 64,
+    },
 }
 
 image = (
@@ -254,7 +266,11 @@ def train_checkpoint(size: int, dataset_version: str = "v1") -> dict:
             loss = per_example.mean()
             return (loss, outputs) if return_outputs else loss
 
-    trainer_class = PerExampleAssistantLossTrainer if dataset_version == "v3" else Trainer
+    trainer_class = (
+        PerExampleAssistantLossTrainer
+        if dataset_version in {"v3", "v4"}
+        else Trainer
+    )
     trainer = trainer_class(
         model=model,
         args=training_args,
@@ -295,9 +311,13 @@ def train_checkpoint(size: int, dataset_version: str = "v1") -> dict:
         "dataset_version": dataset_version,
         "train_sha256": hashlib.sha256(train_path.read_bytes()).hexdigest(),
         "fixed_config": FIXED_CONFIG,
-        "loss_config": V3_LOSS_CONFIG if dataset_version == "v3" else {
-            "name": "assistant_token_mean",
-        },
+        "loss_config": (
+            V3_LOSS_CONFIG
+            if dataset_version == "v3"
+            else V4_LOSS_CONFIG
+            if dataset_version == "v4"
+            else {"name": "assistant_token_mean"}
+        ),
         "assistant_token_counts": {
             "minimum": min(assistant_token_counts),
             "mean": sum(assistant_token_counts) / len(assistant_token_counts),

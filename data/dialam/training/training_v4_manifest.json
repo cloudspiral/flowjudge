@@ -1,0 +1,126 @@
+{
+  "base_model": "Qwen/Qwen3-0.6B",
+  "category_counts": {
+    "ATTACK": 1344,
+    "MIXED": 64,
+    "NONE": 4096,
+    "REPHRASE": 1344,
+    "SUPPORT": 1344
+  },
+  "category_unique_example_counts": {
+    "ATTACK": 483,
+    "MIXED": 64,
+    "NONE": 4096,
+    "REPHRASE": 1344,
+    "SUPPORT": 1344
+  },
+  "created_at": "2026-08-23T09:47:35.967742+00:00",
+  "dataset_version": "v4-class-balanced-rehearsal",
+  "development_gate": {
+    "eval_examples_sha256": "78f4ccc35312a4e3e74cce062346af040ff4e00b365a1312c2a627d7d0e1ec55",
+    "eval_inputs_sha256": "8ae5555f489ef47b3d4915674b0df5f69d84caaff8649cd21d57e09f6f92d1c3",
+    "evaluation": "existing episode-disjoint v3 development set",
+    "requirements_to_run_reused_frozen_benchmark": {
+      "json_and_schema_validity": 1.0,
+      "maximum_false_edges_per_update": 0.3333333333333333,
+      "maximum_none_scenarios_with_false_edges": 2,
+      "minimum_attack_f1": 0.1,
+      "minimum_edge_f1": 0.25,
+      "minimum_exact_patch_accuracy": 0.26666666666666666
+    },
+    "v3_baseline": {
+      "attack_f1": 0.0,
+      "edge_f1": 0.2105263157894737,
+      "exact_patch_accuracy": 0.26666666666666666,
+      "false_edges_per_update": 0.3333333333333333,
+      "none_scenarios_with_false_edges": 2
+    }
+  },
+  "development_parent_episode_count": 4,
+  "dialogue_leakage": false,
+  "frozen_parent_episode_count": 6,
+  "loss_policy": {
+    "assistant_loss_weight_per_row": 1.0,
+    "name": "per_example_assistant_token_mean_then_batch_mean",
+    "positive_to_none_row_ratio": 1.0,
+    "unbalanced_positive_to_none_supervised_character_ratio": 4.48638916015625
+  },
+  "output": {
+    "path": "data/dialam/training/dialam_v4_n8192.jsonl",
+    "sha256": "2f66d56f509c13c5b8b3120f4c5d3c5e1fdd28f7f3e3dbf543d34d2a6b277045"
+  },
+  "privacy": "The v4 JSONL contains transformed QT30 text and remains private/local. Only this text-free aggregate manifest, schema, and deterministic reconstruction code may be published.",
+  "relation_counts": {
+    "ATTACK": 1373,
+    "REPHRASE": 1411,
+    "SUPPORT": 1443
+  },
+  "repetition_policy": {
+    "categories_with_repeated_examples": [
+      "ATTACK"
+    ],
+    "description": "Retain every v3 foundation row; add every unused ATTACK block before deterministically cycling ATTACK examples to class balance. Other supplemental positive classes and every NONE supplement remain unique.",
+    "maximum_occurrences_of_one_example": 3,
+    "repeated_copy_count": 861,
+    "unique_example_count": 7331
+  },
+  "reused_frozen_benchmark": {
+    "disclosure": "The v3 frozen errors informed v4, so this set is now a reused comparison benchmark rather than an untouched model-selection holdout. The external staff-held-out set remains the final unbiased evaluation.",
+    "eval_sha256": "76badbae23ace13b22822335fa794f7cc796ce0d02753666ebd83c4d7260305b",
+    "examples": 30,
+    "judge_rubric_sha256": "b27fe77a9adce4fe586327fa556a51352efb76d402b93676df2173225be35f66",
+    "promotion_requirements": {
+      "json_and_schema_validity": 1.0,
+      "maximum_false_edges_per_update": 0.3,
+      "maximum_none_scenarios_with_false_edges": 1,
+      "minimum_attack_f1": 0.3,
+      "minimum_edge_f1": 0.4,
+      "minimum_exact_patch_accuracy": 0.43333333333333335,
+      "minimum_relation_macro_f1": 0.39
+    }
+  },
+  "sampling_role_counts": {
+    "NONE": 4096,
+    "POSITIVE": 4096
+  },
+  "schema": {
+    "path": "data/dialam/training/training_example_v4.schema.json",
+    "sha256": "537efcba4af04125ebe313a13f1587a71aff150242502cb21e5995bf3540e8de"
+  },
+  "schema_version": "dialam_training_manifest_v4",
+  "selection_seed": "dialam-qt30-qlora-v4-class-balanced-rehearsal",
+  "size": 8192,
+  "source": {
+    "archive_sha256": "9d3d70c5ad86c815f821928dc515ee80a8e2a24d3f5d224557045f50f7a73791",
+    "dialogues_sha256": "60f06e6c8f1c86b158eee7f2a3f7095ab405016d64536364a4d793bf00855299",
+    "eval_summary_sha256": "72c737361081962a68c692311a012db73e8b187331a43b68d2463f3a6ce33ba2",
+    "v3_training_jsonl_sha256": "902bd567df7b6c2cb23c8987dd8bf4284e53e4fbfd2b35de262a811fb16dc3e0",
+    "v3_training_manifest_sha256": "60e042cee5cd5b6d87d94fd362d775c6c7877fed99fe2c0ecc40b8607d708034"
+  },
+  "source_stage_counts": {
+    "V3_FOUNDATION": 4096,
+    "V4_CLASS_BALANCE": 4096
+  },
+  "split_unit": "original_parent_episode",
+  "supplement_policy": {
+    "description": "Use all available positive-class diversity before deterministic ATTACK repetition. Exhaust unused no-edge blocks whose update has a direct edge elsewhere, then fill with the hardest unused all-negative blocks ranked only by within-block lexical overlap and chronology.",
+    "none_count": 2048,
+    "none_kind_counts": {
+      "all_negative_update": 1531,
+      "direct_edge_elsewhere": 517
+    },
+    "none_shared_content_tokens": {
+      "maximum": 15,
+      "mean": 2.4912109375,
+      "minimum": 0
+    },
+    "positive_target_counts": {
+      "ATTACK": 1155,
+      "MIXED": 34,
+      "REPHRASE": 429,
+      "SUPPORT": 430
+    },
+    "semantic_candidate_retrieval": false
+  },
+  "training_parent_episode_count": 20
+}

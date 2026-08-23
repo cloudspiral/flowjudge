@@ -1,0 +1,136 @@
+{
+  "$defs": {
+    "HardNegativeMetadata": {
+      "additionalProperties": false,
+      "properties": {
+        "closest_turn_gap": {
+          "exclusiveMinimum": 0,
+          "title": "Closest Turn Gap",
+          "type": "integer"
+        },
+        "kind": {
+          "const": "positive_sibling_lexical_no_edge",
+          "title": "Kind",
+          "type": "string"
+        },
+        "max_jaccard_similarity": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Max Jaccard Similarity",
+          "type": "number"
+        },
+        "max_overlap_coefficient": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Max Overlap Coefficient",
+          "type": "number"
+        },
+        "max_shared_content_tokens": {
+          "minimum": 1,
+          "title": "Max Shared Content Tokens",
+          "type": "integer"
+        },
+        "positive_sibling_block": {
+          "const": true,
+          "title": "Positive Sibling Block",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "kind",
+        "positive_sibling_block",
+        "max_shared_content_tokens",
+        "max_overlap_coefficient",
+        "max_jaccard_similarity",
+        "closest_turn_gap"
+      ],
+      "title": "HardNegativeMetadata",
+      "type": "object"
+    },
+    "TrainingMessage": {
+      "additionalProperties": false,
+      "properties": {
+        "content": {
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "user",
+            "assistant"
+          ],
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "content"
+      ],
+      "title": "TrainingMessage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "category": {
+      "enum": [
+        "NONE",
+        "SUPPORT",
+        "ATTACK",
+        "REPHRASE",
+        "MIXED"
+      ],
+      "title": "Category",
+      "type": "string"
+    },
+    "dialogue_id": {
+      "title": "Dialogue Id",
+      "type": "string"
+    },
+    "example_id": {
+      "title": "Example Id",
+      "type": "string"
+    },
+    "hard_negative": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/HardNegativeMetadata"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "messages": {
+      "items": {
+        "$ref": "#/$defs/TrainingMessage"
+      },
+      "maxItems": 2,
+      "minItems": 2,
+      "title": "Messages",
+      "type": "array"
+    },
+    "schema_version": {
+      "const": "dialam_qlora_chat_v2",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "update_id": {
+      "title": "Update Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "example_id",
+    "update_id",
+    "dialogue_id",
+    "category",
+    "messages"
+  ],
+  "title": "DialAMTrainingRowV2",
+  "type": "object"
+}

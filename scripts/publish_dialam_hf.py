@@ -22,7 +22,12 @@ def main() -> None:
     parser.add_argument(
         "--model-dir",
         type=Path,
-        default=PROJECT_ROOT / "artifacts" / "hf_publish" / "dialam-qwen3-0.6b-v2",
+        default=(
+            PROJECT_ROOT
+            / "artifacts"
+            / "hf_publish"
+            / "dialam-qwen3-0.6b-v1-n2048"
+        ),
     )
     parser.add_argument(
         "--dataset-dir",
@@ -34,8 +39,8 @@ def main() -> None:
 
     model_manifest = _validate_manifest(args.model_dir)
     dataset_manifest = _validate_manifest(args.dataset_dir)
-    if not model_manifest.get("material_improvement_verified"):
-        raise ValueError("model package does not record a material v2 improvement")
+    if not model_manifest.get("selected_submission_checkpoint"):
+        raise ValueError("model package is not marked as the selected submission checkpoint")
     if model_manifest.get("contains_raw_or_transformed_qt30_text") is not False:
         raise ValueError("model package redistribution boundary is not safe")
     if dataset_manifest.get("contains_raw_or_transformed_qt30_text") is not False:
@@ -58,7 +63,10 @@ def main() -> None:
         repo_id=args.model_repo,
         repo_type="model",
         folder_path=args.model_dir,
-        commit_message="Publish Qwen3-0.6B DialAM v2 hard-negative QLoRA adapter and evidence",
+        commit_message=(
+            "Publish selected Qwen3-0.6B DialAM v1 n=2048 QLoRA adapter, "
+            "fixed efficiency-curve evidence, and failed v2 comparison"
+        ),
     )
     api.create_repo(
         args.dataset_repo,

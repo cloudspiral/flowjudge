@@ -78,9 +78,26 @@ random NONE selection with 1,024 topically overlapping no-edge blocks, but it
 did not clear the preregistered improvement rule: edge F1 rose to 21.4% while
 false edges worsened to 0.867/update, exact accuracy fell to 7/30, and judge
 Robustness fell to 1.43/4. The v2 checkpoint is preserved but is not promoted
-or packaged for Hugging Face. See
+or used for submission. The selected v1/n=2048 adapter is public at
+[`mr-mc/flowjudge-dialam-qwen3-0.6b-v1-n2048`](https://huggingface.co/mr-mc/flowjudge-dialam-qwen3-0.6b-v1-n2048),
+and the text-free dataset/reconstruction artifact is public at
+[`mr-mc/flowjudge-dialam-reconstruction`](https://huggingface.co/datasets/mr-mc/flowjudge-dialam-reconstruction).
+The public base-versus-tuned demo is
+[`mr-mc/flowjudge-dialam-demo`](https://huggingface.co/spaces/mr-mc/flowjudge-dialam-demo).
+See
 [`docs/dialam_v1_efficiency_results.md`](docs/dialam_v1_efficiency_results.md)
 and [`docs/dialam_v2_hard_negative_results.md`](docs/dialam_v2_hard_negative_results.md).
+
+The assignment-prescribed base-versus-tuned evaluator now auto-detects DialAM
+`PatchExample` JSONL and writes the complete deterministic table plus blinded
+judge transcripts:
+
+```bash
+uv sync --group train
+uv run python eval.py \
+  --model mr-mc/flowjudge-dialam-qwen3-0.6b-v1-n2048 \
+  --eval-set <dialam-patch-example-jsonl>
+```
 
 The private source audit includes three complete maps and therefore remains
 Git-ignored. Its publishable metadata, generated statistics, known source

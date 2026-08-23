@@ -1,0 +1,529 @@
+{
+  "any_v1_checkpoint_clears_reliability_bar": false,
+  "base_model": "Qwen/Qwen3-0.6B",
+  "best_v1_checkpoint": {
+    "n": 2048,
+    "reason": "highest exact patch accuracy, edge F1, and relation macro-F1"
+  },
+  "curve": [
+    {
+      "checkpoint_tree_sha256": "3e8d303395b5944abe7edfdc8a589ee4fd4e0255d0c3f6561cf12d2900126299",
+      "clears_reliability_bar": false,
+      "direction_accuracy": 1.0,
+      "edge_f1": 0.09523809523809525,
+      "edge_precision": 0.1111111111111111,
+      "edge_recall": 0.08333333333333333,
+      "exact_patch_accuracy": 0.16666666666666666,
+      "exact_patch_count": 5,
+      "failed_reliability_thresholds": [
+        "edge_f1",
+        "exact_patch_accuracy",
+        "false_edges_per_update",
+        "judge_robustness_mean",
+        "relation_macro_f1"
+      ],
+      "false_edges_per_update": 0.5333333333333333,
+      "false_negative_edges": 22,
+      "false_positive_edges": 16,
+      "invalid_id_count": 0,
+      "json_validity_rate": 1.0,
+      "judge_metrics": {
+        "judge_validity_rate": 1.0,
+        "mean_robustness": 2.466666666666667,
+        "mean_spec_adherence": 4.0,
+        "valid_judgments": 30
+      },
+      "n": 256,
+      "none_diagnostics": {
+        "false_edge_labels": {
+          "SUPPORT": 3
+        },
+        "false_positive_rate": 0.5,
+        "none_scenarios": 6,
+        "scenarios_with_false_edges": 3
+      },
+      "relation_macro_f1": 0.05555555555555555,
+      "relation_metrics": {
+        "ATTACK": {
+          "f1": 0.0,
+          "false_negative": 8,
+          "false_positive": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "true_positive": 0
+        },
+        "REPHRASE": {
+          "f1": 0.0,
+          "false_negative": 8,
+          "false_positive": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "true_positive": 0
+        },
+        "SUPPORT": {
+          "f1": 0.16666666666666666,
+          "false_negative": 6,
+          "false_positive": 14,
+          "precision": 0.125,
+          "recall": 0.25,
+          "true_positive": 2
+        }
+      },
+      "reliability_checks": {
+        "direction_accuracy": true,
+        "edge_f1": false,
+        "exact_patch_accuracy": false,
+        "false_edges_per_update": false,
+        "invalid_id_count": true,
+        "json_validity_rate": true,
+        "judge_robustness_mean": false,
+        "judge_spec_adherence_mean": true,
+        "judge_validity_rate": true,
+        "relation_macro_f1": false,
+        "schema_validity_rate": true
+      },
+      "schema_validity_rate": 1.0,
+      "training_manifest_sha256": "388d91b294d6d497290766a15887a5275d45406ff1401c712403c4164d0327d4",
+      "training_metrics": {
+        "epoch": 3.0,
+        "total_flos": 1451006853120000.0,
+        "train_loss": 0.13352974030810097,
+        "train_runtime": 116.606,
+        "train_samples_per_second": 6.586,
+        "train_steps_per_second": 0.823
+      }
+    },
+    {
+      "checkpoint_tree_sha256": "d50a62bd75d97a85d6e903454c7241abd01bc708f052b2010b014fab8d21daaa",
+      "clears_reliability_bar": false,
+      "direction_accuracy": 1.0,
+      "edge_f1": 0.09523809523809525,
+      "edge_precision": 0.1111111111111111,
+      "edge_recall": 0.08333333333333333,
+      "exact_patch_accuracy": 0.16666666666666666,
+      "exact_patch_count": 5,
+      "failed_reliability_thresholds": [
+        "edge_f1",
+        "exact_patch_accuracy",
+        "false_edges_per_update",
+        "judge_robustness_mean",
+        "relation_macro_f1"
+      ],
+      "false_edges_per_update": 0.5333333333333333,
+      "false_negative_edges": 22,
+      "false_positive_edges": 16,
+      "invalid_id_count": 0,
+      "json_validity_rate": 1.0,
+      "judge_metrics": {
+        "judge_validity_rate": 1.0,
+        "mean_robustness": 2.1666666666666665,
+        "mean_spec_adherence": 4.0,
+        "valid_judgments": 30
+      },
+      "n": 512,
+      "none_diagnostics": {
+        "false_edge_labels": {
+          "REPHRASE": 1,
+          "SUPPORT": 2
+        },
+        "false_positive_rate": 0.5,
+        "none_scenarios": 6,
+        "scenarios_with_false_edges": 3
+      },
+      "relation_macro_f1": 0.0634920634920635,
+      "relation_metrics": {
+        "ATTACK": {
+          "f1": 0.0,
+          "false_negative": 8,
+          "false_positive": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "true_positive": 0
+        },
+        "REPHRASE": {
+          "f1": 0.0,
+          "false_negative": 8,
+          "false_positive": 5,
+          "precision": 0.0,
+          "recall": 0.0,
+          "true_positive": 0
+        },
+        "SUPPORT": {
+          "f1": 0.1904761904761905,
+          "false_negative": 6,
+          "false_positive": 11,
+          "precision": 0.15384615384615385,
+          "recall": 0.25,
+          "true_positive": 2
+        }
+      },
+      "reliability_checks": {
+        "direction_accuracy": true,
+        "edge_f1": false,
+        "exact_patch_accuracy": false,
+        "false_edges_per_update": false,
+        "invalid_id_count": true,
+        "json_validity_rate": true,
+        "judge_robustness_mean": false,
+        "judge_spec_adherence_mean": true,
+        "judge_validity_rate": true,
+        "relation_macro_f1": false,
+        "schema_validity_rate": true
+      },
+      "schema_validity_rate": 1.0,
+      "training_manifest_sha256": "119bd634549f52846cf7c4a021e56e9a610d2f0acde0aca586cf836648d8df88",
+      "training_metrics": {
+        "epoch": 3.0,
+        "total_flos": 2899742883840000.0,
+        "train_loss": 0.1126094947103411,
+        "train_runtime": 224.4173,
+        "train_samples_per_second": 6.844,
+        "train_steps_per_second": 0.856
+      }
+    },
+    {
+      "checkpoint_tree_sha256": "04fbe0471d67e2355c6d3dbfbd9fbc607f7b9f946a4e2fe27913e2d5a3e61422",
+      "clears_reliability_bar": false,
+      "direction_accuracy": 1.0,
+      "edge_f1": 0.0851063829787234,
+      "edge_precision": 0.08695652173913043,
+      "edge_recall": 0.08333333333333333,
+      "exact_patch_accuracy": 0.16666666666666666,
+      "exact_patch_count": 5,
+      "failed_reliability_thresholds": [
+        "edge_f1",
+        "exact_patch_accuracy",
+        "false_edges_per_update",
+        "judge_robustness_mean",
+        "relation_macro_f1"
+      ],
+      "false_edges_per_update": 0.7,
+      "false_negative_edges": 22,
+      "false_positive_edges": 21,
+      "invalid_id_count": 0,
+      "json_validity_rate": 1.0,
+      "judge_metrics": {
+        "judge_validity_rate": 1.0,
+        "mean_robustness": 1.8666666666666667,
+        "mean_spec_adherence": 4.0,
+        "valid_judgments": 30
+      },
+      "n": 1024,
+      "none_diagnostics": {
+        "false_edge_labels": {
+          "ATTACK": 1,
+          "SUPPORT": 2
+        },
+        "false_positive_rate": 0.5,
+        "none_scenarios": 6,
+        "scenarios_with_false_edges": 3
+      },
+      "relation_macro_f1": 0.08888888888888889,
+      "relation_metrics": {
+        "ATTACK": {
+          "f1": 0.0,
+          "false_negative": 8,
+          "false_positive": 7,
+          "precision": 0.0,
+          "recall": 0.0,
+          "true_positive": 0
+        },
+        "REPHRASE": {
+          "f1": 0.26666666666666666,
+          "false_negative": 6,
+          "false_positive": 5,
+          "precision": 0.2857142857142857,
+          "recall": 0.25,
+          "true_positive": 2
+        },
+        "SUPPORT": {
+          "f1": 0.0,
+          "false_negative": 8,
+          "false_positive": 9,
+          "precision": 0.0,
+          "recall": 0.0,
+          "true_positive": 0
+        }
+      },
+      "reliability_checks": {
+        "direction_accuracy": true,
+        "edge_f1": false,
+        "exact_patch_accuracy": false,
+        "false_edges_per_update": false,
+        "invalid_id_count": true,
+        "json_validity_rate": true,
+        "judge_robustness_mean": false,
+        "judge_spec_adherence_mean": true,
+        "judge_validity_rate": true,
+        "relation_macro_f1": false,
+        "schema_validity_rate": true
+      },
+      "schema_validity_rate": 1.0,
+      "training_manifest_sha256": "b978650ff27eb7c9fdc4601a81f6c19824cb20cd463745f528e66a369310a537",
+      "training_metrics": {
+        "epoch": 3.0,
+        "total_flos": 5715313950720000.0,
+        "train_loss": 0.09884455621552964,
+        "train_runtime": 434.7285,
+        "train_samples_per_second": 7.066,
+        "train_steps_per_second": 0.883
+      }
+    },
+    {
+      "checkpoint_tree_sha256": "f484bfea5b5a59843571c037f52eeaf69a01f451ceb3639194b135f403d16d09",
+      "clears_reliability_bar": false,
+      "direction_accuracy": 1.0,
+      "edge_f1": 0.16666666666666666,
+      "edge_precision": 0.16666666666666666,
+      "edge_recall": 0.16666666666666666,
+      "exact_patch_accuracy": 0.26666666666666666,
+      "exact_patch_count": 8,
+      "failed_reliability_thresholds": [
+        "edge_f1",
+        "exact_patch_accuracy",
+        "false_edges_per_update",
+        "judge_robustness_mean",
+        "relation_macro_f1"
+      ],
+      "false_edges_per_update": 0.6666666666666666,
+      "false_negative_edges": 20,
+      "false_positive_edges": 20,
+      "invalid_id_count": 0,
+      "json_validity_rate": 1.0,
+      "judge_metrics": {
+        "judge_validity_rate": 1.0,
+        "mean_robustness": 2.1,
+        "mean_spec_adherence": 4.0,
+        "valid_judgments": 30
+      },
+      "n": 2048,
+      "none_diagnostics": {
+        "false_edge_labels": {
+          "REPHRASE": 1,
+          "SUPPORT": 2
+        },
+        "false_positive_rate": 0.3333333333333333,
+        "none_scenarios": 6,
+        "scenarios_with_false_edges": 2
+      },
+      "relation_macro_f1": 0.16732026143790849,
+      "relation_metrics": {
+        "ATTACK": {
+          "f1": 0.26666666666666666,
+          "false_negative": 6,
+          "false_positive": 5,
+          "precision": 0.2857142857142857,
+          "recall": 0.25,
+          "true_positive": 2
+        },
+        "REPHRASE": {
+          "f1": 0.23529411764705882,
+          "false_negative": 6,
+          "false_positive": 7,
+          "precision": 0.2222222222222222,
+          "recall": 0.25,
+          "true_positive": 2
+        },
+        "SUPPORT": {
+          "f1": 0.0,
+          "false_negative": 8,
+          "false_positive": 8,
+          "precision": 0.0,
+          "recall": 0.0,
+          "true_positive": 0
+        }
+      },
+      "reliability_checks": {
+        "direction_accuracy": true,
+        "edge_f1": false,
+        "exact_patch_accuracy": false,
+        "false_edges_per_update": false,
+        "invalid_id_count": true,
+        "json_validity_rate": true,
+        "judge_robustness_mean": false,
+        "judge_spec_adherence_mean": true,
+        "judge_validity_rate": true,
+        "relation_macro_f1": false,
+        "schema_validity_rate": true
+      },
+      "schema_validity_rate": 1.0,
+      "training_manifest_sha256": "5b08e8e9988d4ebeb49c69f85a20579a89ffb6e4ce6f1f2768f9f2d20f828f32",
+      "training_metrics": {
+        "epoch": 3.0,
+        "total_flos": 1.1492794368e+16,
+        "train_loss": 0.086618229727416,
+        "train_runtime": 866.4394,
+        "train_samples_per_second": 7.091,
+        "train_steps_per_second": 0.886
+      }
+    }
+  ],
+  "failure_diagnosis": {
+    "conclusion": "SUPPORT remains the largest single false-positive class, although at n=2048 errors are distributed across SUPPORT, REPHRASE, and ATTACK. Scaling v1 does reduces NONE-case false-positive scenarios only from 3/6 to 2/6 at n=2048.",
+    "none_false_positive_scenarios_by_n": {
+      "1024": 3,
+      "2048": 2,
+      "256": 3,
+      "512": 3
+    },
+    "support_false_positive_is_largest_label_at_every_n": true,
+    "support_false_positives_by_n": {
+      "1024": 9,
+      "2048": 8,
+      "256": 14,
+      "512": 11
+    },
+    "total_false_positives_by_n": {
+      "1024": 21,
+      "2048": 20,
+      "256": 16,
+      "512": 16
+    }
+  },
+  "fixed_training_config": {
+    "base_model": "Qwen/Qwen3-0.6B",
+    "effective_batch_size": 8,
+    "epochs": 3.0,
+    "gradient_accumulation_steps": 4,
+    "learning_rate": 0.0002,
+    "load_in_4bit": true,
+    "lora_alpha": 32,
+    "lora_dropout": 0.0,
+    "lora_r": 16,
+    "lr_scheduler_type": "cosine",
+    "max_seq_length": 2048,
+    "method": "Unsloth QLoRA",
+    "optimizer": "adamw_8bit",
+    "packing": false,
+    "per_device_batch_size": 2,
+    "prompt_masking": true,
+    "seed": 20260823,
+    "target_modules": [
+      "q_proj",
+      "k_proj",
+      "v_proj",
+      "o_proj",
+      "gate_proj",
+      "up_proj",
+      "down_proj"
+    ],
+    "warmup_ratio": 0.05
+  },
+  "fixed_training_config_sha256": "2cbf97d0f552f70df423283aad5bca589189857edb8b3f257561082eda16aa9f",
+  "frozen_eval_sha256": "76badbae23ace13b22822335fa794f7cc796ce0d02753666ebd83c4d7260305b",
+  "frozen_judge_rubric_sha256": "b27fe77a9adce4fe586327fa556a51352efb76d402b93676df2173225be35f66",
+  "label": "v1 fixed data-efficiency curve",
+  "private_artifacts": {
+    "n1024": {
+      "checkpoint": {
+        "path": "artifacts/dialam_qlora/n1024/adapter",
+        "redistribution": "private/local checkpoint pending publication decision",
+        "tree_sha256": "04fbe0471d67e2355c6d3dbfbd9fbc607f7b9f946a4e2fe27913e2d5a3e61422"
+      },
+      "judge_transcripts": {
+        "path": "results/dialam_model_eval/n1024/judge_transcripts.jsonl",
+        "redistribution": "private/local only",
+        "sha256": "e252ff73133b7cd658fa46fa5f9bae1d4a7a6c010a45e20ddd86c15105e9b7b1"
+      },
+      "predictions": {
+        "path": "results/dialam_model_eval/n1024/predictions.jsonl",
+        "redistribution": "private/local only",
+        "sha256": "22a7b165770465ca3c710d36b047e3753d196b92c67a1eadbb139d5598a7858a"
+      },
+      "records": {
+        "path": "results/dialam_model_eval/n1024/records.jsonl",
+        "redistribution": "private/local only",
+        "sha256": "cab3339122aec01a12f8b1b4c838d2ab8133a0c813782e079ebbaf5932713d56"
+      }
+    },
+    "n2048": {
+      "checkpoint": {
+        "path": "artifacts/dialam_qlora/n2048/adapter",
+        "redistribution": "private/local checkpoint pending publication decision",
+        "tree_sha256": "f484bfea5b5a59843571c037f52eeaf69a01f451ceb3639194b135f403d16d09"
+      },
+      "judge_transcripts": {
+        "path": "results/dialam_model_eval/n2048/judge_transcripts.jsonl",
+        "redistribution": "private/local only",
+        "sha256": "70ea558d5d3a490cf00b75eb6c7175c7f1079fd951492ec876b717cf9136e50d"
+      },
+      "predictions": {
+        "path": "results/dialam_model_eval/n2048/predictions.jsonl",
+        "redistribution": "private/local only",
+        "sha256": "814b747713857ffdb823b8cba0e86995a1d9abcf3f4375226fb276482357740a"
+      },
+      "records": {
+        "path": "results/dialam_model_eval/n2048/records.jsonl",
+        "redistribution": "private/local only",
+        "sha256": "3793cc3bed143c18ee85e6498d5b55c1415aa7461d1be3ee4a9e53de63ee2abd"
+      }
+    },
+    "n256": {
+      "checkpoint": {
+        "path": "artifacts/dialam_qlora/n256/adapter",
+        "redistribution": "private/local checkpoint pending publication decision",
+        "tree_sha256": "3e8d303395b5944abe7edfdc8a589ee4fd4e0255d0c3f6561cf12d2900126299"
+      },
+      "judge_transcripts": {
+        "path": "results/dialam_model_eval/n256/judge_transcripts.jsonl",
+        "redistribution": "private/local only",
+        "sha256": "81419ea5ebb4a7f8c4a8e9aff5044b6367ab3cffe8e250564f3fbfec79b3269f"
+      },
+      "predictions": {
+        "path": "results/dialam_model_eval/n256/predictions.jsonl",
+        "redistribution": "private/local only",
+        "sha256": "9245a34bfdc5942ce8c76aa40ad98f824577c956225398f4fa096b91d939ece1"
+      },
+      "records": {
+        "path": "results/dialam_model_eval/n256/records.jsonl",
+        "redistribution": "private/local only",
+        "sha256": "f88858ad00d790de1161af7a8332a46f6cb9c4718832d89d6e49cd29d0da4b80"
+      }
+    },
+    "n512": {
+      "checkpoint": {
+        "path": "artifacts/dialam_qlora/n512/adapter",
+        "redistribution": "private/local checkpoint pending publication decision",
+        "tree_sha256": "d50a62bd75d97a85d6e903454c7241abd01bc708f052b2010b014fab8d21daaa"
+      },
+      "judge_transcripts": {
+        "path": "results/dialam_model_eval/n512/judge_transcripts.jsonl",
+        "redistribution": "private/local only",
+        "sha256": "94b97f0a572cf6f522b8bf4a1c989e4c3fc136e8169b3b6d81a842ed71c98eac"
+      },
+      "predictions": {
+        "path": "results/dialam_model_eval/n512/predictions.jsonl",
+        "redistribution": "private/local only",
+        "sha256": "e0ed4fb0684fe907624971fdaf93335333e6fff3ae5bee8f8297100273ee390b"
+      },
+      "records": {
+        "path": "results/dialam_model_eval/n512/records.jsonl",
+        "redistribution": "private/local only",
+        "sha256": "8eb1abe38e2d61a31fd1869e732dabf9cd0bc6edaca35e334ab1e53f1535385a"
+      }
+    }
+  },
+  "reliability_threshold": {
+    "direction_accuracy_min": 0.95,
+    "edge_f1_min": 0.85,
+    "exact_patch_accuracy_min": 0.8,
+    "false_edges_per_update_max": 0.2,
+    "invalid_id_count_max": 0,
+    "json_validity_rate_min": 1.0,
+    "judge_robustness_mean_min": 3.5,
+    "judge_spec_adherence_mean_min": 3.5,
+    "judge_validity_rate_min": 1.0,
+    "minimum_scenarios_per_combination": 30,
+    "provider_families_required_to_pass": 2,
+    "relation_macro_f1_min": 0.75,
+    "schema_validity_rate_min": 1.0
+  },
+  "schema_version": "dialam_v1_efficiency_curve_v1",
+  "sizes": [
+    256,
+    512,
+    1024,
+    2048
+  ],
+  "smallest_n_reliably_holding_behavior": null
+}

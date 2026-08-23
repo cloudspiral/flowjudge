@@ -1,0 +1,81 @@
+{
+  "actual_category_counts": {
+    "ATTACK": 256,
+    "MIXED": 103,
+    "NONE": 1024,
+    "REPHRASE": 307,
+    "SUPPORT": 358
+  },
+  "base_model": "Qwen/Qwen3-0.6B",
+  "created_at": "2026-08-23T07:05:54.272219+00:00",
+  "dataset_version": "v2-hard-negative",
+  "dialogue_leakage": false,
+  "frozen_evaluation": {
+    "eval_sha256": "76badbae23ace13b22822335fa794f7cc796ce0d02753666ebd83c4d7260305b",
+    "examples": 30,
+    "judge_rubric_sha256": "b27fe77a9adce4fe586327fa556a51352efb76d402b93676df2173225be35f66",
+    "unchanged_from_v1": true
+  },
+  "hard_negative_policy": {
+    "description": "Select an all-negative fixed block only when the same update has a direct gold edge in a different block, then rank without embeddings by content-word overlap, shared-token count, Jaccard similarity, recency, and seeded hash.",
+    "duplicates": false,
+    "kind": "positive_sibling_lexical_no_edge",
+    "overlap_coefficient": {
+      "maximum": 1.0,
+      "mean": 0.4733097956730769,
+      "minimum": 0.125
+    },
+    "positive_sibling_count": 1024,
+    "selected_count": 1024,
+    "semantic_candidate_retrieval": false,
+    "shared_content_tokens": {
+      "maximum": 13,
+      "mean": 2.4560546875,
+      "minimum": 1
+    },
+    "with_two_or_more_shared_content_tokens": 906
+  },
+  "heldout_parent_episode_count": 6,
+  "output": {
+    "path": "data/dialam/training/dialam_v2_n2048.jsonl",
+    "sha256": "a860eb5ce7847c7ad995f112229d9f7eb67073d220737ddfdda14c0958cbcb08"
+  },
+  "preregistered_material_improvement": {
+    "baseline": "v1/n2048",
+    "false_edges_per_update_must_not_increase": true,
+    "json_and_schema_validity_must_remain": 1.0,
+    "minimum_absolute_edge_f1_gain": 0.05
+  },
+  "privacy": "The v2 JSONL contains transformed QT30 text and remains private/local. This text-free manifest, aggregate statistics, schema, and reconstruction code may be published.",
+  "prompt": "prompts/dialam/zero_shot.txt",
+  "relation_counts": {
+    "ATTACK": 294,
+    "REPHRASE": 388,
+    "SUPPORT": 459
+  },
+  "schema": {
+    "path": "data/dialam/training/training_example_v2.schema.json",
+    "sha256": "2b556b6ef05a8a4def48c0385837e87ddbeb5e12191cf5ef663ba2ef5af6c88c"
+  },
+  "schema_version": "dialam_training_manifest_v2",
+  "selection_policy": "deterministic weighted interleave without replacement; positives use a seeded hash and NONE uses the declared hard-negative ranking",
+  "selection_seed": "dialam-qt30-qlora-v2-hard-negative",
+  "size": 2048,
+  "source": {
+    "archive_sha256": "9d3d70c5ad86c815f821928dc515ee80a8e2a24d3f5d224557045f50f7a73791",
+    "dialogues_sha256": "60f06e6c8f1c86b158eee7f2a3f7095ab405016d64536364a4d793bf00855299",
+    "eval_summary_sha256": "72c737361081962a68c692311a012db73e8b187331a43b68d2463f3a6ce33ba2",
+    "v1_training_manifest_sha256": "a68668fc0537f627beb465e165c0b0cc2611a71d743de97d58f25a51f2420fd2"
+  },
+  "split_unit": "original_parent_episode",
+  "target_category_counts": {
+    "ATTACK": 256,
+    "MIXED": 103,
+    "NONE": 1024,
+    "REPHRASE": 307,
+    "SUPPORT": 358
+  },
+  "training_parent_episode_count": 24,
+  "v1_n2048_none_count": 819,
+  "v2_n2048_none_count": 1024
+}

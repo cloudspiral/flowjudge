@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>FlowJudge DialAM — Base vs Tuned</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #09111f;
+      --panel: #111c2f;
+      --line: #293953;
+      --ink: #edf4ff;
+      --muted: #a8b7cc;
+      --accent: #7dd3fc;
+      --warning: #fbbf24;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: radial-gradient(circle at top left, #19304e 0, var(--bg) 42%);
+      color: var(--ink);
+      font: 16px/1.55 ui-sans-serif, system-ui, -apple-system, sans-serif;
+    }
+    main { width: min(1120px, calc(100% - 32px)); margin: 0 auto; padding: 48px 0 64px; }
+    h1 { margin: 0 0 8px; font-size: clamp(2rem, 6vw, 4rem); line-height: 1; letter-spacing: -.04em; }
+    h2 { margin: 0 0 12px; font-size: 1rem; color: var(--accent); text-transform: uppercase; letter-spacing: .08em; }
+    p { color: var(--muted); max-width: 820px; }
+    a { color: var(--accent); }
+    .notice { border-left: 3px solid var(--warning); padding-left: 14px; }
+    .panel { margin-top: 24px; padding: 20px; border: 1px solid var(--line); border-radius: 16px; background: color-mix(in srgb, var(--panel) 94%, transparent); }
+    textarea, pre {
+      width: 100%; min-height: 330px; margin: 0; padding: 16px; overflow: auto;
+      border: 1px solid var(--line); border-radius: 10px; background: #07101d; color: #dff4ff;
+      font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap;
+    }
+    pre { min-height: 180px; }
+    button {
+      margin-top: 14px; padding: 12px 20px; border: 0; border-radius: 999px;
+      background: var(--accent); color: #06111f; font-weight: 800; cursor: pointer;
+    }
+    button:disabled { cursor: wait; opacity: .55; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+    .status { min-height: 26px; margin: 12px 0 0; color: var(--muted); }
+    footer { margin-top: 28px; color: var(--muted); font-size: .9rem; }
+    @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h2>Incremental argument-graph patching</h2>
+    <h1>Base vs tuned, same input.</h1>
+    <p>Compare untouched Qwen3-0.6B with the selected FlowJudge v1/n=2048 QLoRA adapter. The model must return one bare JSON object containing only direct SUPPORT, ATTACK, or REPHRASE edges to supplied IDs.</p>
+    <p class="notice"><strong>Research result:</strong> fine-tuning improved strict JSON and held-out edge F1, but no tested checkpoint cleared the frozen reliability threshold. A plausible-looking tuned answer can still be wrong.</p>
+
+    <section class="panel">
+      <h2>Patch input</h2>
+      <textarea id="input" spellcheck="false">{
+  "new_proposition": {
+    "id": "P4",
+    "chronological_turn": 4,
+    "speaker": "A",
+    "text": "Teenagers learn better when school starts after 9 a.m."
+  },
+  "complete_earlier_comparison_block": [
+    {"id": "P1", "chronological_turn": 1, "speaker": "A", "text": "High schools should start later."},
+    {"id": "P2", "chronological_turn": 2, "speaker": "B", "text": "Changing bus schedules can be expensive."},
+    {"id": "P3", "chronological_turn": 3, "speaker": "B", "text": "After-school sports often end near sunset."}
+  ]
+}</textarea>
+      <button id="run">Run both models</button>
+      <div id="status" class="status">The first request after idle may take about a minute while the CPU service loads the model.</div>
+    </section>
+
+    <section class="grid">
+      <div class="panel">
+        <h2>Untouched base</h2>
+        <pre id="base">Run the comparison to generate output.</pre>
+      </div>
+      <div class="panel">
+        <h2>QLoRA v1 / n=2048</h2>
+        <pre id="tuned">Run the comparison to generate output.</pre>
+      </div>
+    </section>
+
+    <footer>
+      Model: <a href="https://huggingface.co/mr-mc/flowjudge-dialam-qwen3-0.6b-v1-n2048">mr-mc/flowjudge-dialam-qwen3-0.6b-v1-n2048</a>.
+      Synthetic example only; no QT30 text is redistributed.
+    </footer>
+  </main>
+  <script>
+    const endpoint = "https://cloudspiral--flowjudge-dialam-public-demo-web.modal.run/predict";
+    const button = document.querySelector("#run");
+    const status = document.querySelector("#status");
+    const base = document.querySelector("#base");
+    const tuned = document.querySelector("#tuned");
+
+    button.addEventListener("click", async () => {
+      button.disabled = true;
+      status.textContent = "Running base and tuned with greedy decoding…";
+      base.textContent = "Waiting…";
+      tuned.textContent = "Waiting…";
+      try {
+        const patchInput = JSON.parse(document.querySelector("#input").value);
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: {"content-type": "application/json"},
+          body: JSON.stringify({patch_input: patchInput})
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || `HTTP ${response.status}`);
+        base.textContent = data.base;
+        tuned.textContent = data.tuned;
+        status.textContent = data.note;
+      } catch (error) {
+        base.textContent = "";
+        tuned.textContent = "";
+        status.textContent = `Error: ${error.message}`;
+      } finally {
+        button.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

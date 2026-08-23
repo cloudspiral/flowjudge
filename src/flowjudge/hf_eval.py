@@ -19,10 +19,18 @@ from .training_data import DEFAULT_OWN_EVAL_PATH, load_eval_cases
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
-        description="Evaluate a Hugging Face FlowJudge model and, for an adapter, its base model"
+        description=(
+            "Evaluate a Hugging Face FlowJudge model and, for an adapter, its base model; "
+            "auto-detects legacy BenchmarkCase and DialAM PatchExample JSONL"
+        )
     )
     parser.add_argument("--model", required=True, help="Hugging Face model or adapter repository ID")
-    parser.add_argument("--eval-set", required=True, type=Path, help="BenchmarkCase JSONL path")
+    parser.add_argument(
+        "--eval-set",
+        required=True,
+        type=Path,
+        help="BenchmarkCase or DialAM PatchExample JSONL path",
+    )
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--judge-model", help="override JUDGE_MODEL")
     parser.add_argument("--max-new-tokens", type=int, default=512)
@@ -39,7 +47,7 @@ def build_parser() -> argparse.ArgumentParser:
     )
     parser.add_argument(
         "--base-model",
-        help="base checkpoint for an MLX-LM adapter; normally read from its training manifest",
+        help="base checkpoint override; normally read from the adapter manifest",
     )
     parser.add_argument(
         "--skip-base",
@@ -51,6 +59,23 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main() -> None:
     args = build_parser().parse_args()
+    if _is_dialam_eval_set(args.eval_set):
+        if args.backend == "mlx":
+            raise ValueError("the published DialAM PEFT adapter requires transformers")
+        from .dialam_hf_eval import run_dialam_hf_evaluation
+
+        output_dir = run_dialam_hf_evaluation(
+            model_id=args.model,
+            eval_set=args.eval_set,
+            output_dir=args.output_dir,
+            judge_model=args.judge_model,
+            max_new_tokens=args.max_new_tokens,
+            compare_base=not args.skip_base,
+            base_model_override=args.base_model,
+            skip_judge=args.skip_judge,
+        )
+        print(output_dir)
+        return
     output_dir = run_hf_evaluation(
         model_id=args.model,
         eval_set=args.eval_set,
@@ -207,7 +232,13 @@ def run_hf_evaluation(
 
 
 class HuggingFaceGenerator:
-    def __init__(self, model_id: str, *, max_new_tokens: int) -> None:
+    def __init__(
+        self,
+        model_id: str,
+        *,
+        max_new_tokens: int,
+        adapter_base_model: str | None = None,
+    ) -> None:
         try:
             import torch
             from peft import PeftConfig, PeftModel
@@ -232,7 +263,7 @@ class HuggingFaceGenerator:
                 device_map="auto",
             )
         else:
-            base_id = peft_config.base_model_name_or_path
+            base_id = adapter_base_model or peft_config.base_model_name_or_path
             self.tokenizer = AutoTokenizer.from_pretrained(model_id)
             base = AutoModelForCausalLM.from_pretrained(
                 base_id,
@@ -406,6 +437,18 @@ def _read_json_resource(model_id: str, filename: str) -> dict[str, Any]:
     except Exception:
         return {}
     return value if isinstance(value, dict) else {}
+
+
+def _is_dialam_eval_set(path: Path) -> bool:
+    try:
+        with path.open(encoding="utf-8") as handle:
+            for line in handle:
+                if line.strip():
+                    row = json.loads(line)
+                    return row.get("schema_version") == "dialam_incremental_patch_v1"
+    except (OSError, json.JSONDecodeError, AttributeError):
+        return False
+    return False
 
 
 def _results_table(summaries: dict[str, Any]) -> str:

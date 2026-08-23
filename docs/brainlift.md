@@ -1,54 +1,132 @@
-# FlowJudge Brainlift
+# FlowJudge DialAM Brainlift
 
-## Thesis
+## Behavior thesis
 
-FlowJudge tests whether data can instill one narrow behavior in a small open model: distinguishing a direct cross-side response from mere topical proximity, same-side continuation, repetition, or an independent counterargument. The intended gain is not broad debate understanding; it is reliable sparse graph reconstruction in a strict JSON contract.
+This project tests whether a 0.6B-parameter model can learn one narrow,
+grounded graph-editing behavior from data: given one new proposition and one
+complete fixed-size block of earlier propositions from the same dialogue,
+return exactly the direct `SUPPORT`, `ATTACK`, and `REPHRASE` edges from the new
+proposition to supplied IDs. The output must be one bare JSON object, with an
+empty relation list when no direct edge exists. Indirect edges, topical
+similarity, invented IDs, and prose are errors.
 
-## Behavior specification
+The behavior matters because incremental graph patching is easier to verify and
+compose than asking a model to regenerate an entire argument map after every
+turn. Its hardest requirement is calibrated sparsity: most semantically related
+proposition pairs are not directly connected.
 
-Given a chronological 6–12-unit debate excerpt, the model must return one bare JSON object whose `relations` array contains exactly every edge from a later opposing-side unit to an earlier unit that it directly answers, attacks, mitigates, or turns. It must return no prose, duplicate/unknown/forward edges, or edges based only on topical similarity, same-side extension, repetition/rephrase, or an independent counterargument.
+## Why prompting was not enough
 
-## Why training rather than prompting
+The frozen prompt-ceiling gate evaluated 30 held-out update scenarios for all
+six combinations of GPT-5.4 Mini / Claude Haiku 4.5 and zero-shot / few-shot /
+strong-structured prompts. The best edge F1 was 34.3%, and no combination
+cleared the preregistered reliability thresholds. GPT Mini produced valid JSON
+but overpredicted edges, including at least one false edge on all six NONE
+scenarios in its best cell. Haiku frequently wrapped the required bare object
+in Markdown fences. The prompt-ceiling gate therefore passed: the behavior was
+not already reliable under the required hosted-model baselines.
 
-The best of six prompt-ceiling cells reached only 58.6% mean Spec adherence, 69.5% mean Robustness, and 15.6% exact graph match. It failed mainly by adding spurious response edges around same-side extensions, far below the pre-registered 95%/90% gate.
+## Data
 
-## Dataset design
+The private source is the English DialAM-2024/QT30 argument-map corpus. The
+canonical parser preserves parent episode, map and proposition identity,
+speaker, chronology, locution grounding, original RA/CA/MA labels, normalized
+relation labels, and edge direction. Training keeps only direct,
+chronology-resolvable, singly grounded, unambiguous binary relations.
 
-- Source: VivesDebate v3, CC BY-NC-SA 4.0.
-- Training debates: 1–7.
-- Own evaluation debates: 8–10.
-- Source labels: opposite-stance `CA` conflicts oriented from later ADU to earlier ADU.
-- Teacher: fixed strong OpenAI model rewrites noisy source English without changing units or labels.
-- Filter: a separate call checks semantic preservation, edge support, absence of label cues, fluency, and atomicity; deterministic validation independently enforces IDs, chronology, stance, schema, and graph direction.
-- Efficiency sizes: 12, 24, 48, and 96 nested examples. This approximately log2-spaced sweep emphasizes the low-data regime while remaining feasible for four real QLoRA checkpoints.
+Splitting is by original parent episode, not map ID: 24 episodes train and six
+episodes remain untouched for the 30-scenario evaluation. The v1 training
+slices are nested deterministic prefixes at N=256, 512, 1024, and 2048. The
+largest slice contains 819 NONE, 410 SUPPORT, 307 ATTACK, 410 REPHRASE, and 102
+mixed-label blocks. QT30-derived text stays private; the public dataset artifact
+contains only aggregate metadata, schemas, hashes, and deterministic
+reconstruction code.
 
-## Model and training
+## Model and fixed training method
 
-The canonical base is `Qwen/Qwen3-0.6B`. The first local sweep uses the corresponding `mlx-community/Qwen3-0.6B-4bit` checkpoint; MLX-LM trains LoRA layers over that quantized model, which is QLoRA. Every checkpoint uses the same training hyperparameters and only dataset size changes. Hyperparameters and actual training logs are written beside each checkpoint.
-
-## Evaluation
-
-`eval.py --model <hf-repo-id> --eval-set <path>` automatically detects a PEFT or MLX-LM adapter, evaluates both its declared base and tuned adapter, and writes raw generations, full judge JSONL, deterministic graph metrics, rubric means, and a Markdown comparison table. Staff data uses the same one-row-per-`BenchmarkCase` JSONL format as `data/eval/own_eval.jsonl`.
+The only base model is `Qwen/Qwen3-0.6B`. Every v1 checkpoint uses the same
+Unsloth 4-bit QLoRA configuration: LoRA rank 16, alpha 32, dropout 0, attention
+and MLP projections, three epochs, effective batch size 8, learning rate
+`2e-4`, cosine schedule, 5% warmup, `adamw_8bit`, prompt-token masking, and seed
+`20260823`. Only N changes. Training, saving, reloading, and deterministic
+generation ran on an NVIDIA L4 through Modal.
 
 ## Results
 
-On the nine-case own evaluation set, the untuned Qwen3 0.6B base produced 66.7% valid JSON and 0% edge F1. The best n=96 checkpoint produced 100% valid JSON and 16% edge F1, but 0% exact graph match. Smaller 12/24/48 checkpoints had 0% edge F1. Two error-driven v2 data revisions did not improve beyond 16%, and a Qwen3 1.7B capacity check was worse than its base.
+The untouched base had 0% schema validity, 0% exact-patch accuracy, and 0% edge
+F1. Fine-tuning clearly taught the output contract and some relation behavior,
+but not reliable graph recovery.
 
-No tested size reliably holds the full behavior, so the minimum viable dataset size is **not established at N ≤ 120**. This is a negative but falsifiable result: the data clearly instilled schema compliance and a small amount of response reconstruction, not reliable graph recovery.
+| N | Exact patch | Edge F1 | Relation macro-F1 | False edges/update | Robustness /4 |
+|---:|---:|---:|---:|---:|---:|
+| Base | 0.0% | 0.0% | 0.0% | 0.000 | 1.40 |
+| 256 | 16.7% | 9.5% | 5.6% | 0.533 | 2.47 |
+| 512 | 16.7% | 9.5% | 6.3% | 0.533 | 2.17 |
+| 1024 | 16.7% | 8.5% | 8.9% | 0.700 | 1.87 |
+| 2048 | **26.7%** | **16.7%** | **16.7%** | 0.667 | 2.10 |
 
-## Limitations
+Every tuned checkpoint reached 100% JSON and schema validity with zero invalid
+IDs. N=2048 is the selected checkpoint because it has the best v1 exact-patch,
+edge-F1, and macro-F1 results. No tested N clears the frozen reliability bar,
+so the minimum viable dataset size is **not established at N <= 2048**.
 
-The target graph follows the documented VivesDebate-to-FlowJudge mapping and does not claim to capture every philosophically plausible response. The corpus covers one debate topic and one source language context, and the own evaluation set is necessarily small. The final claim must therefore stay narrow: data taught the selected small model to reproduce this response-edge behavior more reliably on held-out debates.
+## Error-driven v2 and diagnosis
 
-## Reproduction
+The dominant v1 error was false-positive SUPPORT prediction. A controlled v2
+kept the model, N, configuration, seed, and evaluation fixed while raising
+difficult NONE coverage to 1,024 blocks selected for lexical overlap and a true
+positive sibling elsewhere in the update. Edge F1 rose from 16.7% to 21.4%, but
+false edges increased from 0.667 to 0.867 per update, exact accuracy fell from
+26.7% to 23.3%, and robustness fell from 2.10 to 1.43. It failed the
+preregistered improvement rule and was rejected.
+
+Post-run analysis found that only 166/1,024 v2 hard negatives were accompanied
+by their positive sibling in the selected training slice. The model therefore
+usually did not receive the intended matched contrast between "same update,
+wrong block" and "same update, correct target block." The low training loss
+(0.087 for v1 and 0.081 for v2) combined with weak held-out metrics also points
+to data/formulation mismatch or annotation ambiguity rather than simple
+undertraining.
+
+If another training run is justified, the highest-value change is a paired
+contrastive v3 dataset: include each difficult negative with its exact positive
+sibling and preserve class balance at the update level. A learning-rate or
+epoch sweep is lower priority because it would optimize already-low training
+loss without fixing the missing contrast. A pairwise edge-classification
+objective with deterministic block assembly is a stronger redesign, but it
+should be treated as a new formulation rather than silently mixed into the
+completed fixed experiment.
+
+## Public artifacts and reproduction
+
+- Model: [mr-mc/flowjudge-dialam-qwen3-0.6b-v1-n2048](https://huggingface.co/mr-mc/flowjudge-dialam-qwen3-0.6b-v1-n2048), commit `18ee7ee16a48159e8a18997c4719c5dd87d54a6f`.
+- Dataset/reconstruction artifact: [mr-mc/flowjudge-dialam-reconstruction](https://huggingface.co/datasets/mr-mc/flowjudge-dialam-reconstruction), commit `649950879893bfcc1b5b6fb53ec5feff77ab3e66`.
+- Live demo: [mr-mc/flowjudge-dialam-demo](https://huggingface.co/spaces/mr-mc/flowjudge-dialam-demo), static Space commit `13edded07c43faf456c08462039c37c56efda26c`, backed by a scale-to-zero Modal CPU endpoint.
+
+The assignment-prescribed evaluator auto-detects DialAM `PatchExample` JSONL,
+rejects parent-episode leakage, evaluates both the canonical base and adapter,
+unions block predictions for update-level exact-patch metrics, uses deterministic
+gold scoring for relation correctness, and uses the frozen blinded judge only
+for Spec adherence and Robustness:
 
 ```bash
-uv sync --frozen
-uv run flowjudge build-training-data --limit 115
-uv run flowjudge distill-training-data --max-workers 4 --required-examples 96
-uv sync --frozen --group mlx-train
-uv run --group mlx-train python scripts/run_efficiency_curve.py --backend mlx
-uv run python eval.py --model <hf-repo-id> --eval-set data/eval/own_eval.jsonl
+uv sync --group train
+uv run python eval.py \
+  --model mr-mc/flowjudge-dialam-qwen3-0.6b-v1-n2048 \
+  --eval-set <dialam-patch-example-jsonl>
 ```
 
-Publication is locally prepared but still needs Hugging Face authentication and repository IDs. Fixed-judge rows beyond n=24 need replenished OpenAI credits, and staff-held-out results need the grader-supplied JSONL.
+The staff-held-out set is intentionally unavailable before grading. The command
+accepts it in the same `dialam_incremental_patch_v1` JSONL schema; its results
+cannot honestly be precomputed here. Raw candidate and judge transcripts are
+written under the ignored local `results/` tree.
+
+## Conclusion
+
+Data produced a real, measurable improvement over the untouched base and made
+the strict output contract reliable. It did not make direct relation selection
+reliable, and neither more v1 data nor unpaired topical hard negatives solved
+false-edge overprediction. The defensible submission claim is a successful
+end-to-end specialization experiment with a negative reliability finding and a
+specific paired-contrastive next hypothesis, not a production-ready argument
+mapper.

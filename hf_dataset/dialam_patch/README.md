@@ -23,6 +23,14 @@ split: 24 episodes for training and six untouched episodes for evaluation.
 The n=2048 slice contains 819 NONE, 410 SUPPORT, 307 ATTACK, 410 REPHRASE, and
 102 mixed-label blocks.
 
+All four v1 sizes and one hard-negative v2 n=2048 checkpoint were evaluated on
+the same frozen 30-scenario set. The selected publication checkpoint is v1
+n=2048: it had the best exact-patch result in the fixed v1 curve. The v2 data
+change added 1,024 difficult NONE blocks, but increased false edges and failed
+the preregistered material-improvement criterion. No tested checkpoint cleared
+the frozen reliability threshold; the published artifacts preserve that
+negative result rather than presenting the model as reliable.
+
 ## Behavior
 
 Given one new proposition and a complete fixed-size comparison block of earlier

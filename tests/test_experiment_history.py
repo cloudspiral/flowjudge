@@ -50,6 +50,13 @@ def test_experiment_history_separates_frozen_and_development_points() -> None:
         assert v8["metrics"]["none_scenarios_with_false_edges"] == 3
         assert v8["status"] == "RETAIN_V5_1_V8_FAILED_DEVELOPMENT_GATE"
 
+    v9_calibration_path = Path("reports/dialam_v9_calibration.json")
+    if v9_calibration_path.exists():
+        v9 = by_id["v9-1-n8192-development"]
+        assert v9["evaluation_scope"] == "episode_disjoint_development_30"
+        assert v9["n"] == 8192
+        assert v9["source_artifact"] == "reports/dialam_v9_calibration.json"
+
 
 def test_experiment_history_renderers_include_scope_warning_and_series() -> None:
     ledger = build_experiment_ledger()
@@ -63,5 +70,8 @@ def test_experiment_history_renderers_include_scope_warning_and_series() -> None
     if Path("reports/dialam_v8_result.json").exists():
         assert "v8.1/12288" in markdown
         assert "v8.1/12288" in svg
+    if Path("reports/dialam_v9_calibration.json").exists():
+        assert "v9.1/8192" in markdown
+        assert "v9.1/8192" in svg
     assert "DialAM improvement history" in svg
     assert "Edge F1" in svg

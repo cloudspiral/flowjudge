@@ -41,6 +41,8 @@ DATASET_VERSIONS = (
     "v7",
     "v8-smoke",
     "v8",
+    "v9-smoke",
+    "v9",
 )
 VALID_SIZES_BY_VERSION = {
     "v1": (256, 512, 1024, 2048),
@@ -53,6 +55,8 @@ VALID_SIZES_BY_VERSION = {
     "v7": (8192,),
     "v8-smoke": (252,),
     "v8": (12288,),
+    "v9-smoke": (256,),
+    "v9": (8192,),
 }
 EVAL_INPUT_FILENAMES = {
     "frozen": "frozen_eval_inputs.jsonl",
@@ -70,6 +74,8 @@ PAIRWISE_DATASET_VERSIONS = {
     "v7",
     "v8-smoke",
     "v8",
+    "v9-smoke",
+    "v9",
 }
 MAX_SEQ_LENGTH = 2048
 SEED = 20260823
@@ -184,6 +190,38 @@ V8_LOSS_CONFIG = {
         "NONE": 8192,
     },
 }
+V9_CONFIG = {
+    **FIXED_CONFIG,
+    "method": "Unsloth QLoRA selected-model hard-negative corrective continuation",
+    "epochs": 1.0,
+    "learning_rate": 5e-6,
+    "source_adapter": "v5_n8192",
+    "source_adapter_tree_sha256": V5_SOURCE_ADAPTER_TREE_SHA256,
+    "save_strategy": "steps",
+    "save_total_limit": 2,
+    "save_steps": {"v9-smoke": 8, "v9": 100},
+    "ignore_data_skip": False,
+}
+V9_LOSS_CONFIG = {
+    "name": "restricted_four_label_score_cross_entropy",
+    "labels": list(PAIRWISE_LABELS),
+    "sequence_score": "mean label-token log probability",
+    "loss": "cross_entropy(stack(four_label_scores), gold_label_index)",
+    "generative_token_nll": False,
+    "preference_loss": False,
+    "class_weights": False,
+    "label_smoothing": False,
+    "training_mix": {
+        "POSITIVE_REHEARSAL": 4096,
+        "MINED_NONE": 4096,
+    },
+}
+V9_MINING_INPUT_FILENAME = "v9_mining_candidates_n12288.jsonl"
+V9_MINING_SCORE_FILENAME = "v9_mining_scores_n12288.jsonl"
+V9_MINING_CANDIDATE_COUNT = 12288
+V9_MINING_CHUNK_SIZE = 128
+V9_MINING_BATCH_SIZE = 4
+V9_MINING_ROOT = EVALUATION_ROOT / "v9_v5_selected_model_mining"
 
 image = (
     modal.Image.from_registry("unsloth/unsloth:latest")
@@ -214,6 +252,8 @@ def _checkpoint_label(size: int, dataset_version: str) -> str:
         return f"v7_resume_smoke_n{size}"
     if dataset_version == "v8-smoke":
         return f"v8_resume_smoke_n{size}"
+    if dataset_version == "v9-smoke":
+        return f"v9_resume_smoke_n{size}"
     return f"{dataset_version}_n{size}"
 
 
@@ -223,6 +263,8 @@ def _train_filename(size: int, dataset_version: str) -> str:
         return f"dialam_v7_resume_smoke_n{size}.jsonl"
     if dataset_version == "v8-smoke":
         return f"dialam_v8_resume_smoke_n{size}.jsonl"
+    if dataset_version == "v9-smoke":
+        return f"dialam_v9_resume_smoke_n{size}.jsonl"
     return (
         f"dialam_n{size}.jsonl"
         if dataset_version == "v1"
@@ -311,6 +353,382 @@ def _score_pairwise_labels(
         key=lambda label: (scores[label], -PAIRWISE_LABELS.index(label)),
     )
     return selected, scores
+
+
+def _score_pairwise_labels_batch(
+    model: object,
+    tokenizer: object,
+    prompts: list[str],
+) -> list[tuple[str, dict[str, float]]]:
+    """Score a small prompt batch while materializing only trailing logits."""
+
+    import torch
+
+    if not prompts:
+        return []
+    label_ids = {
+        label: tokenizer(label, add_special_tokens=False)["input_ids"]
+        for label in PAIRWISE_LABELS
+    }
+    if any(not tokens for tokens in label_ids.values()):
+        raise ValueError("v9 mining label tokenization is empty")
+    prompt_ids = []
+    for prompt in prompts:
+        prompt_text = tokenizer.apply_chat_template(
+            [{"role": "user", "content": prompt}],
+            tokenize=False,
+            add_generation_prompt=True,
+            enable_thinking=False,
+        )
+        tokens = tokenizer(prompt_text, add_special_tokens=False)["input_ids"]
+        if not tokens:
+            raise ValueError("v9 mining prompt tokenization is empty")
+        prompt_ids.append(tokens)
+
+    records: list[tuple[int, str, list[int], int]] = []
+    sequences: list[list[int]] = []
+    for prompt_index, tokens in enumerate(prompt_ids):
+        for label in PAIRWISE_LABELS:
+            label_tokens = label_ids[label]
+            sequence = tokens + label_tokens
+            if len(sequence) > MAX_SEQ_LENGTH:
+                raise ValueError(
+                    f"v9 mining prompt needs {len(sequence)} tokens, exceeding "
+                    f"{MAX_SEQ_LENGTH}"
+                )
+            records.append((prompt_index, label, label_tokens, len(sequence)))
+            sequences.append(sequence)
+
+    pad_id = tokenizer.pad_token_id
+    if pad_id is None:
+        raise ValueError("v9 mining scoring requires a tokenizer pad token")
+    maximum_length = max(len(sequence) for sequence in sequences)
+    input_ids = torch.full(
+        (len(sequences), maximum_length),
+        pad_id,
+        dtype=torch.long,
+        device=model.device,
+    )
+    attention_mask = torch.zeros_like(input_ids)
+    for row_index, sequence in enumerate(sequences):
+        offset = maximum_length - len(sequence)
+        input_ids[row_index, offset:] = torch.tensor(sequence, device=model.device)
+        attention_mask[row_index, offset:] = 1
+
+    maximum_label_length = max(len(tokens) for tokens in label_ids.values())
+    logits_to_keep = maximum_label_length + 1
+    with torch.inference_mode():
+        try:
+            logits = model(
+                input_ids=input_ids,
+                attention_mask=attention_mask,
+                logits_to_keep=logits_to_keep,
+            ).logits
+        except TypeError as error:
+            raise RuntimeError(
+                "Qwen3 mining requires trailing-logit selection support"
+            ) from error
+    if logits.shape[1] != logits_to_keep:
+        raise RuntimeError("Qwen3 returned an unexpected mining-logit window")
+
+    by_prompt: list[dict[str, float]] = [dict() for _ in prompts]
+    for row_index, (prompt_index, label, tokens, _) in enumerate(records):
+        first_prediction = logits_to_keep - len(tokens) - 1
+        token_scores = []
+        for token_offset, token_id in enumerate(tokens):
+            token_logits = logits[row_index, first_prediction + token_offset].float()
+            token_scores.append(token_logits[token_id] - torch.logsumexp(token_logits, dim=-1))
+        by_prompt[prompt_index][label] = float(torch.stack(token_scores).mean().item())
+
+    output = []
+    for scores in by_prompt:
+        selected = max(
+            PAIRWISE_LABELS,
+            key=lambda label: (scores[label], -PAIRWISE_LABELS.index(label)),
+        )
+        output.append((selected, scores))
+    return output
+
+
+@app.function(
+    image=image,
+    gpu="L4",
+    timeout=60 * 60 * 4,
+    volumes={str(PERSISTENT_ROOT): volume},
+)
+def mine_v9_hard_negatives(stop_after_chunks: int = 0) -> dict:
+    """Score and persist fixed V9 training candidates one complete chunk at a time."""
+
+    from datetime import UTC, datetime
+
+    import torch
+    from unsloth import FastLanguageModel
+
+    if stop_after_chunks < 0:
+        raise ValueError("stop_after_chunks must be nonnegative")
+    volume.reload()
+    input_path = REMOTE_DATA_DIR / V9_MINING_INPUT_FILENAME
+    rows = _load_rows(input_path)
+    if len(rows) != V9_MINING_CANDIDATE_COUNT:
+        raise ValueError(
+            f"expected {V9_MINING_CANDIDATE_COUNT} v9 mining rows, found {len(rows)}"
+        )
+    candidate_ids = [row["mining_candidate_id"] for row in rows]
+    if len(candidate_ids) != len(set(candidate_ids)):
+        raise ValueError("v9 mining candidate IDs are not unique")
+    if any(row.get("gold_label") != "NONE" for row in rows):
+        raise ValueError("v9 mining inputs contain a non-NONE candidate")
+    source_hash, source_files = tree_manifest(V5_SOURCE_ADAPTER)
+    if source_hash != V5_SOURCE_ADAPTER_TREE_SHA256:
+        raise RuntimeError("remote v5 source adapter differs from the frozen checkpoint")
+
+    expected_identity = {
+        "schema_version": "dialam_modal_resumable_mining_identity_v1",
+        "implementation_version": "dialam-v9-v5-mining-batched-trailing-logits-v1",
+        "input_sha256": file_sha256(input_path),
+        "candidate_ids": candidate_ids,
+        "source_adapter_path": str(V5_SOURCE_ADAPTER),
+        "source_adapter_tree_sha256": source_hash,
+        "labels": list(PAIRWISE_LABELS),
+        "scoring": "mean allowed-label token log probability",
+        "selection_signal": "max positive score minus NONE score",
+        "chunk_size": V9_MINING_CHUNK_SIZE,
+        "batch_size": V9_MINING_BATCH_SIZE,
+        "max_seq_length": MAX_SEQ_LENGTH,
+    }
+    identity_hash = object_sha256(expected_identity)
+    run_dir = V9_MINING_ROOT
+    identity_path = run_dir / "run_identity.json"
+    progress_path = run_dir / "progress.json"
+    completed_path = run_dir / "completed.json"
+    chunk_dir = run_dir / "chunks"
+    if run_dir.exists():
+        if not identity_path.is_file():
+            raise RuntimeError("existing v9 mining run has no immutable identity")
+        observed = json.loads(identity_path.read_text(encoding="utf-8"))
+        observed_hash = observed.pop("identity_sha256", None)
+        if observed_hash != object_sha256(observed):
+            raise RuntimeError("stored v9 mining identity hash is invalid")
+        if observed != expected_identity or observed_hash != identity_hash:
+            raise RuntimeError("v9 mining identity mismatch")
+    else:
+        run_dir.mkdir(parents=True)
+        chunk_dir.mkdir()
+        write_json_atomic(
+            identity_path,
+            {**expected_identity, "identity_sha256": identity_hash},
+        )
+        write_json_atomic(
+            progress_path,
+            {
+                "schema_version": "dialam_modal_resumable_mining_progress_v1",
+                "identity_sha256": identity_hash,
+                "resume_events": [],
+                "completed_chunks": 0,
+                "completed_candidates": 0,
+            },
+        )
+        volume.commit()
+    chunk_dir.mkdir(exist_ok=True)
+
+    expected_chunks = [
+        rows[index : index + V9_MINING_CHUNK_SIZE]
+        for index in range(0, len(rows), V9_MINING_CHUNK_SIZE)
+    ]
+
+    def load_chunks() -> tuple[list[list[dict] | None], int, int]:
+        persisted: list[list[dict] | None] = []
+        completed_chunks = 0
+        completed_candidates = 0
+        for chunk_index, expected in enumerate(expected_chunks):
+            path = chunk_dir / f"{chunk_index:04d}.json"
+            if not path.is_file():
+                persisted.append(None)
+                continue
+            value = json.loads(path.read_text(encoding="utf-8"))
+            if not isinstance(value, list) or [
+                item.get("mining_candidate_id") for item in value
+            ] != [item["mining_candidate_id"] for item in expected]:
+                raise RuntimeError(f"persisted v9 mining chunk {chunk_index} is invalid")
+            if any(
+                item.get("adapter_tree_sha256") != source_hash for item in value
+            ):
+                raise RuntimeError(
+                    f"persisted v9 mining chunk {chunk_index} has the wrong adapter"
+                )
+            persisted.append(value)
+            completed_chunks += 1
+            completed_candidates += len(value)
+        return persisted, completed_chunks, completed_candidates
+
+    persisted, resumed_chunks, resumed_candidates = load_chunks()
+    if completed_path.is_file():
+        completed = json.loads(completed_path.read_text(encoding="utf-8"))
+        scores = [item for chunk in persisted if chunk is not None for item in chunk]
+        if len(scores) != len(rows):
+            raise RuntimeError("completed v9 mining run is missing chunks")
+        if completed.get("scores_sha256") != object_sha256(scores):
+            raise RuntimeError("completed v9 mining score hash is invalid")
+        return {
+            "scores": scores,
+            "resume": {
+                "idempotent_reuse": True,
+                "resumed_completed_chunks": len(expected_chunks),
+                "newly_completed_chunks": 0,
+                "total_chunks": len(expected_chunks),
+                "resumed_completed_candidates": len(scores),
+                "newly_completed_candidates": 0,
+                "total_candidates": len(scores),
+                "identity_sha256": identity_hash,
+                "adapter_tree_sha256": source_hash,
+                "scores_sha256": completed["scores_sha256"],
+            },
+        }
+
+    progress = json.loads(progress_path.read_text(encoding="utf-8"))
+    progress["resume_events"].append(
+        {
+            "started_at": datetime.now(UTC).isoformat(),
+            "resumed_completed_chunks": resumed_chunks,
+            "resumed_completed_candidates": resumed_candidates,
+            "missing_chunks": len(expected_chunks) - resumed_chunks,
+        }
+    )
+    write_json_atomic(progress_path, progress)
+    volume.commit()
+
+    model, tokenizer = FastLanguageModel.from_pretrained(
+        model_name=str(V5_SOURCE_ADAPTER),
+        max_seq_length=MAX_SEQ_LENGTH,
+        load_in_4bit=True,
+        dtype=None,
+    )
+    if tokenizer.pad_token_id is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    FastLanguageModel.for_inference(model)
+    newly_completed_chunks = 0
+    newly_completed_candidates = 0
+    positive_labels = ("SUPPORT", "ATTACK", "REPHRASE")
+    for chunk_index, expected in enumerate(expected_chunks):
+        if persisted[chunk_index] is not None:
+            print(
+                f"reused v9 mining chunk {chunk_index + 1}/{len(expected_chunks)}",
+                flush=True,
+            )
+            continue
+        chunk_scores: list[dict] = []
+        for batch_start in range(0, len(expected), V9_MINING_BATCH_SIZE):
+            batch = expected[batch_start : batch_start + V9_MINING_BATCH_SIZE]
+            scored = _score_pairwise_labels_batch(
+                model,
+                tokenizer,
+                [item["prompt"] for item in batch],
+            )
+            for candidate, (selected_label, label_scores) in zip(
+                batch,
+                scored,
+                strict=True,
+            ):
+                winning_positive = max(
+                    positive_labels,
+                    key=lambda label: (
+                        label_scores[label],
+                        -positive_labels.index(label),
+                    ),
+                )
+                chunk_scores.append(
+                    {
+                        "schema_version": "dialam_selected_model_mining_score_v9",
+                        "mining_candidate_id": candidate["mining_candidate_id"],
+                        "decision_key": candidate["decision_key"],
+                        "selected_label": selected_label,
+                        "winning_positive_label": winning_positive,
+                        "label_scores": label_scores,
+                        "model_hardness": (
+                            label_scores[winning_positive] - label_scores["NONE"]
+                        ),
+                        "support_evidence": (
+                            label_scores["SUPPORT"] - label_scores["NONE"]
+                        ),
+                        "adapter_tree_sha256": source_hash,
+                    }
+                )
+        write_json_atomic(chunk_dir / f"{chunk_index:04d}.json", chunk_scores)
+        persisted[chunk_index] = chunk_scores
+        newly_completed_chunks += 1
+        newly_completed_candidates += len(chunk_scores)
+        progress.update(
+            {
+                "completed_chunks": resumed_chunks + newly_completed_chunks,
+                "completed_candidates": (
+                    resumed_candidates + newly_completed_candidates
+                ),
+                "latest_completed_chunk": chunk_index,
+                "latest_completed_candidate_id": chunk_scores[-1][
+                    "mining_candidate_id"
+                ],
+                "committed_at": datetime.now(UTC).isoformat(),
+            }
+        )
+        write_json_atomic(progress_path, progress)
+        volume.commit()
+        print(
+            f"scored and committed v9 mining chunk "
+            f"{chunk_index + 1}/{len(expected_chunks)}",
+            flush=True,
+        )
+        if stop_after_chunks and newly_completed_chunks >= stop_after_chunks:
+            write_json_atomic(
+                run_dir / "intentional_interrupt.json",
+                {
+                    "schema_version": "dialam_v9_mining_intentional_interrupt_v1",
+                    "committed_chunk": chunk_index,
+                    "committed_candidates": (
+                        resumed_candidates + newly_completed_candidates
+                    ),
+                    "created_at": datetime.now(UTC).isoformat(),
+                },
+            )
+            volume.commit()
+            raise RuntimeError(
+                "INTENTIONAL_V9_MINING_INTERRUPTION_AFTER_COMMITTED_CHUNK"
+            )
+
+    del model
+    torch.cuda.empty_cache()
+    scores = [item for chunk in persisted if chunk is not None for item in chunk]
+    if len(scores) != len(rows):
+        raise RuntimeError("v9 mining did not cover every candidate")
+    scores_hash = object_sha256(scores)
+    write_json_atomic(
+        completed_path,
+        {
+            "schema_version": "dialam_modal_resumable_mining_complete_v1",
+            "identity_sha256": identity_hash,
+            "candidate_count": len(scores),
+            "chunk_count": len(expected_chunks),
+            "scores_sha256": scores_hash,
+            "adapter_tree_sha256": source_hash,
+            "adapter_files": source_files,
+            "completed_at": datetime.now(UTC).isoformat(),
+        },
+    )
+    volume.commit()
+    return {
+        "scores": scores,
+        "resume": {
+            "idempotent_reuse": False,
+            "resumed_completed_chunks": resumed_chunks,
+            "newly_completed_chunks": newly_completed_chunks,
+            "total_chunks": len(expected_chunks),
+            "resumed_completed_candidates": resumed_candidates,
+            "newly_completed_candidates": newly_completed_candidates,
+            "total_candidates": len(scores),
+            "identity_sha256": identity_hash,
+            "adapter_tree_sha256": source_hash,
+            "scores_sha256": scores_hash,
+        },
+    }
 
 
 @app.function(
@@ -998,11 +1416,14 @@ def train_listwise_checkpoint(
     resume_mode: ResumeMode = "auto",
     interrupt_after_steps: int = 0,
 ) -> dict:
-    if dataset_version not in {"v8-smoke", "v8"}:
-        raise ValueError("listwise training is registered only for v8-smoke or v8")
+    if dataset_version not in {"v8-smoke", "v8", "v9-smoke", "v9"}:
+        raise ValueError("restricted-label training is registered only for v8 or v9")
     _checkpoint_label(size, dataset_version)
     if interrupt_after_steps < 0:
         raise ValueError("interrupt_after_steps must be nonnegative")
+    is_v9 = dataset_version in {"v9-smoke", "v9"}
+    config = V9_CONFIG if is_v9 else V8_CONFIG
+    loss_config = V9_LOSS_CONFIG if is_v9 else V8_LOSS_CONFIG
 
     from datetime import UTC, datetime
 
@@ -1011,39 +1432,63 @@ def train_listwise_checkpoint(
     train_path = REMOTE_DATA_DIR / _train_filename(size, dataset_version)
     rows = _load_rows(train_path)
     if len(rows) != size:
-        raise ValueError(f"expected {size} v8 listwise rows, found {len(rows)}")
-    for index in range(0, len(rows), 3):
-        triple = rows[index : index + 3]
-        if len(triple) != 3:
-            raise ValueError("v8 listwise data ends with an incomplete triple")
-        if [row["group_position"] for row in triple] != [0, 1, 2]:
-            raise ValueError(f"v8 rows {index}:{index + 3} are not ordered triples")
-        if len({row["group_id"] for row in triple}) != 1:
-            raise ValueError(f"v8 rows {index}:{index + 3} cross groups")
-        if len({row["source_example_id"] for row in triple}) != 1:
-            raise ValueError(f"v8 rows {index}:{index + 3} cross source blocks")
-        if len({row["candidate_target_id"] for row in triple}) != 3:
-            raise ValueError(f"v8 rows {index}:{index + 3} repeat a candidate")
-        if [row["label"] for row in triple[1:]] != ["NONE", "NONE"]:
-            raise ValueError(f"v8 rows {index}:{index + 3} lack two NONE labels")
+        raise ValueError(f"expected {size} restricted-label rows, found {len(rows)}")
+    if is_v9:
+        from collections import Counter
+
+        expected_labels = (
+            {"NONE": 128, "ATTACK": 43, "REPHRASE": 43, "SUPPORT": 42}
+            if dataset_version == "v9-smoke"
+            else {"NONE": 4096, "ATTACK": 1366, "REPHRASE": 1365, "SUPPORT": 1365}
+        )
+        if Counter(row.get("label") for row in rows) != Counter(expected_labels):
+            raise ValueError("v9 row label mix differs from its registered corpus")
+        expected_roles = (
+            {"POSITIVE_REHEARSAL": 128, "MINED_NONE": 128}
+            if dataset_version == "v9-smoke"
+            else {"POSITIVE_REHEARSAL": 4096, "MINED_NONE": 4096}
+        )
+        if Counter(row.get("row_role") for row in rows) != Counter(expected_roles):
+            raise ValueError("v9 row-role mix differs from its registered corpus")
+        if len({row.get("training_row_id") for row in rows}) != len(rows):
+            raise ValueError("v9 training row IDs are not unique")
+    else:
+        for index in range(0, len(rows), 3):
+            triple = rows[index : index + 3]
+            if len(triple) != 3:
+                raise ValueError("v8 listwise data ends with an incomplete triple")
+            if [row["group_position"] for row in triple] != [0, 1, 2]:
+                raise ValueError(f"v8 rows {index}:{index + 3} are not ordered triples")
+            if len({row["group_id"] for row in triple}) != 1:
+                raise ValueError(f"v8 rows {index}:{index + 3} cross groups")
+            if len({row["source_example_id"] for row in triple}) != 1:
+                raise ValueError(f"v8 rows {index}:{index + 3} cross source blocks")
+            if len({row["candidate_target_id"] for row in triple}) != 3:
+                raise ValueError(f"v8 rows {index}:{index + 3} repeat a candidate")
+            if [row["label"] for row in triple[1:]] != ["NONE", "NONE"]:
+                raise ValueError(f"v8 rows {index}:{index + 3} lack two NONE labels")
 
     source_adapter_hash, source_adapter_files = tree_manifest(V5_SOURCE_ADAPTER)
     if source_adapter_hash != V5_SOURCE_ADAPTER_TREE_SHA256:
         raise RuntimeError(
             "remote v5 source adapter differs from the frozen selected checkpoint"
         )
-    save_steps = int(V8_CONFIG["save_steps"][dataset_version])
+    save_steps = int(config["save_steps"][dataset_version])
     expected_identity = {
         "schema_version": "dialam_modal_resumable_run_identity_v1",
-        "implementation_version": "dialam-v8-listwise-resume-v1",
+        "implementation_version": (
+            "dialam-v9-model-error-corrective-resume-v1"
+            if is_v9
+            else "dialam-v8-listwise-resume-v1"
+        ),
         "checkpoint_label": checkpoint_label,
         "dataset_version": dataset_version,
         "size": size,
         "train_sha256": file_sha256(train_path),
         "source_adapter_path": str(V5_SOURCE_ADAPTER),
         "source_adapter_tree_sha256": source_adapter_hash,
-        "fixed_config": V8_CONFIG,
-        "loss_config": V8_LOSS_CONFIG,
+        "fixed_config": config,
+        "loss_config": loss_config,
         "seed": SEED,
         "save_steps": save_steps,
     }
@@ -1120,7 +1565,7 @@ def train_listwise_checkpoint(
         for label in PAIRWISE_LABELS
     }
     if any(not tokens for tokens in label_ids.values()):
-        raise ValueError("v8 label tokenization is empty")
+        raise ValueError("restricted-label tokenization is empty")
 
     def tokenize_listwise(row: dict) -> dict[str, list[int] | int]:
         prompt_text = tokenizer.apply_chat_template(
@@ -1131,9 +1576,9 @@ def train_listwise_checkpoint(
         )
         prompt_ids = tokenizer(prompt_text, add_special_tokens=False)["input_ids"]
         if not prompt_ids:
-            raise ValueError("v8 prompt tokenization is empty")
+            raise ValueError("restricted-label prompt tokenization is empty")
         if len(prompt_ids) + max(len(tokens) for tokens in label_ids.values()) > MAX_SEQ_LENGTH:
-            raise ValueError("v8 listwise sequence exceeds the registered max length")
+            raise ValueError("restricted-label sequence exceeds the registered max length")
         tokenized: dict[str, list[int] | int] = {
             "target_index": PAIRWISE_LABELS.index(row["label"]),
         }
@@ -1262,20 +1707,20 @@ def train_listwise_checkpoint(
 
     training_args = TrainingArguments(
         output_dir=str(run_dir / "trainer"),
-        num_train_epochs=V8_CONFIG["epochs"],
-        per_device_train_batch_size=V8_CONFIG["per_device_batch_size"],
-        gradient_accumulation_steps=V8_CONFIG["gradient_accumulation_steps"],
-        learning_rate=V8_CONFIG["learning_rate"],
-        lr_scheduler_type=V8_CONFIG["lr_scheduler_type"],
-        warmup_ratio=V8_CONFIG["warmup_ratio"],
+        num_train_epochs=config["epochs"],
+        per_device_train_batch_size=config["per_device_batch_size"],
+        gradient_accumulation_steps=config["gradient_accumulation_steps"],
+        learning_rate=config["learning_rate"],
+        lr_scheduler_type=config["lr_scheduler_type"],
+        warmup_ratio=config["warmup_ratio"],
         logging_steps=5,
         save_strategy="steps",
         save_steps=save_steps,
-        save_total_limit=V8_CONFIG["save_total_limit"],
+        save_total_limit=config["save_total_limit"],
         save_safetensors=True,
         bf16=torch.cuda.is_bf16_supported(),
         fp16=not torch.cuda.is_bf16_supported(),
-        optim=V8_CONFIG["optimizer"],
+        optim=config["optimizer"],
         report_to="none",
         seed=SEED,
         data_seed=SEED,
@@ -1316,7 +1761,7 @@ def train_listwise_checkpoint(
         rows[0]["messages"][0]["content"],
     )
     if not reload_probe.strip():
-        raise RuntimeError("saved v8 adapter reloaded but produced an empty label")
+        raise RuntimeError("saved restricted-label adapter produced an empty label")
     adapter_hash, adapter_files = tree_manifest(adapter_dir)
     progress = json.loads(progress_path.read_text(encoding="utf-8"))
     progress.update(
@@ -1328,14 +1773,18 @@ def train_listwise_checkpoint(
     )
     write_json_atomic(progress_path, progress)
     manifest = {
-        "schema_version": "dialam_modal_listwise_qlora_run_v1",
+        "schema_version": (
+            "dialam_modal_model_error_corrective_qlora_run_v1"
+            if is_v9
+            else "dialam_modal_listwise_qlora_run_v1"
+        ),
         "completed_at": datetime.now(UTC).isoformat(),
         "size": size,
         "dataset_version": dataset_version,
         "train_sha256": file_sha256(train_path),
         "run_identity_sha256": run_identity_sha256,
-        "fixed_config": V8_CONFIG,
-        "loss_config": V8_LOSS_CONFIG,
+        "fixed_config": config,
+        "loss_config": loss_config,
         "source_adapter": {
             "path": str(V5_SOURCE_ADAPTER),
             "tree_sha256": source_adapter_hash,
@@ -1347,7 +1796,7 @@ def train_listwise_checkpoint(
             "resumed_from_step": decision.global_step,
             "resume_events": progress["resume_events"],
             "save_steps": save_steps,
-            "save_total_limit": V8_CONFIG["save_total_limit"],
+            "save_total_limit": config["save_total_limit"],
             "full_trainer_state": True,
             "volume_commit_on_save": True,
             "trainer_state_preserved_after_completion": True,
@@ -1478,13 +1927,13 @@ def generate_resumable_v8_eval(
     dataset_version: str,
     eval_split: str,
 ) -> dict:
-    """Persist each completed v8 scenario so interrupted evals resume in place."""
+    """Persist each completed restricted-label scenario for exact resume."""
 
     import torch
     from unsloth import FastLanguageModel
 
-    if dataset_version not in {"v8-smoke", "v8"}:
-        raise ValueError("resumable evaluation is registered only for v8")
+    if dataset_version not in {"v8-smoke", "v8", "v9-smoke", "v9"}:
+        raise ValueError("resumable evaluation is registered only for v8 or v9")
     if eval_split not in EVAL_INPUT_FILENAMES:
         raise ValueError(f"eval_split must be one of {tuple(EVAL_INPUT_FILENAMES)}")
     volume.reload()
@@ -1497,7 +1946,11 @@ def generate_resumable_v8_eval(
     rows = _load_rows(input_path)
     expected_identity = {
         "schema_version": "dialam_modal_resumable_eval_identity_v1",
-        "implementation_version": "dialam-v8-pairwise-eval-resume-v1",
+        "implementation_version": (
+            "dialam-v9-pairwise-eval-resume-v1"
+            if dataset_version in {"v9-smoke", "v9"}
+            else "dialam-v8-pairwise-eval-resume-v1"
+        ),
         "checkpoint_label": checkpoint_label,
         "dataset_version": dataset_version,
         "eval_split": eval_split,
@@ -1700,7 +2153,9 @@ def main(
     output_path: str = "",
     resume_mode: str = "auto",
     interrupt_after_steps: int = 0,
+    stop_after_chunks: int = 0,
 ) -> None:
+    resume_result = None
     if action == "train":
         checkpoint_label = _checkpoint_label(size, dataset_version)
         if dataset_version in {"v7-smoke", "v7"}:
@@ -1712,7 +2167,7 @@ def main(
                 resume_mode,
                 interrupt_after_steps,
             )
-        elif dataset_version in {"v8-smoke", "v8"}:
+        elif dataset_version in {"v8-smoke", "v8", "v9-smoke", "v9"}:
             if resume_mode not in {"never", "auto", "required"}:
                 raise ValueError("resume_mode must be never, auto, or required")
             result = train_listwise_checkpoint.remote(
@@ -1724,7 +2179,7 @@ def main(
         else:
             if interrupt_after_steps:
                 raise ValueError(
-                    "intentional interruption is available only for v7 or v8"
+                    "intentional interruption is available only for v7, v8, or v9"
                 )
             result = train_checkpoint.remote(size, dataset_version)
         default = (
@@ -1735,15 +2190,19 @@ def main(
             / "remote_training_result.json"
         )
     elif action == "evaluate":
-        eval_resume = None
-        if target == "tuned" and dataset_version in {"v8-smoke", "v8"}:
+        if target == "tuned" and dataset_version in {
+            "v8-smoke",
+            "v8",
+            "v9-smoke",
+            "v9",
+        }:
             resumable_result = generate_resumable_v8_eval.remote(
                 size,
                 dataset_version,
                 eval_split,
             )
             result = resumable_result["predictions"]
-            eval_resume = resumable_result["resume"]
+            resume_result = resumable_result["resume"]
         else:
             result = generate_model_eval.remote(target, size, dataset_version, eval_split)
         label = "base" if target == "base" else _checkpoint_label(size, dataset_version)
@@ -1754,8 +2213,13 @@ def main(
             / (label if eval_split == "frozen" else f"{label}_{eval_split}")
             / "predictions.jsonl"
         )
+    elif action == "mine-v9":
+        mined = mine_v9_hard_negatives.remote(stop_after_chunks)
+        result = mined["scores"]
+        resume_result = mined["resume"]
+        default = LOCAL_DATA_DIR / V9_MINING_SCORE_FILENAME
     else:
-        raise ValueError("action must be train or evaluate")
+        raise ValueError("action must be train, evaluate, or mine-v9")
 
     output = Path(output_path).resolve() if output_path else default
     output.parent.mkdir(parents=True, exist_ok=True)
@@ -1765,10 +2229,10 @@ def main(
         with output.open("w", encoding="utf-8") as handle:
             for row in result:
                 handle.write(json.dumps(row, ensure_ascii=False) + "\n")
-        if eval_resume is not None:
+        if resume_result is not None:
             resume_output = output.with_name(f"{output.stem}.resume.json")
             resume_output.write_text(
-                json.dumps(eval_resume, indent=2, sort_keys=True) + "\n",
+                json.dumps(resume_result, indent=2, sort_keys=True) + "\n",
                 encoding="utf-8",
             )
     print(output)

@@ -23,6 +23,13 @@ TRAINING_RESULT = (
     / "v7_n8192"
     / "remote_training_result.json"
 )
+IDEMPOTENT_RESULT = (
+    PROJECT_ROOT
+    / "artifacts"
+    / "dialam_qlora"
+    / "v7_n8192"
+    / "idempotent_reuse_result.json"
+)
 DATA_MANIFEST = (
     PROJECT_ROOT / "data" / "dialam" / "training" / "training_v7_manifest.json"
 )
@@ -152,16 +159,43 @@ def _write_doc(report: dict[str, Any]) -> None:
     for name, passed in report["development_gate_checks"].items():
         lines.append(f"- {'PASS' if passed else 'FAIL'}: `{name}`")
 
+    diagnosis = report["failure_diagnosis"]
+    lines.extend(
+        [
+            "",
+            "## Development diagnosis",
+            "",
+            f"V7 produced {diagnosis['false_positive_edges']} false-positive edges and "
+            f"{diagnosis['false_negative_edges']} false negatives. SUPPORT caused "
+            f"{diagnosis['support_false_positive_edges']} of the false positives, and "
+            f"{diagnosis['none_scenarios_with_false_edges']}/6 all-NONE scenarios "
+            "received at least one false edge.",
+            "",
+            "The reciprocal preference continuation therefore moved the relation-vs-NONE",
+            "boundary in the wrong direction on development. The selected fixed-grid",
+            "margin also saturated at its registered maximum of 3.0, so a separately",
+            "preregistered score-scale calibration is the only warranted zero-training",
+            "follow-up before rejecting the checkpoint itself.",
+        ]
+    )
+
     if "v7_1_frozen_n8192" not in report:
-        lines.extend(
-            [
-                "",
-                "## Frozen benchmark",
-                "",
-                "Not run. The development gate either failed or has not yet completed,",
-                "so v5.1 remains the selected submission model.",
-            ]
-        )
+        lines.extend(["", "## Frozen benchmark", ""])
+        if report["development_gate_passed"]:
+            lines.extend(
+                [
+                    "Not yet run. The development gate passed, but the locked frozen",
+                    "sequence has not completed.",
+                ]
+            )
+        else:
+            lines.extend(
+                [
+                    "Not run. The preregistered development gate failed, so no v7",
+                    "frozen predictions were generated or inspected and v5.1 remains",
+                    "the selected submission model.",
+                ]
+            )
     else:
         baseline_frozen = report["v5_1_frozen_n8192"]
         selected_frozen = report["v7_1_frozen_n8192"]
@@ -221,6 +255,7 @@ def _write_doc(report: dict[str, Any]) -> None:
 def build_report() -> dict[str, Any]:
     calibration = _load(CALIBRATION)
     training = _load(TRAINING_RESULT)
+    idempotent = _load(IDEMPOTENT_RESULT)
     data = _load(DATA_MANIFEST)
     baseline = _load(V5_1_RESULT)
     resume_smoke = _load(RESUME_SMOKE)
@@ -237,6 +272,13 @@ def build_report() -> dict[str, Any]:
         raise ValueError("v7 did not continue from the frozen v5 adapter")
     if not training["reload_verified"]:
         raise ValueError("v7 final adapter reload failed")
+    if idempotent.get("idempotent_reuse") is not True:
+        raise ValueError("v7 completed-run idempotence check did not short circuit")
+    if (
+        idempotent["global_step"] != training["global_step"]
+        or idempotent["adapter_tree_sha256"] != training["adapter_tree_sha256"]
+    ):
+        raise ValueError("v7 idempotent rerun returned different completed state")
     if not resume_smoke["all_checks_passed"]:
         raise ValueError("v7 full run proceeded without a passing resume smoke")
 
@@ -256,6 +298,8 @@ def build_report() -> dict[str, Any]:
         "v7_1_development_n8192": selected_metrics,
         "v5_1_frozen_n8192": baseline["v5_1_frozen_n8192"],
         "training": {
+            "modal_training_app_id": "ap-eDrcBEahd3VhgCFVdLqgYP",
+            "modal_development_eval_app_id": "ap-riM3TVuUmvwzB5sDFTMUZt",
             "size": training["size"],
             "dataset_version": training["dataset_version"],
             "train_sha256": training["train_sha256"],
@@ -267,6 +311,12 @@ def build_report() -> dict[str, Any]:
             "adapter_files": training["adapter_files"],
             "reload_verified": training["reload_verified"],
             "resumability": training["resumability"],
+            "idempotent_reuse_check": {
+                "returned_without_training": True,
+                "global_step": idempotent["global_step"],
+                "adapter_tree_sha256": idempotent["adapter_tree_sha256"],
+                "artifact_sha256": file_sha256(IDEMPOTENT_RESULT),
+            },
         },
         "failure_diagnosis": {
             "false_positive_edges": selected["metrics"]["false_positive_edges"],
@@ -286,6 +336,7 @@ def build_report() -> dict[str, Any]:
                 "data_manifest": DATA_MANIFEST,
                 "resume_smoke": RESUME_SMOKE,
                 "training_result": TRAINING_RESULT,
+                "idempotent_training_result": IDEMPOTENT_RESULT,
                 "development_raw_predictions": DEV_RAW,
                 "development_selected_predictions": DEV_SELECTED,
                 "calibration": CALIBRATION,

@@ -27,6 +27,7 @@ LOCAL_DATA_DIR = PROJECT_ROOT / "data" / "dialam" / "training"
 REMOTE_DATA_DIR = Path("/workspace/dialam_data")
 PERSISTENT_ROOT = Path("/workspace/persistent")
 CHECKPOINT_ROOT = PERSISTENT_ROOT / "checkpoints"
+EVALUATION_ROOT = PERSISTENT_ROOT / "evaluations"
 BASE_MODEL = "Qwen/Qwen3-0.6B"
 SIZES = (252, 256, 512, 1024, 2048, 4096, 8192, 12288)
 DATASET_VERSIONS = (
@@ -1466,6 +1467,229 @@ def generate_model_eval(
     return predictions
 
 
+@app.function(
+    image=image,
+    gpu="L4",
+    timeout=60 * 60,
+    volumes={str(PERSISTENT_ROOT): volume},
+)
+def generate_resumable_v8_eval(
+    size: int,
+    dataset_version: str,
+    eval_split: str,
+) -> dict:
+    """Persist each completed v8 scenario so interrupted evals resume in place."""
+
+    import torch
+    from unsloth import FastLanguageModel
+
+    if dataset_version not in {"v8-smoke", "v8"}:
+        raise ValueError("resumable evaluation is registered only for v8")
+    if eval_split not in EVAL_INPUT_FILENAMES:
+        raise ValueError(f"eval_split must be one of {tuple(EVAL_INPUT_FILENAMES)}")
+    volume.reload()
+    checkpoint_label = _checkpoint_label(size, dataset_version)
+    adapter_dir = CHECKPOINT_ROOT / checkpoint_label / "adapter"
+    if not adapter_dir.is_dir():
+        raise FileNotFoundError(f"missing trained adapter: {adapter_dir}")
+    adapter_hash, adapter_files = tree_manifest(adapter_dir)
+    input_path = REMOTE_DATA_DIR / V5_EVAL_INPUT_FILENAMES[eval_split]
+    rows = _load_rows(input_path)
+    expected_identity = {
+        "schema_version": "dialam_modal_resumable_eval_identity_v1",
+        "implementation_version": "dialam-v8-pairwise-eval-resume-v1",
+        "checkpoint_label": checkpoint_label,
+        "dataset_version": dataset_version,
+        "eval_split": eval_split,
+        "input_sha256": file_sha256(input_path),
+        "example_ids": [row["example_id"] for row in rows],
+        "adapter_tree_sha256": adapter_hash,
+        "scoring": "mean allowed-label token log probability",
+        "labels": list(PAIRWISE_LABELS),
+    }
+    identity_hash = object_sha256(expected_identity)
+    run_dir = EVALUATION_ROOT / f"{checkpoint_label}_{eval_split}"
+    identity_path = run_dir / "run_identity.json"
+    progress_path = run_dir / "progress.json"
+    completed_path = run_dir / "completed.json"
+    row_dir = run_dir / "rows"
+    if run_dir.exists():
+        if not identity_path.is_file():
+            raise RuntimeError("existing evaluation has no immutable run identity")
+        observed = json.loads(identity_path.read_text(encoding="utf-8"))
+        observed_hash = observed.pop("identity_sha256", None)
+        if observed_hash != object_sha256(observed):
+            raise RuntimeError("stored evaluation identity hash is invalid")
+        if observed != expected_identity or observed_hash != identity_hash:
+            raise RuntimeError(
+                "evaluation identity mismatch; input, adapter, split, or scorer changed"
+            )
+    else:
+        run_dir.mkdir(parents=True)
+        row_dir.mkdir()
+        write_json_atomic(
+            identity_path,
+            {**expected_identity, "identity_sha256": identity_hash},
+        )
+        write_json_atomic(
+            progress_path,
+            {
+                "schema_version": "dialam_modal_resumable_eval_progress_v1",
+                "identity_sha256": identity_hash,
+                "resume_events": [],
+                "completed_count": 0,
+            },
+        )
+        volume.commit()
+
+    row_dir.mkdir(exist_ok=True)
+
+    def load_persisted() -> tuple[list[dict | None], int]:
+        persisted: list[dict | None] = []
+        count = 0
+        for index, expected in enumerate(rows):
+            path = row_dir / f"{index:04d}.json"
+            if not path.is_file():
+                persisted.append(None)
+                continue
+            value = json.loads(path.read_text(encoding="utf-8"))
+            if value.get("example_id") != expected["example_id"]:
+                raise RuntimeError(f"persisted evaluation row {index} has the wrong ID")
+            persisted.append(value)
+            count += 1
+        return persisted, count
+
+    persisted, resumed_count = load_persisted()
+    if completed_path.is_file():
+        completed = json.loads(completed_path.read_text(encoding="utf-8"))
+        predictions = [row for row in persisted if row is not None]
+        if len(predictions) != len(rows):
+            raise RuntimeError("completed evaluation is missing persisted scenario rows")
+        if completed.get("predictions_sha256") != object_sha256(predictions):
+            raise RuntimeError("completed evaluation prediction hash is invalid")
+        return {
+            "predictions": predictions,
+            "resume": {
+                "idempotent_reuse": True,
+                "resumed_completed_scenarios": len(predictions),
+                "newly_completed_scenarios": 0,
+                "total_scenarios": len(predictions),
+                "identity_sha256": identity_hash,
+                "adapter_tree_sha256": adapter_hash,
+                "predictions_sha256": completed["predictions_sha256"],
+            },
+        }
+
+    progress = json.loads(progress_path.read_text(encoding="utf-8"))
+    progress["resume_events"].append(
+        {
+            "resumed_completed_scenarios": resumed_count,
+            "missing_scenarios": len(rows) - resumed_count,
+        }
+    )
+    write_json_atomic(progress_path, progress)
+    volume.commit()
+
+    model, tokenizer = FastLanguageModel.from_pretrained(
+        model_name=str(adapter_dir),
+        max_seq_length=MAX_SEQ_LENGTH,
+        load_in_4bit=True,
+        dtype=None,
+    )
+    if tokenizer.pad_token_id is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    FastLanguageModel.for_inference(model)
+    newly_completed = 0
+    for index, row in enumerate(rows):
+        if persisted[index] is not None:
+            print(
+                f"reused tuned {index + 1}/{len(rows)} from persistent eval state",
+                flush=True,
+            )
+            continue
+        pairwise_decisions = []
+        relations = []
+        for candidate in row["candidates"]:
+            label, label_scores = _score_pairwise_labels(
+                model,
+                tokenizer,
+                candidate["prompt"],
+            )
+            pairwise_decisions.append(
+                {
+                    "target_id": candidate["target_id"],
+                    "label": label,
+                    "label_scores": label_scores,
+                }
+            )
+            if label != "NONE":
+                relations.append(
+                    {
+                        "source": row["source_id"],
+                        "target": candidate["target_id"],
+                        "type": label,
+                    }
+                )
+        prediction = {
+            "example_id": row["example_id"],
+            "update_id": row["update_id"],
+            "target": "tuned",
+            "model": BASE_MODEL,
+            "adapter_size": size,
+            "dataset_version": dataset_version,
+            "eval_split": eval_split,
+            "raw_response": json.dumps(
+                {"relations": relations},
+                separators=(",", ":"),
+            ),
+            "pairwise_decisions": pairwise_decisions,
+        }
+        write_json_atomic(row_dir / f"{index:04d}.json", prediction)
+        persisted[index] = prediction
+        newly_completed += 1
+        progress.update(
+            {
+                "completed_count": resumed_count + newly_completed,
+                "latest_completed_index": index,
+                "latest_completed_example_id": row["example_id"],
+            }
+        )
+        write_json_atomic(progress_path, progress)
+        volume.commit()
+        print(f"generated tuned {index + 1}/{len(rows)} and committed", flush=True)
+
+    del model
+    torch.cuda.empty_cache()
+    predictions = [row for row in persisted if row is not None]
+    if len(predictions) != len(rows):
+        raise RuntimeError("resumable evaluation did not cover every scenario")
+    predictions_hash = object_sha256(predictions)
+    write_json_atomic(
+        completed_path,
+        {
+            "schema_version": "dialam_modal_resumable_eval_complete_v1",
+            "identity_sha256": identity_hash,
+            "scenario_count": len(predictions),
+            "predictions_sha256": predictions_hash,
+            "adapter_tree_sha256": adapter_hash,
+            "adapter_files": adapter_files,
+        },
+    )
+    volume.commit()
+    return {
+        "predictions": predictions,
+        "resume": {
+            "idempotent_reuse": False,
+            "resumed_completed_scenarios": resumed_count,
+            "newly_completed_scenarios": newly_completed,
+            "total_scenarios": len(predictions),
+            "identity_sha256": identity_hash,
+            "adapter_tree_sha256": adapter_hash,
+            "predictions_sha256": predictions_hash,
+        },
+    }
+
+
 @app.local_entrypoint()
 def main(
     action: str,
@@ -1511,7 +1735,17 @@ def main(
             / "remote_training_result.json"
         )
     elif action == "evaluate":
-        result = generate_model_eval.remote(target, size, dataset_version, eval_split)
+        eval_resume = None
+        if target == "tuned" and dataset_version in {"v8-smoke", "v8"}:
+            resumable_result = generate_resumable_v8_eval.remote(
+                size,
+                dataset_version,
+                eval_split,
+            )
+            result = resumable_result["predictions"]
+            eval_resume = resumable_result["resume"]
+        else:
+            result = generate_model_eval.remote(target, size, dataset_version, eval_split)
         label = "base" if target == "base" else _checkpoint_label(size, dataset_version)
         default = (
             PROJECT_ROOT
@@ -1531,4 +1765,10 @@ def main(
         with output.open("w", encoding="utf-8") as handle:
             for row in result:
                 handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+        if eval_resume is not None:
+            resume_output = output.with_name(f"{output.stem}.resume.json")
+            resume_output.write_text(
+                json.dumps(eval_resume, indent=2, sort_keys=True) + "\n",
+                encoding="utf-8",
+            )
     print(output)

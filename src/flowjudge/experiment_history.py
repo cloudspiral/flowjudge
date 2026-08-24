@@ -363,6 +363,55 @@ def build_experiment_ledger(reports_dir: Path = REPORTS_DIR) -> dict[str, Any]:
             )
         )
 
+    v8_path = reports_dir / "dialam_v8_calibration.json"
+    if v8_path.exists():
+        v8 = _load(v8_path)
+        sources.append(v8_path)
+        selected = v8["selected"]
+        points.append(
+            _point(
+                run_id="v8-1-n12288-development",
+                label="v8.1/12288",
+                evaluation_scope="episode_disjoint_development_30",
+                n=12288,
+                intervention=(
+                    "QT30 prior-aware one-positive/two-hard-NONE groups with "
+                    "restricted four-label score cross-entropy"
+                ),
+                status=v8["development_decision"],
+                value={
+                    **selected["metrics"],
+                    "none_diagnostics": selected["none_diagnostics"],
+                },
+                source_artifact="reports/dialam_v8_calibration.json",
+            )
+        )
+
+    v8_result_path = reports_dir / "dialam_v8_result.json"
+    if v8_result_path.exists():
+        v8_result = _load(v8_result_path)
+        sources.append(v8_result_path)
+        if "v8_1_frozen_n12288" in v8_result:
+            if v8_result.get("promotion_passed"):
+                for point in points:
+                    if point["run_id"] == "v5-1-n8192-frozen":
+                        point["status"] = "previous selected model"
+            points.append(
+                _point(
+                    run_id="v8-1-n12288-frozen",
+                    label="v8.1/12288",
+                    evaluation_scope="frozen_30",
+                    n=12288,
+                    intervention=(
+                        "QT30 prior-aware restricted-label listwise training plus "
+                        "locked NONE margin"
+                    ),
+                    status=v8_result["selection_decision"],
+                    value=v8_result["v8_1_frozen_n12288"],
+                    source_artifact="reports/dialam_v8_result.json",
+                )
+            )
+
     return {
         "schema_version": "dialam_experiment_history_v1",
         "scope_warning": (

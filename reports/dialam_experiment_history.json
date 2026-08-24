@@ -374,6 +374,31 @@
       "run_id": "v7-1-n8192-development",
       "source_artifact": "reports/dialam_v7_calibration.json",
       "status": "RETAIN_V5_1_V7_FAILED_DEVELOPMENT_GATE"
+    },
+    {
+      "evaluation_scope": "episode_disjoint_development_30",
+      "intervention": "Transition-complete score-only NONE calibration over fixed v7 development scores",
+      "label": "v7.2/8192",
+      "metrics": {
+        "attack_f1": 0.6153846153846154,
+        "edge_f1": 0.5217391304347826,
+        "edge_precision": 0.5454545454545454,
+        "edge_recall": 0.5,
+        "exact_patch_accuracy": 0.5333333333333333,
+        "false_edges_per_update": 0.3333333333333333,
+        "json_validity_rate": 1.0,
+        "judge_robustness_mean": null,
+        "judge_spec_adherence_mean": null,
+        "none_scenarios_with_false_edges": 2,
+        "relation_macro_f1": 0.5067155067155067,
+        "rephrase_f1": 0.3333333333333333,
+        "schema_validity_rate": 1.0,
+        "support_f1": 0.5714285714285714
+      },
+      "n": 8192,
+      "run_id": "v7-2-n8192-development",
+      "source_artifact": "reports/dialam_v7_2_calibration.json",
+      "status": "RETAIN_V5_1_V7_2_FAILED_DEVELOPMENT_GATE"
     }
   ],
   "schema_version": "dialam_experiment_history_v1",
@@ -418,6 +443,10 @@
     {
       "path": "reports/dialam_v7_result.json",
       "sha256": "402b02cfd64a761ecf2a0a368078bc77c14bb85af65ecc4a13bf3983b835d821"
+    },
+    {
+      "path": "reports/dialam_v7_2_calibration.json",
+      "sha256": "f4495cee14467d2acf4fcb8d72ca40e2ef1c7f64405f3cd1832e23034fb18fd2"
     }
   ]
 }

@@ -1,0 +1,12 @@
+{
+  "adapter_tree_sha256": "cbd9a2a6cae8ab988d78b7694ac9f9829bf9262bbb7a6fab838894a5080f122a",
+  "idempotent_reuse": true,
+  "identity_sha256": "1be408f19c0a19f812ce6690e74c9fea9561594017c7876052f6a33554663238",
+  "newly_completed_candidates": 0,
+  "newly_completed_chunks": 0,
+  "resumed_completed_candidates": 12288,
+  "resumed_completed_chunks": 96,
+  "scores_sha256": "d69c539c38fa335be3485fdfb27ed71db51ed8c4ccfbbb9360c25c967959385d",
+  "total_candidates": 12288,
+  "total_chunks": 96
+}

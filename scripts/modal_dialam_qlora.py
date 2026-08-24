@@ -2228,7 +2228,9 @@ def main(
     else:
         with output.open("w", encoding="utf-8") as handle:
             for row in result:
-                handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+                handle.write(
+                    json.dumps(row, ensure_ascii=False, sort_keys=True) + "\n"
+                )
         if resume_result is not None:
             resume_output = output.with_name(f"{output.stem}.resume.json")
             resume_output.write_text(

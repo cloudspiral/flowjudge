@@ -1,0 +1,122 @@
+{
+  "continuation": {
+    "optimizer_state_reset_between_v5_and_v9": true,
+    "source_adapter": "v5_n8192",
+    "source_adapter_tree_sha256": "cbd9a2a6cae8ab988d78b7694ac9f9829bf9262bbb7a6fab838894a5080f122a"
+  },
+  "created_at": "2026-08-24T03:33:44.287189+00:00",
+  "dataset_version": "v9-selected-model-error-corrective",
+  "development_gate": {
+    "edge_f1_min": 0.56,
+    "exact_patch_accuracy_min": 0.5333333333333333,
+    "false_edges_per_update_max": 0.3,
+    "json_validity_rate_min": 1.0,
+    "none_scenarios_with_false_edges_max": 2,
+    "relation_macro_f1_min": 0.5427350427350427,
+    "schema_validity_rate_min": 1.0
+  },
+  "dialogue_leakage": false,
+  "fixed_training_config": {
+    "effective_batch_size": 8,
+    "epochs": 1.0,
+    "learning_rate": 5e-06,
+    "save_steps": {
+      "v9": 100,
+      "v9-smoke": 8
+    },
+    "save_total_limit": 2,
+    "seed": 20260823
+  },
+  "frozen_promotion_gate": {
+    "attack_f1_min": 0.3076923076923077,
+    "edge_f1_min": 0.5061904761904762,
+    "exact_patch_accuracy_min": 0.5333333333333333,
+    "false_edges_per_update_max": 0.26666666666666666,
+    "json_validity_rate_min": 1.0,
+    "none_scenarios_with_false_edges_max": 0,
+    "relation_macro_f1_min": 0.4743589743589744,
+    "schema_validity_rate_min": 1.0
+  },
+  "mining_input_sha256": "1d7c612d09cb61190430c89d7dc5035cbc84f5b91aaf4e1297a6b9e64d91ed1a",
+  "mining_manifest_sha256": "2d82d8262579e76298530d5271350d8804d24ec033036b70f167a39aa06db922",
+  "mining_score_count": 12288,
+  "mining_score_sha256": "406a704f8b58f2e54dd0cb02bd1a4926f8fd7d290bc4e4f240b842165fa4b479",
+  "new_external_data": false,
+  "objective": {
+    "class_weights": false,
+    "label_smoothing": false,
+    "labels": [
+      "NONE",
+      "SUPPORT",
+      "ATTACK",
+      "REPHRASE"
+    ],
+    "loss": "cross_entropy(stack(four_label_scores), gold_label_index)",
+    "name": "restricted_four_label_score_cross_entropy",
+    "sequence_score": "mean label-token log probability"
+  },
+  "output": {
+    "path": "data/dialam/training/dialam_v9_n8192.jsonl",
+    "sha256": "8967ce5d99d79ffc7ebc928bb2c49262645d33179184ae4d330c4491c7e84df9"
+  },
+  "preregistration": {
+    "path": "docs/dialam_v9_preregistration.md",
+    "sha256": "6dab3739e7fc8b482f8ef075e06085b9356c0606f3be68073d085bca1c8a8a22"
+  },
+  "publication": "Training rows and mining scores remain local/ignored; the tracked manifest, schemas, and reconstruction code contain no corpus text.",
+  "resumability": {
+    "completed_run_is_idempotent_in_auto_mode": true,
+    "identity_mismatch_refuses_resume": true,
+    "periodic_full_trainer_state": true,
+    "persistent_modal_volume_commit_on_every_save": true,
+    "smoke_subset_is_nested_prefix": true
+  },
+  "row_label_counts": {
+    "ATTACK": 1366,
+    "NONE": 4096,
+    "REPHRASE": 1365,
+    "SUPPORT": 1365
+  },
+  "row_role_counts": {
+    "MINED_NONE": 4096,
+    "POSITIVE_REHEARSAL": 4096
+  },
+  "schema": {
+    "path": "data/dialam/training/training_example_v9.schema.json",
+    "sha256": "85173687cabdeb5a2c7774764bc0abd0c5cd70f390bfc977ee0c23ed54e90ec9"
+  },
+  "schema_version": "dialam_training_manifest_v9",
+  "selected_model_hardness": {
+    "maximum": 16.125078201293945,
+    "mean": 3.2992460536770523,
+    "minimum": -0.32995176315307617
+  },
+  "selected_none_count": 4096,
+  "selected_shared_content_tokens": {
+    "maximum": 15,
+    "mean": 2.34228515625,
+    "minimum": 1
+  },
+  "selected_support_evidence": {
+    "maximum": 11.250078201293945,
+    "mean": 2.581268572481349,
+    "minimum": -3.1522207260131836
+  },
+  "selected_uncalibrated_positive_predictions": 3677,
+  "selected_v5_1_margin_false_predictions": 2127,
+  "selected_winning_positive_labels": {
+    "ATTACK": 475,
+    "REPHRASE": 1946,
+    "SUPPORT": 1675
+  },
+  "selection_seed": "dialam-qt30-qlora-v9-selected-model-error-mining",
+  "size": 8192,
+  "smoke_output": {
+    "path": "data/dialam/training/dialam_v9_resume_smoke_n256.jsonl",
+    "sha256": "1193d0f1b14c00158dfde6d5af30e7c620b3f66222c983fbcb2206063c16b9b2"
+  },
+  "smoke_size": 256,
+  "source_adapter_tree_sha256": "cbd9a2a6cae8ab988d78b7694ac9f9829bf9262bbb7a6fab838894a5080f122a",
+  "source_v5_sha256": "23f4b8d552a6bca16cdb79507d89ec9675bb16a8d2f5b7b573c6a0981a42d8db",
+  "split_unit": "original_parent_episode"
+}

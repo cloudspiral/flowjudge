@@ -1,0 +1,56 @@
+{
+  "all_checks_passed": true,
+  "canonical_export": {
+    "byte_sha256": "406a704f8b58f2e54dd0cb02bd1a4926f8fd7d290bc4e4f240b842165fa4b479",
+    "line_count": 12288,
+    "local_path": "data/dialam/training/v9_mining_scores_n12288.jsonl",
+    "semantic_scores_sha256": "d69c539c38fa335be3485fdfb27ed71db51ed8c4ccfbbb9360c25c967959385d"
+  },
+  "checks": {
+    "all_12288_candidates_scored": true,
+    "canonical_replay_bytes_identical": true,
+    "completed_replay_created_zero_chunks": true,
+    "completed_replay_reused_all_96_chunks": true,
+    "completed_replay_semantic_hash_identical": true,
+    "first_chunk_committed_before_intentional_stop": true,
+    "immutable_identity_preserved": true,
+    "resume_created_only_95_missing_chunks": true,
+    "resume_reused_committed_chunk_1": true,
+    "source_adapter_hash_matches_v5_1": true
+  },
+  "completed_replay": {
+    "canonical_export_app_id": "ap-54GKem50nVu7mp4hhmg94c",
+    "first_idempotence_app_id": "ap-xEDUvGEqiP8SohcOWzCrdC",
+    "idempotent_reuse": true,
+    "newly_completed_candidates": 0,
+    "newly_completed_chunks": 0,
+    "resume_manifest_path": "data/dialam/training/v9_mining_scores_n12288.resume.json",
+    "resume_manifest_sha256": "6dab9355efaa295f72c821f0e18f74c8f53980c1ebbffd17465e3b91450de669",
+    "resumed_completed_candidates": 12288,
+    "resumed_completed_chunks": 96
+  },
+  "decision": "PASS_BUILD_V9_CORPUS",
+  "experiment": "V9 selected-model mining intentional interruption, resume, and idempotence",
+  "identity": {
+    "adapter_tree_sha256": "cbd9a2a6cae8ab988d78b7694ac9f9829bf9262bbb7a6fab838894a5080f122a",
+    "input_sha256": "1d7c612d09cb61190430c89d7dc5035cbc84f5b91aaf4e1297a6b9e64d91ed1a",
+    "remote_identity_sha256": "1be408f19c0a19f812ce6690e74c9fea9561594017c7876052f6a33554663238"
+  },
+  "intentional_interruption": {
+    "committed_candidates": 128,
+    "committed_chunks": 1,
+    "expected_error": "INTENTIONAL_V9_MINING_INTERRUPTION_AFTER_COMMITTED_CHUNK",
+    "modal_app_id": "ap-hsrOAokzK1ESsvcMhTS3dY"
+  },
+  "privacy": "Candidate prompts and per-candidate score rows remain local and ignored. This report contains only aggregate counts, paths, hashes, and run identifiers.",
+  "resume_completion": {
+    "modal_app_id": "ap-huP83tIPe5hvtoXvPCUPZ9",
+    "newly_completed_candidates": 12160,
+    "newly_completed_chunks": 95,
+    "resumed_completed_candidates": 128,
+    "resumed_completed_chunks": 1,
+    "total_candidates": 12288,
+    "total_chunks": 96
+  },
+  "schema_version": "dialam_v9_mining_resume_result_v1"
+}

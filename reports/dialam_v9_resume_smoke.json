@@ -1,0 +1,59 @@
+{
+  "all_checks_passed": true,
+  "checks": {
+    "completed_rerun_was_idempotent": true,
+    "final_adapter_reloaded": true,
+    "first_invocation_created_new_run": true,
+    "full_trainer_state_was_persisted": true,
+    "idempotent_rerun_preserved_adapter_hash": true,
+    "idempotent_rerun_preserved_step": true,
+    "learning_rate_matches_manifest": true,
+    "nested_smoke_size_is_256": true,
+    "objective_matches_manifest": true,
+    "run_completed_step_32": true,
+    "second_invocation_required_step_8": true,
+    "smoke_data_hash_matches_manifest": true,
+    "source_adapter_matches_frozen_v5_1": true,
+    "trainer_state_preserved_after_completion": true,
+    "volume_was_committed_on_every_save": true
+  },
+  "data_manifest_sha256": "21401e242196134841b3df6710b5c59664032ff8483fb9a924aca3afeb7dfcbb",
+  "decision": "PASS",
+  "experiment": "V9/n256 intentional interruption and exact-state resume",
+  "frozen_eval_touched": false,
+  "full_run_allowed": true,
+  "idempotent_reuse": {
+    "adapter_tree_sha256": "ab6e1844bad9735f7df5064c05419c993adaeb2afbf222a8b155830b780b8502",
+    "global_step": 32,
+    "modal_app_id": "ap-gUtuJQ44oeDp9dPkYRshtx",
+    "returned_without_training": true
+  },
+  "intentional_interruption": {
+    "committed_global_step": 8,
+    "expected_error": "INTENTIONAL_RESUME_SMOKE_INTERRUPTION_AFTER_COMMITTED_CHECKPOINT",
+    "modal_app_id": "ap-ozWEo7lky70HNUjClfxh73"
+  },
+  "judge_calls": 0,
+  "preregistration_sha256": "6dab3739e7fc8b482f8ef075e06085b9356c0606f3be68073d085bca1c8a8a22",
+  "private_local_artifacts": {
+    "idempotent_result": {
+      "path": "artifacts/dialam_qlora/v9_resume_smoke_n256/idempotent_reuse_result.json",
+      "sha256": "3bdb242d6625e8d71fd2a81b2785237d811580bfa9e74b23df6c9edc396781bd"
+    },
+    "modal_checkpoint_root": "/workspace/persistent/checkpoints/v9_resume_smoke_n256",
+    "training_result": {
+      "path": "artifacts/dialam_qlora/v9_resume_smoke_n256/remote_training_result.json",
+      "sha256": "af486e8914ddc725e0260c8ee42412677c51127582933378bc3e1779136f10d9"
+    }
+  },
+  "resume_completion": {
+    "adapter_tree_sha256": "ab6e1844bad9735f7df5064c05419c993adaeb2afbf222a8b155830b780b8502",
+    "completed_global_step": 32,
+    "first_new_global_step": 9,
+    "modal_app_id": "ap-9RfT5NTh1bIfV17oGZTqnW",
+    "reload_verified": true,
+    "resumed_from_step": 8,
+    "train_loss": 5.304976046085358
+  },
+  "schema_version": "dialam_v9_resume_smoke_result_v1"
+}

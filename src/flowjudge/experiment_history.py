@@ -290,6 +290,55 @@ def build_experiment_ledger(reports_dir: Path = REPORTS_DIR) -> dict[str, Any]:
                 )
             )
 
+    v7_path = reports_dir / "dialam_v7_calibration.json"
+    if v7_path.exists():
+        v7 = _load(v7_path)
+        sources.append(v7_path)
+        selected = v7["selected"]
+        points.append(
+            _point(
+                run_id="v7-1-n8192-development",
+                label="v7.1/8192",
+                evaluation_scope="episode_disjoint_development_30",
+                n=8192,
+                intervention=(
+                    "QT30-only reciprocal candidate-preference continuation from v5 "
+                    "plus development-only NONE calibration"
+                ),
+                status=v7["development_decision"],
+                value={
+                    **selected["metrics"],
+                    "none_diagnostics": selected["none_diagnostics"],
+                },
+                source_artifact="reports/dialam_v7_calibration.json",
+            )
+        )
+
+    v7_result_path = reports_dir / "dialam_v7_result.json"
+    if v7_result_path.exists():
+        v7_result = _load(v7_result_path)
+        sources.append(v7_result_path)
+        if "v7_1_frozen_n8192" in v7_result:
+            if v7_result.get("promotion_passed"):
+                for point in points:
+                    if point["run_id"] == "v5-1-n8192-frozen":
+                        point["status"] = "previous selected model"
+            points.append(
+                _point(
+                    run_id="v7-1-n8192-frozen",
+                    label="v7.1/8192",
+                    evaluation_scope="frozen_30",
+                    n=8192,
+                    intervention=(
+                        "QT30-only reciprocal candidate-preference continuation from v5 "
+                        "plus locked NONE margin"
+                    ),
+                    status=v7_result["selection_decision"],
+                    value=v7_result["v7_1_frozen_n8192"],
+                    source_artifact="reports/dialam_v7_result.json",
+                )
+            )
+
     return {
         "schema_version": "dialam_experiment_history_v1",
         "scope_warning": (

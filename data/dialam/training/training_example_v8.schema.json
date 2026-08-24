@@ -1,0 +1,180 @@
+{
+  "$defs": {
+    "CandidateHardness": {
+      "additionalProperties": false,
+      "properties": {
+        "jaccard_similarity": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Jaccard Similarity",
+          "type": "number"
+        },
+        "overlap_coefficient": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Overlap Coefficient",
+          "type": "number"
+        },
+        "shared_content_tokens": {
+          "minimum": 0,
+          "title": "Shared Content Tokens",
+          "type": "integer"
+        },
+        "turn_gap": {
+          "exclusiveMinimum": 0,
+          "title": "Turn Gap",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "shared_content_tokens",
+        "overlap_coefficient",
+        "jaccard_similarity",
+        "turn_gap"
+      ],
+      "title": "CandidateHardness",
+      "type": "object"
+    },
+    "TrainingMessage": {
+      "additionalProperties": false,
+      "properties": {
+        "content": {
+          "minLength": 1,
+          "title": "Content",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "user",
+            "assistant"
+          ],
+          "title": "Role",
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "content"
+      ],
+      "title": "TrainingMessage",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "block_index": {
+      "minimum": 0,
+      "title": "Block Index",
+      "type": "integer"
+    },
+    "candidate_hardness": {
+      "$ref": "#/$defs/CandidateHardness"
+    },
+    "candidate_target_id": {
+      "title": "Candidate Target Id",
+      "type": "string"
+    },
+    "dialogue_id": {
+      "title": "Dialogue Id",
+      "type": "string"
+    },
+    "group_id": {
+      "title": "Group Id",
+      "type": "string"
+    },
+    "group_position": {
+      "maximum": 2,
+      "minimum": 0,
+      "title": "Group Position",
+      "type": "integer"
+    },
+    "group_role": {
+      "enum": [
+        "POSITIVE",
+        "NONE_PRIMARY",
+        "NONE_SECONDARY"
+      ],
+      "title": "Group Role",
+      "type": "string"
+    },
+    "is_repeated_positive": {
+      "title": "Is Repeated Positive",
+      "type": "boolean"
+    },
+    "label": {
+      "enum": [
+        "NONE",
+        "SUPPORT",
+        "ATTACK",
+        "REPHRASE"
+      ],
+      "title": "Label",
+      "type": "string"
+    },
+    "messages": {
+      "items": {
+        "$ref": "#/$defs/TrainingMessage"
+      },
+      "maxItems": 2,
+      "minItems": 2,
+      "title": "Messages",
+      "type": "array"
+    },
+    "positive_label": {
+      "enum": [
+        "SUPPORT",
+        "ATTACK",
+        "REPHRASE"
+      ],
+      "title": "Positive Label",
+      "type": "string"
+    },
+    "repetition_index": {
+      "minimum": 0,
+      "title": "Repetition Index",
+      "type": "integer"
+    },
+    "schema_version": {
+      "const": "dialam_qlora_prior_aware_listwise_v8",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_example_id": {
+      "title": "Source Example Id",
+      "type": "string"
+    },
+    "source_positive_key": {
+      "title": "Source Positive Key",
+      "type": "string"
+    },
+    "training_row_id": {
+      "title": "Training Row Id",
+      "type": "string"
+    },
+    "update_id": {
+      "title": "Update Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "training_row_id",
+    "group_id",
+    "group_role",
+    "group_position",
+    "source_positive_key",
+    "source_example_id",
+    "update_id",
+    "dialogue_id",
+    "block_index",
+    "candidate_target_id",
+    "label",
+    "positive_label",
+    "repetition_index",
+    "is_repeated_positive",
+    "candidate_hardness",
+    "messages"
+  ],
+  "title": "DialAMListwiseRowV8",
+  "type": "object"
+}

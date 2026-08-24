@@ -1,0 +1,154 @@
+{
+  "ambiguous_same_pair_decisions_excluded": 3,
+  "available_candidate_label_counts": {
+    "ATTACK": 517,
+    "NONE": 70719,
+    "REPHRASE": 2499,
+    "SUPPORT": 2618
+  },
+  "available_candidate_positive_rate": 0.07378884916113315,
+  "available_unique_positive_decisions": {
+    "ATTACK": 443,
+    "REPHRASE": 2182,
+    "SUPPORT": 2252
+  },
+  "continuation": {
+    "optimizer_state_reset_between_v5_and_v8": true,
+    "source_adapter": "v5_n8192",
+    "source_adapter_tree_sha256": "cbd9a2a6cae8ab988d78b7694ac9f9829bf9262bbb7a6fab838894a5080f122a"
+  },
+  "created_at": "2026-08-24T00:49:08.315899+00:00",
+  "dataset_version": "v8-qt30-prior-aware-listwise",
+  "development_gate": {
+    "edge_f1_min": 0.56,
+    "exact_patch_accuracy_min": 0.5333333333333333,
+    "false_edges_per_update_max": 0.3,
+    "json_validity_rate_min": 1.0,
+    "none_scenarios_with_false_edges_max": 2,
+    "relation_macro_f1_min": 0.5427350427350427,
+    "schema_validity_rate_min": 1.0
+  },
+  "development_parent_episode_count": 4,
+  "dialogue_leakage": false,
+  "eligible_two_negative_positive_decisions": {
+    "ATTACK": 367,
+    "REPHRASE": 1834,
+    "SUPPORT": 1905
+  },
+  "evaluation_hashes": {
+    "development_examples_sha256": "78f4ccc35312a4e3e74cce062346af040ff4e00b365a1312c2a627d7d0e1ec55",
+    "frozen_examples_sha256": "76badbae23ace13b22822335fa794f7cc796ce0d02753666ebd83c4d7260305b"
+  },
+  "fixed_training_config": {
+    "effective_batch_size": 8,
+    "epochs": 1.0,
+    "learning_rate": 2e-05,
+    "save_steps": {
+      "v8": 100,
+      "v8-smoke": 8
+    },
+    "save_total_limit": 2,
+    "seed": 20260823
+  },
+  "frozen_parent_episode_count": 6,
+  "frozen_promotion_gate": {
+    "attack_f1_min": 0.3076923076923077,
+    "edge_f1_min": 0.5061904761904762,
+    "exact_patch_accuracy_min": 0.5333333333333333,
+    "false_edges_per_update_max": 0.26666666666666666,
+    "json_validity_rate_min": 1.0,
+    "none_scenarios_with_false_edges_max": 0,
+    "relation_macro_f1_min": 0.4743589743589744,
+    "schema_validity_rate_min": 1.0
+  },
+  "group_count": 4096,
+  "group_policy": {
+    "distinct_candidate_targets_within_group": true,
+    "maximum_positive_occurrences": 4,
+    "negative_overlap_coefficient": {
+      "maximum": 1.0,
+      "mean": 0.17681737034746428,
+      "minimum": 0.0
+    },
+    "negative_shared_content_tokens": {
+      "maximum": 17,
+      "mean": 0.9737548828125,
+      "minimum": 0
+    },
+    "one_positive_two_none": true,
+    "repeated_positive_groups": 999,
+    "same_complete_block": true,
+    "semantic_candidate_retrieval": false,
+    "unique_positive_decisions": 3097,
+    "unique_positives_before_repetition": true
+  },
+  "group_role_counts": {
+    "NONE_PRIMARY": 4096,
+    "NONE_SECONDARY": 4096,
+    "POSITIVE": 4096
+  },
+  "insufficient_negative_positive_decisions_excluded": {
+    "ATTACK": 76,
+    "REPHRASE": 348,
+    "SUPPORT": 347
+  },
+  "new_external_data": false,
+  "objective": {
+    "class_weights": false,
+    "generative_token_nll": false,
+    "label_smoothing": false,
+    "labels": [
+      "NONE",
+      "SUPPORT",
+      "ATTACK",
+      "REPHRASE"
+    ],
+    "loss": "cross_entropy(stack(four_label_scores), gold_label_index)",
+    "name": "restricted_four_label_score_cross_entropy",
+    "preference_loss": false,
+    "sequence_score": "mean label-token log probability"
+  },
+  "output": {
+    "path": "data/dialam/training/dialam_v8_n12288.jsonl",
+    "sha256": "feb00779c5b97c3650204bf5af1aacda7acfa7c7a116ce1dbfaf2203541c97c7"
+  },
+  "positive_target_counts": {
+    "ATTACK": 1366,
+    "REPHRASE": 1365,
+    "SUPPORT": 1365
+  },
+  "preregistration": {
+    "path": "docs/dialam_v8_preregistration.md",
+    "sha256": "d4e48359870453080a1a4cff9a9e06dcb7f6a5dc441a68d08367646c7a419a15"
+  },
+  "publication": "Rows contain transformed QT30 text and remain local/ignored; the tracked manifest and deterministic reconstruction code contain no corpus text.",
+  "resumability": {
+    "completed_run_is_idempotent_in_auto_mode": true,
+    "identity_mismatch_refuses_resume": true,
+    "periodic_full_trainer_state": true,
+    "persistent_modal_volume_commit_on_every_save": true,
+    "smoke_subset_is_nested_prefix": true
+  },
+  "row_label_counts": {
+    "ATTACK": 1366,
+    "NONE": 8192,
+    "REPHRASE": 1365,
+    "SUPPORT": 1365
+  },
+  "schema": {
+    "path": "data/dialam/training/training_example_v8.schema.json",
+    "sha256": "254b6da8c68dee7803385d37d971a72989ed36306789e43ec2a39a8d21f684ec"
+  },
+  "schema_version": "dialam_training_manifest_v8",
+  "selection_seed": "dialam-qt30-qlora-v8-prior-aware-listwise",
+  "size": 12288,
+  "smoke_output": {
+    "path": "data/dialam/training/dialam_v8_resume_smoke_n252.jsonl",
+    "sha256": "694561881a169d053066f7da2af69b519066746bc9edba78285a1aa3c5dfc89d"
+  },
+  "smoke_size": 252,
+  "source_archive_sha256": "9d3d70c5ad86c815f821928dc515ee80a8e2a24d3f5d224557045f50f7a73791",
+  "source_v5_sha256": "23f4b8d552a6bca16cdb79507d89ec9675bb16a8d2f5b7b573c6a0981a42d8db",
+  "split_unit": "original_parent_episode",
+  "training_parent_episode_count": 20
+}

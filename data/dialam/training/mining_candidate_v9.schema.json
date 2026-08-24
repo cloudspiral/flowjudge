@@ -1,0 +1,104 @@
+{
+  "$defs": {
+    "CandidateHardness": {
+      "additionalProperties": false,
+      "properties": {
+        "jaccard_similarity": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Jaccard Similarity",
+          "type": "number"
+        },
+        "overlap_coefficient": {
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Overlap Coefficient",
+          "type": "number"
+        },
+        "shared_content_tokens": {
+          "minimum": 0,
+          "title": "Shared Content Tokens",
+          "type": "integer"
+        },
+        "turn_gap": {
+          "exclusiveMinimum": 0,
+          "title": "Turn Gap",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "shared_content_tokens",
+        "overlap_coefficient",
+        "jaccard_similarity",
+        "turn_gap"
+      ],
+      "title": "CandidateHardness",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "block_index": {
+      "minimum": 0,
+      "title": "Block Index",
+      "type": "integer"
+    },
+    "candidate_hardness": {
+      "$ref": "#/$defs/CandidateHardness"
+    },
+    "candidate_target_id": {
+      "title": "Candidate Target Id",
+      "type": "string"
+    },
+    "decision_key": {
+      "title": "Decision Key",
+      "type": "string"
+    },
+    "dialogue_id": {
+      "title": "Dialogue Id",
+      "type": "string"
+    },
+    "gold_label": {
+      "const": "NONE",
+      "title": "Gold Label",
+      "type": "string"
+    },
+    "mining_candidate_id": {
+      "title": "Mining Candidate Id",
+      "type": "string"
+    },
+    "prompt": {
+      "minLength": 1,
+      "title": "Prompt",
+      "type": "string"
+    },
+    "schema_version": {
+      "const": "dialam_selected_model_mining_candidate_v9",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source_example_id": {
+      "title": "Source Example Id",
+      "type": "string"
+    },
+    "update_id": {
+      "title": "Update Id",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "mining_candidate_id",
+    "decision_key",
+    "source_example_id",
+    "update_id",
+    "dialogue_id",
+    "block_index",
+    "candidate_target_id",
+    "gold_label",
+    "candidate_hardness",
+    "prompt"
+  ],
+  "title": "DialAMMiningCandidateV9",
+  "type": "object"
+}

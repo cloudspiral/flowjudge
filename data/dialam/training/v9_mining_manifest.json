@@ -1,0 +1,68 @@
+{
+  "ambiguous_same_pair_decisions_excluded": 3,
+  "available_candidate_label_counts": {
+    "ATTACK": 517,
+    "NONE": 70719,
+    "REPHRASE": 2499,
+    "SUPPORT": 2618
+  },
+  "candidate_overlap_coefficient": {
+    "maximum": 1.0,
+    "mean": 0.3847702030291251,
+    "minimum": 0.10526315789473684
+  },
+  "candidate_shared_content_tokens": {
+    "maximum": 15,
+    "mean": 2.08935546875,
+    "minimum": 1
+  },
+  "created_at": "2026-08-24T02:46:18.347126+00:00",
+  "development_parent_episode_count": 4,
+  "dialogue_leakage": false,
+  "evaluation_hashes": {
+    "development_examples_sha256": "78f4ccc35312a4e3e74cce062346af040ff4e00b365a1312c2a627d7d0e1ec55",
+    "frozen_examples_sha256": "76badbae23ace13b22822335fa794f7cc796ce0d02753666ebd83c4d7260305b"
+  },
+  "frozen_parent_episode_count": 6,
+  "mining": {
+    "chunk_size_max": 128,
+    "completed_run_is_idempotent": true,
+    "identity_mismatch_refuses_resume": true,
+    "labels": [
+      "NONE",
+      "SUPPORT",
+      "ATTACK",
+      "REPHRASE"
+    ],
+    "model_hardness": "max(positive label score) - NONE score",
+    "persistent_chunk_commit": true,
+    "sequence_score": "mean label-token log probability"
+  },
+  "output": {
+    "path": "data/dialam/training/v9_mining_candidates_n12288.jsonl",
+    "sha256": "1d7c612d09cb61190430c89d7dc5035cbc84f5b91aaf4e1297a6b9e64d91ed1a"
+  },
+  "prefilter_policy": "novel unambiguous training NONE decisions in frozen v5 lexical-hardness order with seeded stable ties",
+  "prefilter_size": 12288,
+  "preregistration": {
+    "path": "docs/dialam_v9_preregistration.md",
+    "sha256": "6dab3739e7fc8b482f8ef075e06085b9356c0606f3be68073d085bca1c8a8a22"
+  },
+  "publication": "Mining inputs contain transformed QT30 text and remain local/ignored; this tracked manifest and schemas contain no corpus text.",
+  "schema": {
+    "path": "data/dialam/training/mining_candidate_v9.schema.json",
+    "sha256": "acff87d3e33784f866b9502bfa2926a7e39e8a8720c5dfe269161bbc254517d1"
+  },
+  "schema_version": "dialam_v9_mining_manifest_v1",
+  "score_schema": {
+    "path": "data/dialam/training/mining_score_v9.schema.json",
+    "sha256": "87e8bf510a2cf9a4de20278a27383929ac017e1074a27c258eef690a3414abae"
+  },
+  "selection_seed": "dialam-qt30-qlora-v9-selected-model-error-mining",
+  "source_adapter_tree_sha256": "cbd9a2a6cae8ab988d78b7694ac9f9829bf9262bbb7a6fab838894a5080f122a",
+  "source_archive_sha256": "9d3d70c5ad86c815f821928dc515ee80a8e2a24d3f5d224557045f50f7a73791",
+  "source_v5_sha256": "23f4b8d552a6bca16cdb79507d89ec9675bb16a8d2f5b7b573c6a0981a42d8db",
+  "split_unit": "original_parent_episode",
+  "training_parent_episode_count": 20,
+  "v5_none_decision_count_excluded": 3783
+}

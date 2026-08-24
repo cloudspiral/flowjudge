@@ -1,0 +1,69 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "adapter_tree_sha256": {
+      "title": "Adapter Tree Sha256",
+      "type": "string"
+    },
+    "decision_key": {
+      "title": "Decision Key",
+      "type": "string"
+    },
+    "label_scores": {
+      "additionalProperties": {
+        "type": "number"
+      },
+      "title": "Label Scores",
+      "type": "object"
+    },
+    "mining_candidate_id": {
+      "title": "Mining Candidate Id",
+      "type": "string"
+    },
+    "model_hardness": {
+      "title": "Model Hardness",
+      "type": "number"
+    },
+    "schema_version": {
+      "const": "dialam_selected_model_mining_score_v9",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "selected_label": {
+      "enum": [
+        "NONE",
+        "SUPPORT",
+        "ATTACK",
+        "REPHRASE"
+      ],
+      "title": "Selected Label",
+      "type": "string"
+    },
+    "support_evidence": {
+      "title": "Support Evidence",
+      "type": "number"
+    },
+    "winning_positive_label": {
+      "enum": [
+        "SUPPORT",
+        "ATTACK",
+        "REPHRASE"
+      ],
+      "title": "Winning Positive Label",
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "mining_candidate_id",
+    "decision_key",
+    "selected_label",
+    "winning_positive_label",
+    "label_scores",
+    "model_hardness",
+    "support_evidence",
+    "adapter_tree_sha256"
+  ],
+  "title": "DialAMMiningScoreV9",
+  "type": "object"
+}

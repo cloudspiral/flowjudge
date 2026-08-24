@@ -28,8 +28,19 @@ REMOTE_DATA_DIR = Path("/workspace/dialam_data")
 PERSISTENT_ROOT = Path("/workspace/persistent")
 CHECKPOINT_ROOT = PERSISTENT_ROOT / "checkpoints"
 BASE_MODEL = "Qwen/Qwen3-0.6B"
-SIZES = (256, 512, 1024, 2048, 4096, 8192, 12288)
-DATASET_VERSIONS = ("v1", "v2", "v3", "v4", "v5", "v6", "v7-smoke", "v7")
+SIZES = (252, 256, 512, 1024, 2048, 4096, 8192, 12288)
+DATASET_VERSIONS = (
+    "v1",
+    "v2",
+    "v3",
+    "v4",
+    "v5",
+    "v6",
+    "v7-smoke",
+    "v7",
+    "v8-smoke",
+    "v8",
+)
 VALID_SIZES_BY_VERSION = {
     "v1": (256, 512, 1024, 2048),
     "v2": (2048,),
@@ -39,6 +50,8 @@ VALID_SIZES_BY_VERSION = {
     "v6": (12288,),
     "v7-smoke": (256,),
     "v7": (8192,),
+    "v8-smoke": (252,),
+    "v8": (12288,),
 }
 EVAL_INPUT_FILENAMES = {
     "frozen": "frozen_eval_inputs.jsonl",
@@ -49,7 +62,14 @@ V5_EVAL_INPUT_FILENAMES = {
     "v3_dev": "v5_dev_pairwise_inputs.jsonl",
 }
 PAIRWISE_LABELS = ("NONE", "SUPPORT", "ATTACK", "REPHRASE")
-PAIRWISE_DATASET_VERSIONS = {"v5", "v6", "v7-smoke", "v7"}
+PAIRWISE_DATASET_VERSIONS = {
+    "v5",
+    "v6",
+    "v7-smoke",
+    "v7",
+    "v8-smoke",
+    "v8",
+}
 MAX_SEQ_LENGTH = 2048
 SEED = 20260823
 V5_SOURCE_ADAPTER = CHECKPOINT_ROOT / "v5_n8192" / "adapter"
@@ -137,6 +157,32 @@ V7_LOSS_CONFIG = {
     "positive_candidate_preference": "gold relation > NONE",
     "hard_negative_candidate_preference": "NONE > paired gold relation",
 }
+V8_CONFIG = {
+    **FIXED_CONFIG,
+    "method": "Unsloth QLoRA adapter continuation with restricted-label cross-entropy",
+    "epochs": 1.0,
+    "learning_rate": 2e-5,
+    "source_adapter": "v5_n8192",
+    "source_adapter_tree_sha256": V5_SOURCE_ADAPTER_TREE_SHA256,
+    "save_strategy": "steps",
+    "save_total_limit": 2,
+    "save_steps": {"v8-smoke": 8, "v8": 100},
+    "ignore_data_skip": False,
+}
+V8_LOSS_CONFIG = {
+    "name": "restricted_four_label_score_cross_entropy",
+    "labels": list(PAIRWISE_LABELS),
+    "sequence_score": "mean label-token log probability",
+    "loss": "cross_entropy(stack(four_label_scores), gold_label_index)",
+    "generative_token_nll": False,
+    "preference_loss": False,
+    "class_weights": False,
+    "label_smoothing": False,
+    "training_mix": {
+        "POSITIVE": 4096,
+        "NONE": 8192,
+    },
+}
 
 image = (
     modal.Image.from_registry("unsloth/unsloth:latest")
@@ -165,6 +211,8 @@ def _checkpoint_label(size: int, dataset_version: str) -> str:
         return f"n{size}"
     if dataset_version == "v7-smoke":
         return f"v7_resume_smoke_n{size}"
+    if dataset_version == "v8-smoke":
+        return f"v8_resume_smoke_n{size}"
     return f"{dataset_version}_n{size}"
 
 
@@ -172,6 +220,8 @@ def _train_filename(size: int, dataset_version: str) -> str:
     _checkpoint_label(size, dataset_version)
     if dataset_version == "v7-smoke":
         return f"dialam_v7_resume_smoke_n{size}.jsonl"
+    if dataset_version == "v8-smoke":
+        return f"dialam_v8_resume_smoke_n{size}.jsonl"
     return (
         f"dialam_n{size}.jsonl"
         if dataset_version == "v1"
@@ -938,6 +988,396 @@ def train_preference_checkpoint(
 @app.function(
     image=image,
     gpu="L4",
+    timeout=60 * 60 * 4,
+    volumes={str(PERSISTENT_ROOT): volume},
+)
+def train_listwise_checkpoint(
+    size: int,
+    dataset_version: str,
+    resume_mode: ResumeMode = "auto",
+    interrupt_after_steps: int = 0,
+) -> dict:
+    if dataset_version not in {"v8-smoke", "v8"}:
+        raise ValueError("listwise training is registered only for v8-smoke or v8")
+    _checkpoint_label(size, dataset_version)
+    if interrupt_after_steps < 0:
+        raise ValueError("interrupt_after_steps must be nonnegative")
+
+    from datetime import UTC, datetime
+
+    volume.reload()
+    checkpoint_label = _checkpoint_label(size, dataset_version)
+    train_path = REMOTE_DATA_DIR / _train_filename(size, dataset_version)
+    rows = _load_rows(train_path)
+    if len(rows) != size:
+        raise ValueError(f"expected {size} v8 listwise rows, found {len(rows)}")
+    for index in range(0, len(rows), 3):
+        triple = rows[index : index + 3]
+        if len(triple) != 3:
+            raise ValueError("v8 listwise data ends with an incomplete triple")
+        if [row["group_position"] for row in triple] != [0, 1, 2]:
+            raise ValueError(f"v8 rows {index}:{index + 3} are not ordered triples")
+        if len({row["group_id"] for row in triple}) != 1:
+            raise ValueError(f"v8 rows {index}:{index + 3} cross groups")
+        if len({row["source_example_id"] for row in triple}) != 1:
+            raise ValueError(f"v8 rows {index}:{index + 3} cross source blocks")
+        if len({row["candidate_target_id"] for row in triple}) != 3:
+            raise ValueError(f"v8 rows {index}:{index + 3} repeat a candidate")
+        if [row["label"] for row in triple[1:]] != ["NONE", "NONE"]:
+            raise ValueError(f"v8 rows {index}:{index + 3} lack two NONE labels")
+
+    source_adapter_hash, source_adapter_files = tree_manifest(V5_SOURCE_ADAPTER)
+    if source_adapter_hash != V5_SOURCE_ADAPTER_TREE_SHA256:
+        raise RuntimeError(
+            "remote v5 source adapter differs from the frozen selected checkpoint"
+        )
+    save_steps = int(V8_CONFIG["save_steps"][dataset_version])
+    expected_identity = {
+        "schema_version": "dialam_modal_resumable_run_identity_v1",
+        "implementation_version": "dialam-v8-listwise-resume-v1",
+        "checkpoint_label": checkpoint_label,
+        "dataset_version": dataset_version,
+        "size": size,
+        "train_sha256": file_sha256(train_path),
+        "source_adapter_path": str(V5_SOURCE_ADAPTER),
+        "source_adapter_tree_sha256": source_adapter_hash,
+        "fixed_config": V8_CONFIG,
+        "loss_config": V8_LOSS_CONFIG,
+        "seed": SEED,
+        "save_steps": save_steps,
+    }
+    run_dir = CHECKPOINT_ROOT / checkpoint_label
+    decision = prepare_resumable_run(
+        run_dir,
+        expected_identity,
+        resume_mode=resume_mode,
+    )
+    run_identity_sha256 = object_sha256(expected_identity)
+    if decision.action == "complete":
+        completed = json.loads(
+            (run_dir / "training_manifest.json").read_text(encoding="utf-8")
+        )
+        completed["idempotent_reuse"] = True
+        return completed
+
+    import torch
+    from datasets import Dataset
+    from unsloth import FastLanguageModel
+    from transformers import Trainer, TrainerCallback, TrainingArguments, set_seed
+
+    set_seed(SEED)
+
+    progress_path = run_dir / PROGRESS_FILENAME
+    progress = (
+        json.loads(progress_path.read_text(encoding="utf-8"))
+        if progress_path.is_file()
+        else {
+            "schema_version": "dialam_modal_training_progress_v1",
+            "run_identity_sha256": run_identity_sha256,
+            "resume_events": [],
+        }
+    )
+    progress["resume_events"].append(
+        {
+            "started_at": datetime.now(UTC).isoformat(),
+            "action": decision.action,
+            "from_global_step": decision.global_step,
+            "checkpoint": str(decision.checkpoint) if decision.checkpoint else None,
+            "ignored_incomplete_checkpoints": list(
+                decision.ignored_incomplete_checkpoints
+            ),
+        }
+    )
+    progress.update(
+        {
+            "status": "initializing",
+            "latest_committed_global_step": decision.global_step,
+        }
+    )
+    write_json_atomic(progress_path, progress)
+    volume.commit()
+
+    model, tokenizer = FastLanguageModel.from_pretrained(
+        model_name=str(V5_SOURCE_ADAPTER),
+        max_seq_length=MAX_SEQ_LENGTH,
+        load_in_4bit=True,
+        dtype=None,
+    )
+    if tokenizer.pad_token_id is None:
+        tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.padding_side = "right"
+    model.config.use_cache = False
+    trainable_parameters = sum(
+        parameter.numel() for parameter in model.parameters() if parameter.requires_grad
+    )
+    total_parameters = sum(parameter.numel() for parameter in model.parameters())
+    if trainable_parameters <= 0:
+        raise RuntimeError("continued v5 adapter loaded with no trainable parameters")
+
+    label_ids = {
+        label: tokenizer(label, add_special_tokens=False)["input_ids"]
+        for label in PAIRWISE_LABELS
+    }
+    if any(not tokens for tokens in label_ids.values()):
+        raise ValueError("v8 label tokenization is empty")
+
+    def tokenize_listwise(row: dict) -> dict[str, list[int] | int]:
+        prompt_text = tokenizer.apply_chat_template(
+            row["messages"][:1],
+            tokenize=False,
+            add_generation_prompt=True,
+            enable_thinking=False,
+        )
+        prompt_ids = tokenizer(prompt_text, add_special_tokens=False)["input_ids"]
+        if not prompt_ids:
+            raise ValueError("v8 prompt tokenization is empty")
+        if len(prompt_ids) + max(len(tokens) for tokens in label_ids.values()) > MAX_SEQ_LENGTH:
+            raise ValueError("v8 listwise sequence exceeds the registered max length")
+        tokenized: dict[str, list[int] | int] = {
+            "target_index": PAIRWISE_LABELS.index(row["label"]),
+        }
+        for label in PAIRWISE_LABELS:
+            tokens = label_ids[label]
+            prefix = label.lower()
+            tokenized[f"{prefix}_input_ids"] = prompt_ids + tokens
+            tokenized[f"{prefix}_attention_mask"] = [1] * (
+                len(prompt_ids) + len(tokens)
+            )
+            tokenized[f"{prefix}_labels"] = [-100] * len(prompt_ids) + tokens
+        return tokenized
+
+    dataset = Dataset.from_list(rows).map(
+        tokenize_listwise,
+        remove_columns=list(rows[0]),
+        desc=f"tokenize DialAM {dataset_version} n={size}",
+    )
+
+    class ListwiseCollator:
+        def __call__(self, features: list[dict]) -> dict[str, torch.Tensor]:
+            sequences = []
+            sequence_labels = []
+            for feature in features:
+                for label in PAIRWISE_LABELS:
+                    prefix = label.lower()
+                    sequences.append(
+                        {
+                            "input_ids": feature[f"{prefix}_input_ids"],
+                            "attention_mask": feature[f"{prefix}_attention_mask"],
+                        }
+                    )
+                    sequence_labels.append(feature[f"{prefix}_labels"])
+            padded = tokenizer.pad(sequences, padding=True, return_tensors="pt")
+            padded_labels = torch.full_like(padded["input_ids"], -100)
+            for row_index, row_labels in enumerate(sequence_labels):
+                padded_labels[row_index, : len(row_labels)] = torch.tensor(
+                    row_labels,
+                    dtype=torch.long,
+                )
+            return {
+                "input_ids": padded["input_ids"],
+                "attention_mask": padded["attention_mask"],
+                "labels": padded_labels,
+                "target_indices": torch.tensor(
+                    [feature["target_index"] for feature in features],
+                    dtype=torch.long,
+                ),
+            }
+
+    class ListwiseTrainer(Trainer):
+        def compute_loss(
+            self,
+            model: object,
+            inputs: dict,
+            return_outputs: bool = False,
+            num_items_in_batch: object | None = None,
+        ) -> object:
+            del num_items_in_batch
+            labels = inputs.pop("labels")
+            target_indices = inputs.pop("target_indices")
+            outputs = model(**inputs)
+            shift_logits = outputs.logits[..., :-1, :].contiguous().float()
+            shift_labels = labels[..., 1:].contiguous()
+            mask = shift_labels.ne(-100)
+            safe_labels = shift_labels.masked_fill(~mask, 0)
+            token_log_probs = torch.nn.functional.log_softmax(
+                shift_logits,
+                dim=-1,
+            ).gather(-1, safe_labels.unsqueeze(-1)).squeeze(-1)
+            sequence_scores = (token_log_probs * mask).sum(dim=1) / mask.sum(
+                dim=1
+            ).clamp_min(1)
+            label_scores = sequence_scores.view(-1, len(PAIRWISE_LABELS))
+            loss = torch.nn.functional.cross_entropy(label_scores, target_indices)
+            return (loss, outputs) if return_outputs else loss
+
+    class PersistentCheckpointCallback(TrainerCallback):
+        def on_save(
+            self,
+            args: object,
+            state: object,
+            control: object,
+            **kwargs: object,
+        ) -> object:
+            del kwargs
+            checkpoint = Path(str(args.output_dir)) / f"checkpoint-{state.global_step}"
+            errors = checkpoint_validation_errors(checkpoint)
+            if errors:
+                raise RuntimeError(
+                    f"refusing to commit incomplete checkpoint {checkpoint}: {errors}"
+                )
+            current = json.loads(progress_path.read_text(encoding="utf-8"))
+            current.update(
+                {
+                    "status": "checkpointed",
+                    "latest_committed_global_step": state.global_step,
+                    "latest_checkpoint": str(checkpoint),
+                    "latest_checkpoint_files": sorted(
+                        item.name for item in checkpoint.iterdir() if item.is_file()
+                    ),
+                    "committed_at": datetime.now(UTC).isoformat(),
+                }
+            )
+            write_json_atomic(progress_path, current)
+            volume.commit()
+            print(
+                f"committed resumable checkpoint at global step {state.global_step}",
+                flush=True,
+            )
+            if interrupt_after_steps and state.global_step >= interrupt_after_steps:
+                write_json_atomic(
+                    run_dir / "intentional_interrupt.json",
+                    {
+                        "schema_version": "dialam_intentional_interrupt_v1",
+                        "committed_global_step": state.global_step,
+                        "checkpoint": str(checkpoint),
+                        "created_at": datetime.now(UTC).isoformat(),
+                    },
+                )
+                volume.commit()
+                raise RuntimeError(
+                    "INTENTIONAL_RESUME_SMOKE_INTERRUPTION_AFTER_COMMITTED_CHECKPOINT"
+                )
+            return control
+
+    training_args = TrainingArguments(
+        output_dir=str(run_dir / "trainer"),
+        num_train_epochs=V8_CONFIG["epochs"],
+        per_device_train_batch_size=V8_CONFIG["per_device_batch_size"],
+        gradient_accumulation_steps=V8_CONFIG["gradient_accumulation_steps"],
+        learning_rate=V8_CONFIG["learning_rate"],
+        lr_scheduler_type=V8_CONFIG["lr_scheduler_type"],
+        warmup_ratio=V8_CONFIG["warmup_ratio"],
+        logging_steps=5,
+        save_strategy="steps",
+        save_steps=save_steps,
+        save_total_limit=V8_CONFIG["save_total_limit"],
+        save_safetensors=True,
+        bf16=torch.cuda.is_bf16_supported(),
+        fp16=not torch.cuda.is_bf16_supported(),
+        optim=V8_CONFIG["optimizer"],
+        report_to="none",
+        seed=SEED,
+        data_seed=SEED,
+        remove_unused_columns=False,
+        ignore_data_skip=False,
+        gradient_checkpointing=True,
+    )
+    trainer = ListwiseTrainer(
+        model=model,
+        args=training_args,
+        train_dataset=dataset,
+        data_collator=ListwiseCollator(),
+        callbacks=[PersistentCheckpointCallback()],
+    )
+    train_result = trainer.train(
+        resume_from_checkpoint=(
+            str(decision.checkpoint) if decision.action == "resume" else None
+        )
+    )
+    global_step = int(trainer.state.global_step)
+    log_history = list(trainer.state.log_history)
+    adapter_dir = run_dir / "adapter"
+    model.save_pretrained(adapter_dir, safe_serialization=True)
+    tokenizer.save_pretrained(adapter_dir)
+
+    del trainer, model
+    torch.cuda.empty_cache()
+    reloaded_model, reloaded_tokenizer = FastLanguageModel.from_pretrained(
+        model_name=str(adapter_dir),
+        max_seq_length=MAX_SEQ_LENGTH,
+        load_in_4bit=True,
+        dtype=None,
+    )
+    FastLanguageModel.for_inference(reloaded_model)
+    reload_probe, reload_scores = _score_pairwise_labels(
+        reloaded_model,
+        reloaded_tokenizer,
+        rows[0]["messages"][0]["content"],
+    )
+    if not reload_probe.strip():
+        raise RuntimeError("saved v8 adapter reloaded but produced an empty label")
+    adapter_hash, adapter_files = tree_manifest(adapter_dir)
+    progress = json.loads(progress_path.read_text(encoding="utf-8"))
+    progress.update(
+        {
+            "status": "complete",
+            "completed_global_step": global_step,
+            "completed_at": datetime.now(UTC).isoformat(),
+        }
+    )
+    write_json_atomic(progress_path, progress)
+    manifest = {
+        "schema_version": "dialam_modal_listwise_qlora_run_v1",
+        "completed_at": datetime.now(UTC).isoformat(),
+        "size": size,
+        "dataset_version": dataset_version,
+        "train_sha256": file_sha256(train_path),
+        "run_identity_sha256": run_identity_sha256,
+        "fixed_config": V8_CONFIG,
+        "loss_config": V8_LOSS_CONFIG,
+        "source_adapter": {
+            "path": str(V5_SOURCE_ADAPTER),
+            "tree_sha256": source_adapter_hash,
+            "files": source_adapter_files,
+        },
+        "resumability": {
+            "resume_mode": resume_mode,
+            "initial_action": decision.action,
+            "resumed_from_step": decision.global_step,
+            "resume_events": progress["resume_events"],
+            "save_steps": save_steps,
+            "save_total_limit": V8_CONFIG["save_total_limit"],
+            "full_trainer_state": True,
+            "volume_commit_on_save": True,
+            "trainer_state_preserved_after_completion": True,
+        },
+        "global_step": global_step,
+        "trainable_parameters": trainable_parameters,
+        "total_parameters": total_parameters,
+        "label_token_counts": {
+            label: len(tokens) for label, tokens in label_ids.items()
+        },
+        "gpu": torch.cuda.get_device_name(0),
+        "cuda": torch.version.cuda,
+        "torch": str(torch.__version__),
+        "metrics": train_result.metrics,
+        "log_history": log_history,
+        "adapter_path": str(adapter_dir),
+        "adapter_tree_sha256": adapter_hash,
+        "adapter_files": adapter_files,
+        "reload_verified": True,
+        "reload_probe": reload_probe,
+        "reload_probe_label_scores": reload_scores,
+        "idempotent_reuse": False,
+    }
+    write_json_atomic(run_dir / "training_manifest.json", manifest)
+    volume.commit()
+    return json.loads(json.dumps(manifest))
+
+
+@app.function(
+    image=image,
+    gpu="L4",
     timeout=60 * 60,
     volumes={str(PERSISTENT_ROOT): volume},
 )
@@ -1048,9 +1488,20 @@ def main(
                 resume_mode,
                 interrupt_after_steps,
             )
+        elif dataset_version in {"v8-smoke", "v8"}:
+            if resume_mode not in {"never", "auto", "required"}:
+                raise ValueError("resume_mode must be never, auto, or required")
+            result = train_listwise_checkpoint.remote(
+                size,
+                dataset_version,
+                resume_mode,
+                interrupt_after_steps,
+            )
         else:
             if interrupt_after_steps:
-                raise ValueError("intentional interruption is available only for v7")
+                raise ValueError(
+                    "intentional interruption is available only for v7 or v8"
+                )
             result = train_checkpoint.remote(size, dataset_version)
         default = (
             PROJECT_ROOT

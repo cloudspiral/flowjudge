@@ -1,0 +1,778 @@
+{
+  "artifacts": {
+    "examples_sha256": "78f4ccc35312a4e3e74cce062346af040ff4e00b365a1312c2a627d7d0e1ec55",
+    "input_predictions": "results/dialam_model_generation/v9_n8192_dev_raw/predictions.jsonl",
+    "input_predictions_sha256": "9d1d68de75680c25649c95dd6c26d729651b7a5a915fab885e342ee762300bd9",
+    "output_predictions": "results/dialam_model_generation/v9_1_n8192_dev/predictions.jsonl",
+    "output_predictions_sha256": "0fb68603f62c2db093211b87cc4ff192f406965bb3dd0679f6c7e1a4624ca9f9",
+    "preregistration_sha256": "6dab3739e7fc8b482f8ef075e06085b9356c0606f3be68073d085bca1c8a8a22",
+    "resume_smoke_sha256": "9970adb500567fec675bf62706481a80676613ffd698868937456bf736e33ca5",
+    "training_manifest_sha256": "21401e242196134841b3df6710b5c59664032ff8483fb9a924aca3afeb7dfcbb"
+  },
+  "candidate_grid": [
+    {
+      "development_gate_checks": {
+        "edge_f1": false,
+        "exact_patch_accuracy": false,
+        "false_edges_per_update": true,
+        "json_validity": true,
+        "none_scenarios_with_false_edges": true,
+        "relation_macro_f1": false,
+        "schema_validity": true
+      },
+      "development_gate_passed": false,
+      "margin": 0.0,
+      "metrics": {
+        "block_example_count": 30,
+        "direction_accuracy": 1.0,
+        "direction_evaluable_edge_count": 3,
+        "edge_f1": 0.19354838709677416,
+        "edge_precision": 0.42857142857142855,
+        "edge_recall": 0.125,
+        "exact_patch_accuracy": 0.26666666666666666,
+        "exact_scenario_patch_accuracy": 0.26666666666666666,
+        "exact_scenario_patch_count": 8,
+        "example_count": 30,
+        "false_edges_per_update": 0.13333333333333333,
+        "false_negative_edges": 21,
+        "false_positive_edges": 4,
+        "invalid_id_count": 0,
+        "invalid_relation_count": 0,
+        "json_validity_rate": 1.0,
+        "relation_macro_f1": 0.16666666666666666,
+        "relation_metrics": {
+          "ATTACK": {
+            "f1": 0.5,
+            "false_negative": 5,
+            "false_positive": 1,
+            "precision": 0.75,
+            "recall": 0.375,
+            "true_positive": 3
+          },
+          "REPHRASE": {
+            "f1": 0.0,
+            "false_negative": 8,
+            "false_positive": 2,
+            "precision": 0.0,
+            "recall": 0.0,
+            "true_positive": 0
+          },
+          "SUPPORT": {
+            "f1": 0.0,
+            "false_negative": 8,
+            "false_positive": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "true_positive": 0
+          }
+        },
+        "scenario_count": 30,
+        "schema_validity_rate": 1.0,
+        "true_positive_edges": 3,
+        "update_count": 30
+      },
+      "none_diagnostics": {
+        "false_edge_labels": {
+          "SUPPORT": 1
+        },
+        "false_positive_rate": 0.16666666666666666,
+        "none_scenarios": 6,
+        "scenarios_with_false_edges": 1
+      },
+      "passed_check_count": 4
+    },
+    {
+      "development_gate_checks": {
+        "edge_f1": false,
+        "exact_patch_accuracy": false,
+        "false_edges_per_update": true,
+        "json_validity": true,
+        "none_scenarios_with_false_edges": true,
+        "relation_macro_f1": false,
+        "schema_validity": true
+      },
+      "development_gate_passed": false,
+      "margin": 0.00810125470161438,
+      "metrics": {
+        "block_example_count": 30,
+        "direction_accuracy": 1.0,
+        "direction_evaluable_edge_count": 3,
+        "edge_f1": 0.2,
+        "edge_precision": 0.5,
+        "edge_recall": 0.125,
+        "exact_patch_accuracy": 0.26666666666666666,
+        "exact_scenario_patch_accuracy": 0.26666666666666666,
+        "exact_scenario_patch_count": 8,
+        "example_count": 30,
+        "false_edges_per_update": 0.1,
+        "false_negative_edges": 21,
+        "false_positive_edges": 3,
+        "invalid_id_count": 0,
+        "invalid_relation_count": 0,
+        "json_validity_rate": 1.0,
+        "relation_macro_f1": 0.16666666666666666,
+        "relation_metrics": {
+          "ATTACK": {
+            "f1": 0.5,
+            "false_negative": 5,
+            "false_positive": 1,
+            "precision": 0.75,
+            "recall": 0.375,
+            "true_positive": 3
+          },
+          "REPHRASE": {
+            "f1": 0.0,
+            "false_negative": 8,
+            "false_positive": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "true_positive": 0
+          },
+          "SUPPORT": {
+            "f1": 0.0,
+            "false_negative": 8,
+            "false_positive": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "true_positive": 0
+          }
+        },
+        "scenario_count": 30,
+        "schema_validity_rate": 1.0,
+        "true_positive_edges": 3,
+        "update_count": 30
+      },
+      "none_diagnostics": {
+        "false_edge_labels": {
+          "SUPPORT": 1
+        },
+        "false_positive_rate": 0.16666666666666666,
+        "none_scenarios": 6,
+        "scenarios_with_false_edges": 1
+      },
+      "passed_check_count": 4
+    },
+    {
+      "development_gate_checks": {
+        "edge_f1": false,
+        "exact_patch_accuracy": false,
+        "false_edges_per_update": true,
+        "json_validity": true,
+        "none_scenarios_with_false_edges": true,
+        "relation_macro_f1": false,
+        "schema_validity": true
+      },
+      "development_gate_passed": false,
+      "margin": 0.4975382685661316,
+      "metrics": {
+        "block_example_count": 30,
+        "direction_accuracy": 1.0,
+        "direction_evaluable_edge_count": 3,
+        "edge_f1": 0.20689655172413793,
+        "edge_precision": 0.6,
+        "edge_recall": 0.125,
+        "exact_patch_accuracy": 0.26666666666666666,
+        "exact_scenario_patch_accuracy": 0.26666666666666666,
+        "exact_scenario_patch_count": 8,
+        "example_count": 30,
+        "false_edges_per_update": 0.06666666666666667,
+        "false_negative_edges": 21,
+        "false_positive_edges": 2,
+        "invalid_id_count": 0,
+        "invalid_relation_count": 0,
+        "json_validity_rate": 1.0,
+        "relation_macro_f1": 0.1818181818181818,
+        "relation_metrics": {
+          "ATTACK": {
+            "f1": 0.5454545454545454,
+            "false_negative": 5,
+            "false_positive": 0,
+            "precision": 1.0,
+            "recall": 0.375,
+            "true_positive": 3
+          },
+          "REPHRASE": {
+            "f1": 0.0,
+            "false_negative": 8,
+            "false_positive": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "true_positive": 0
+          },
+          "SUPPORT": {
+            "f1": 0.0,
+            "false_negative": 8,
+            "false_positive": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "true_positive": 0
+          }
+        },
+        "scenario_count": 30,
+        "schema_validity_rate": 1.0,
+        "true_positive_edges": 3,
+        "update_count": 30
+      },
+      "none_diagnostics": {
+        "false_edge_labels": {
+          "SUPPORT": 1
+        },
+        "false_positive_rate": 0.16666666666666666,
+        "none_scenarios": 6,
+        "scenarios_with_false_edges": 1
+      },
+      "passed_check_count": 4
+    },
+    {
+      "development_gate_checks": {
+        "edge_f1": false,
+        "exact_patch_accuracy": false,
+        "false_edges_per_update": true,
+        "json_validity": true,
+        "none_scenarios_with_false_edges": true,
+        "relation_macro_f1": false,
+        "schema_validity": true
+      },
+      "development_gate_passed": false,
+      "margin": 0.9580354541540146,
+      "metrics": {
+        "block_example_count": 30,
+        "direction_accuracy": 1.0,
+        "direction_evaluable_edge_count": 3,
+        "edge_f1": 0.21428571428571427,
+        "edge_precision": 0.75,
+        "edge_recall": 0.125,
+        "exact_patch_accuracy": 0.26666666666666666,
+        "exact_scenario_patch_accuracy": 0.26666666666666666,
+        "exact_scenario_patch_count": 8,
+        "example_count": 30,
+        "false_edges_per_update": 0.03333333333333333,
+        "false_negative_edges": 21,
+        "false_positive_edges": 1,
+        "invalid_id_count": 0,
+        "invalid_relation_count": 0,
+        "json_validity_rate": 1.0,
+        "relation_macro_f1": 0.1818181818181818,
+        "relation_metrics": {
+          "ATTACK": {
+            "f1": 0.5454545454545454,
+            "false_negative": 5,
+            "false_positive": 0,
+            "precision": 1.0,
+            "recall": 0.375,
+            "true_positive": 3
+          },
+          "REPHRASE": {
+            "f1": 0.0,
+            "false_negative": 8,
+            "false_positive": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "true_positive": 0
+          },
+          "SUPPORT": {
+            "f1": 0.0,
+            "false_negative": 8,
+            "false_positive": 1,
+            "precision": 0.0,
+            "recall": 0.0,
+            "true_positive": 0
+          }
+        },
+        "scenario_count": 30,
+        "schema_validity_rate": 1.0,
+        "true_positive_edges": 3,
+        "update_count": 30
+      },
+      "none_diagnostics": {
+        "false_edge_labels": {
+          "SUPPORT": 1
+        },
+        "false_positive_rate": 0.16666666666666666,
+        "none_scenarios": 6,
+        "scenarios_with_false_edges": 1
+      },
+      "passed_check_count": 4
+    },
+    {
+      "development_gate_checks": {
+        "edge_f1": false,
+        "exact_patch_accuracy": false,
+        "false_edges_per_update": true,
+        "json_validity": true,
+        "none_scenarios_with_false_edges": true,
+        "relation_macro_f1": false,
+        "schema_validity": true
+      },
+      "development_gate_passed": false,
+      "margin": 1.0169803202152252,
+      "metrics": {
+        "block_example_count": 30,
+        "direction_accuracy": 1.0,
+        "direction_evaluable_edge_count": 3,
+        "edge_f1": 0.2222222222222222,
+        "edge_precision": 1.0,
+        "edge_recall": 0.125,
+        "exact_patch_accuracy": 0.3,
+        "exact_scenario_patch_accuracy": 0.3,
+        "exact_scenario_patch_count": 9,
+        "example_count": 30,
+        "false_edges_per_update": 0.0,
+        "false_negative_edges": 21,
+        "false_positive_edges": 0,
+        "invalid_id_count": 0,
+        "invalid_relation_count": 0,
+        "json_validity_rate": 1.0,
+        "relation_macro_f1": 0.1818181818181818,
+        "relation_metrics": {
+          "ATTACK": {
+            "f1": 0.5454545454545454,
+            "false_negative": 5,
+            "false_positive": 0,
+            "precision": 1.0,
+            "recall": 0.375,
+            "true_positive": 3
+          },
+          "REPHRASE": {
+            "f1": 0.0,
+            "false_negative": 8,
+            "false_positive": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "true_positive": 0
+          },
+          "SUPPORT": {
+            "f1": 0.0,
+            "false_negative": 8,
+            "false_positive": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "true_positive": 0
+          }
+        },
+        "scenario_count": 30,
+        "schema_validity_rate": 1.0,
+        "true_positive_edges": 3,
+        "update_count": 30
+      },
+      "none_diagnostics": {
+        "false_edge_labels": {},
+        "false_positive_rate": 0.0,
+        "none_scenarios": 6,
+        "scenarios_with_false_edges": 0
+      },
+      "passed_check_count": 4
+    },
+    {
+      "development_gate_checks": {
+        "edge_f1": false,
+        "exact_patch_accuracy": false,
+        "false_edges_per_update": true,
+        "json_validity": true,
+        "none_scenarios_with_false_edges": true,
+        "relation_macro_f1": false,
+        "schema_validity": true
+      },
+      "development_gate_passed": false,
+      "margin": 2.181761283427477,
+      "metrics": {
+        "block_example_count": 30,
+        "direction_accuracy": 1.0,
+        "direction_evaluable_edge_count": 2,
+        "edge_f1": 0.15384615384615385,
+        "edge_precision": 1.0,
+        "edge_recall": 0.08333333333333333,
+        "exact_patch_accuracy": 0.26666666666666666,
+        "exact_scenario_patch_accuracy": 0.26666666666666666,
+        "exact_scenario_patch_count": 8,
+        "example_count": 30,
+        "false_edges_per_update": 0.0,
+        "false_negative_edges": 22,
+        "false_positive_edges": 0,
+        "invalid_id_count": 0,
+        "invalid_relation_count": 0,
+        "json_validity_rate": 1.0,
+        "relation_macro_f1": 0.13333333333333333,
+        "relation_metrics": {
+          "ATTACK": {
+            "f1": 0.4,
+            "false_negative": 6,
+            "false_positive": 0,
+            "precision": 1.0,
+            "recall": 0.25,
+            "true_positive": 2
+          },
+          "REPHRASE": {
+            "f1": 0.0,
+            "false_negative": 8,
+            "false_positive": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "true_positive": 0
+          },
+          "SUPPORT": {
+            "f1": 0.0,
+            "false_negative": 8,
+            "false_positive": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "true_positive": 0
+          }
+        },
+        "scenario_count": 30,
+        "schema_validity_rate": 1.0,
+        "true_positive_edges": 2,
+        "update_count": 30
+      },
+      "none_diagnostics": {
+        "false_edge_labels": {},
+        "false_positive_rate": 0.0,
+        "none_scenarios": 6,
+        "scenarios_with_false_edges": 0
+      },
+      "passed_check_count": 4
+    },
+    {
+      "development_gate_checks": {
+        "edge_f1": false,
+        "exact_patch_accuracy": false,
+        "false_edges_per_update": true,
+        "json_validity": true,
+        "none_scenarios_with_false_edges": true,
+        "relation_macro_f1": false,
+        "schema_validity": true
+      },
+      "development_gate_passed": false,
+      "margin": 3.2702859342098236,
+      "metrics": {
+        "block_example_count": 30,
+        "direction_accuracy": 1.0,
+        "direction_evaluable_edge_count": 1,
+        "edge_f1": 0.07999999999999999,
+        "edge_precision": 1.0,
+        "edge_recall": 0.041666666666666664,
+        "exact_patch_accuracy": 0.23333333333333334,
+        "exact_scenario_patch_accuracy": 0.23333333333333334,
+        "exact_scenario_patch_count": 7,
+        "example_count": 30,
+        "false_edges_per_update": 0.0,
+        "false_negative_edges": 23,
+        "false_positive_edges": 0,
+        "invalid_id_count": 0,
+        "invalid_relation_count": 0,
+        "json_validity_rate": 1.0,
+        "relation_macro_f1": 0.07407407407407407,
+        "relation_metrics": {
+          "ATTACK": {
+            "f1": 0.2222222222222222,
+            "false_negative": 7,
+            "false_positive": 0,
+            "precision": 1.0,
+            "recall": 0.125,
+            "true_positive": 1
+          },
+          "REPHRASE": {
+            "f1": 0.0,
+            "false_negative": 8,
+            "false_positive": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "true_positive": 0
+          },
+          "SUPPORT": {
+            "f1": 0.0,
+            "false_negative": 8,
+            "false_positive": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "true_positive": 0
+          }
+        },
+        "scenario_count": 30,
+        "schema_validity_rate": 1.0,
+        "true_positive_edges": 1,
+        "update_count": 30
+      },
+      "none_diagnostics": {
+        "false_edge_labels": {},
+        "false_positive_rate": 0.0,
+        "none_scenarios": 6,
+        "scenarios_with_false_edges": 0
+      },
+      "passed_check_count": 4
+    },
+    {
+      "development_gate_checks": {
+        "edge_f1": false,
+        "exact_patch_accuracy": false,
+        "false_edges_per_update": true,
+        "json_validity": true,
+        "none_scenarios_with_false_edges": true,
+        "relation_macro_f1": false,
+        "schema_validity": true
+      },
+      "development_gate_passed": false,
+      "margin": 5.128011432942003,
+      "metrics": {
+        "block_example_count": 30,
+        "direction_accuracy": null,
+        "direction_evaluable_edge_count": 0,
+        "edge_f1": 0.0,
+        "edge_precision": 0.0,
+        "edge_recall": 0.0,
+        "exact_patch_accuracy": 0.2,
+        "exact_scenario_patch_accuracy": 0.2,
+        "exact_scenario_patch_count": 6,
+        "example_count": 30,
+        "false_edges_per_update": 0.0,
+        "false_negative_edges": 24,
+        "false_positive_edges": 0,
+        "invalid_id_count": 0,
+        "invalid_relation_count": 0,
+        "json_validity_rate": 1.0,
+        "relation_macro_f1": 0.0,
+        "relation_metrics": {
+          "ATTACK": {
+            "f1": 0.0,
+            "false_negative": 8,
+            "false_positive": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "true_positive": 0
+          },
+          "REPHRASE": {
+            "f1": 0.0,
+            "false_negative": 8,
+            "false_positive": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "true_positive": 0
+          },
+          "SUPPORT": {
+            "f1": 0.0,
+            "false_negative": 8,
+            "false_positive": 0,
+            "precision": 0.0,
+            "recall": 0.0,
+            "true_positive": 0
+          }
+        },
+        "scenario_count": 30,
+        "schema_validity_rate": 1.0,
+        "true_positive_edges": 0,
+        "update_count": 30
+      },
+      "none_diagnostics": {
+        "false_edge_labels": {},
+        "false_positive_rate": 0.0,
+        "none_scenarios": 6,
+        "scenarios_with_false_edges": 0
+      },
+      "passed_check_count": 4
+    }
+  ],
+  "candidate_margin_construction": "0.0 plus every distinct positive best-positive-minus-NONE score gap; constructed without gold labels",
+  "candidate_margin_count": 8,
+  "development_decision": "RETAIN_V5_1_V9_FAILED_DEVELOPMENT_GATE",
+  "experiment": "v9.1 transition-complete development NONE-margin calibration",
+  "frozen_status": "NOT_RUN_PREREGISTERED_DEVELOPMENT_GATE_FAILED",
+  "lower_bound": 0.0,
+  "margins": [
+    0.0,
+    0.00810125470161438,
+    0.4975382685661316,
+    0.9580354541540146,
+    1.0169803202152252,
+    2.181761283427477,
+    3.2702859342098236,
+    5.128011432942003
+  ],
+  "preregistered_before_v9_mining_corpus_and_training": true,
+  "raw_v9": {
+    "metrics": {
+      "block_example_count": 30,
+      "direction_accuracy": 1.0,
+      "direction_evaluable_edge_count": 3,
+      "edge_f1": 0.19354838709677416,
+      "edge_precision": 0.42857142857142855,
+      "edge_recall": 0.125,
+      "exact_patch_accuracy": 0.26666666666666666,
+      "exact_scenario_patch_accuracy": 0.26666666666666666,
+      "exact_scenario_patch_count": 8,
+      "example_count": 30,
+      "false_edges_per_update": 0.13333333333333333,
+      "false_negative_edges": 21,
+      "false_positive_edges": 4,
+      "invalid_id_count": 0,
+      "invalid_relation_count": 0,
+      "json_validity_rate": 1.0,
+      "relation_macro_f1": 0.16666666666666666,
+      "relation_metrics": {
+        "ATTACK": {
+          "f1": 0.5,
+          "false_negative": 5,
+          "false_positive": 1,
+          "precision": 0.75,
+          "recall": 0.375,
+          "true_positive": 3
+        },
+        "REPHRASE": {
+          "f1": 0.0,
+          "false_negative": 8,
+          "false_positive": 2,
+          "precision": 0.0,
+          "recall": 0.0,
+          "true_positive": 0
+        },
+        "SUPPORT": {
+          "f1": 0.0,
+          "false_negative": 8,
+          "false_positive": 1,
+          "precision": 0.0,
+          "recall": 0.0,
+          "true_positive": 0
+        }
+      },
+      "scenario_count": 30,
+      "schema_validity_rate": 1.0,
+      "true_positive_edges": 3,
+      "update_count": 30
+    },
+    "none_diagnostics": {
+      "false_edge_labels": {
+        "SUPPORT": 1
+      },
+      "false_positive_rate": 0.16666666666666666,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 1
+    }
+  },
+  "schema_version": "dialam_v9_1_transition_complete_calibration_v1",
+  "selected": {
+    "development_gate_checks": {
+      "edge_f1": false,
+      "exact_patch_accuracy": false,
+      "false_edges_per_update": true,
+      "json_validity": true,
+      "none_scenarios_with_false_edges": true,
+      "relation_macro_f1": false,
+      "schema_validity": true
+    },
+    "development_gate_passed": false,
+    "margin": 1.0169803202152252,
+    "metrics": {
+      "block_example_count": 30,
+      "direction_accuracy": 1.0,
+      "direction_evaluable_edge_count": 3,
+      "edge_f1": 0.2222222222222222,
+      "edge_precision": 1.0,
+      "edge_recall": 0.125,
+      "exact_patch_accuracy": 0.3,
+      "exact_scenario_patch_accuracy": 0.3,
+      "exact_scenario_patch_count": 9,
+      "example_count": 30,
+      "false_edges_per_update": 0.0,
+      "false_negative_edges": 21,
+      "false_positive_edges": 0,
+      "invalid_id_count": 0,
+      "invalid_relation_count": 0,
+      "json_validity_rate": 1.0,
+      "relation_macro_f1": 0.1818181818181818,
+      "relation_metrics": {
+        "ATTACK": {
+          "f1": 0.5454545454545454,
+          "false_negative": 5,
+          "false_positive": 0,
+          "precision": 1.0,
+          "recall": 0.375,
+          "true_positive": 3
+        },
+        "REPHRASE": {
+          "f1": 0.0,
+          "false_negative": 8,
+          "false_positive": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "true_positive": 0
+        },
+        "SUPPORT": {
+          "f1": 0.0,
+          "false_negative": 8,
+          "false_positive": 0,
+          "precision": 0.0,
+          "recall": 0.0,
+          "true_positive": 0
+        }
+      },
+      "scenario_count": 30,
+      "schema_validity_rate": 1.0,
+      "true_positive_edges": 3,
+      "update_count": 30
+    },
+    "none_diagnostics": {
+      "false_edge_labels": {},
+      "false_positive_rate": 0.0,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 0
+    },
+    "passed_check_count": 4
+  },
+  "selection_rule": "all gates, edge F1, exact patch, macro-F1, lower false edges, lower NONE false-positive cases, larger margin",
+  "v5_1_development_baseline": {
+    "block_example_count": 30,
+    "direction_accuracy": 1.0,
+    "direction_evaluable_edge_count": 12,
+    "edge_f1": 0.5333333333333333,
+    "edge_precision": 0.5714285714285714,
+    "edge_recall": 0.5,
+    "exact_patch_accuracy": 0.5333333333333333,
+    "exact_scenario_patch_accuracy": 0.5333333333333333,
+    "exact_scenario_patch_count": 16,
+    "example_count": 30,
+    "false_edges_per_update": 0.3,
+    "false_negative_edges": 12,
+    "false_positive_edges": 9,
+    "invalid_id_count": 0,
+    "invalid_relation_count": 0,
+    "json_validity_rate": 1.0,
+    "none_diagnostics": {
+      "false_edge_labels": {
+        "SUPPORT": 2
+      },
+      "false_positive_rate": 0.3333333333333333,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 2
+    },
+    "relation_macro_f1": 0.5427350427350427,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.6666666666666666,
+        "false_negative": 4,
+        "false_positive": 0,
+        "precision": 1.0,
+        "recall": 0.5,
+        "true_positive": 4
+      },
+      "REPHRASE": {
+        "f1": 0.4615384615384615,
+        "false_negative": 5,
+        "false_positive": 2,
+        "precision": 0.6,
+        "recall": 0.375,
+        "true_positive": 3
+      },
+      "SUPPORT": {
+        "f1": 0.5,
+        "false_negative": 3,
+        "false_positive": 7,
+        "precision": 0.4166666666666667,
+        "recall": 0.625,
+        "true_positive": 5
+      }
+    },
+    "scenario_count": 30,
+    "schema_validity_rate": 1.0,
+    "true_positive_edges": 12,
+    "update_count": 30
+  }
+}

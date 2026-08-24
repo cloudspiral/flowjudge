@@ -424,6 +424,31 @@
       "run_id": "v8-1-n12288-development",
       "source_artifact": "reports/dialam_v8_calibration.json",
       "status": "RETAIN_V5_1_V8_FAILED_DEVELOPMENT_GATE"
+    },
+    {
+      "evaluation_scope": "episode_disjoint_development_30",
+      "intervention": "QT30 selected-model hard-NONE corrective continuation from v5.1 with restricted four-label score cross-entropy",
+      "label": "v9.1/8192",
+      "metrics": {
+        "attack_f1": 0.5454545454545454,
+        "edge_f1": 0.2222222222222222,
+        "edge_precision": 1.0,
+        "edge_recall": 0.125,
+        "exact_patch_accuracy": 0.3,
+        "false_edges_per_update": 0.0,
+        "json_validity_rate": 1.0,
+        "judge_robustness_mean": null,
+        "judge_spec_adherence_mean": null,
+        "none_scenarios_with_false_edges": 0,
+        "relation_macro_f1": 0.1818181818181818,
+        "rephrase_f1": 0.0,
+        "schema_validity_rate": 1.0,
+        "support_f1": 0.0
+      },
+      "n": 8192,
+      "run_id": "v9-1-n8192-development",
+      "source_artifact": "reports/dialam_v9_calibration.json",
+      "status": "RETAIN_V5_1_V9_FAILED_DEVELOPMENT_GATE"
     }
   ],
   "schema_version": "dialam_experiment_history_v1",
@@ -480,6 +505,14 @@
     {
       "path": "reports/dialam_v8_result.json",
       "sha256": "25aa161f8d08a4487da025fbd8b9df32600da43a8c7d0c42d4a4f77bfd66dac9"
+    },
+    {
+      "path": "reports/dialam_v9_calibration.json",
+      "sha256": "e16294d06c40a1529d02e91a1438af9c3a804648901bfa03d456e1c2a8b5cdba"
+    },
+    {
+      "path": "reports/dialam_v9_result.json",
+      "sha256": "c646fc52d3e351aab535cb4e8b5220bab678243fbb71a1f683c83642af11669f"
     }
   ]
 }

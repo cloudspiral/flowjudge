@@ -44,6 +44,14 @@ DEV_RAW = (
     / "predictions.jsonl"
 )
 DEV_RESUME = DEV_RAW.with_name("predictions.resume.json")
+DEV_IDEMPOTENT = (
+    PROJECT_ROOT
+    / "results"
+    / "dialam_model_generation"
+    / "v9_n8192_dev_idempotent"
+    / "predictions.jsonl"
+)
+DEV_IDEMPOTENT_RESUME = DEV_IDEMPOTENT.with_name("predictions.resume.json")
 DEV_SELECTED = (
     PROJECT_ROOT
     / "results"
@@ -170,19 +178,29 @@ def _write_doc(report: dict[str, Any]) -> None:
     ]
     for name, passed in report["development_gate_checks"].items():
         lines.append(f"- {'PASS' if passed else 'FAIL'}: `{name}`")
-    lines.extend(
-        [
-            "",
-            "## Development diagnosis",
-            "",
-            f"V9 produced {diagnosis['false_positive_edges']} false-positive and",
-            f"{diagnosis['false_negative_edges']} false-negative edges. The largest",
-            f"false-positive class was {diagnosis['dominant_false_positive_relation']}",
-            f"with {diagnosis['dominant_false_positive_count']} edges;",
-            f"{diagnosis['none_scenarios_with_false_edges']}/6 all-NONE scenarios",
-            "received a false edge.",
-        ]
-    )
+    lines.extend(["", "## Development diagnosis", ""])
+    if diagnosis["false_positive_edges"] == 0:
+        lines.extend(
+            [
+                "V9 eliminated false-positive edges, including all-NONE failures, but",
+                f"produced {diagnosis['false_negative_edges']} false negatives. It found",
+                f"only {diagnosis['true_positive_edges']}/{diagnosis['gold_edge_count']} "
+                "gold edges and no SUPPORT or REPHRASE true positives. The",
+                "selected-model hard-NONE correction therefore overcorrected into",
+                "underprediction rather than preserving V5.1's positive recall.",
+            ]
+        )
+    else:
+        lines.extend(
+            [
+                f"V9 produced {diagnosis['false_positive_edges']} false-positive and",
+                f"{diagnosis['false_negative_edges']} false-negative edges. The largest",
+                f"false-positive class was {diagnosis['dominant_false_positive_relation']}",
+                f"with {diagnosis['dominant_false_positive_count']} edges;",
+                f"{diagnosis['none_scenarios_with_false_edges']}/6 all-NONE scenarios",
+                "received a false edge.",
+            ]
+        )
     if "v9_1_frozen_n8192" not in report:
         lines.extend(
             [
@@ -295,6 +313,25 @@ def build_report() -> dict[str, Any]:
         raise ValueError("V9 idempotent rerun returned different completed state")
     if calibration["artifacts"]["input_predictions_sha256"] != file_sha256(DEV_RAW):
         raise ValueError("V9 calibration input hash differs from raw development output")
+    if file_sha256(DEV_IDEMPOTENT) != file_sha256(DEV_RAW):
+        raise ValueError("V9 idempotent development replay changed prediction bytes")
+    dev_first_resume = _load(DEV_RESUME)
+    dev_idempotent_resume = _load(DEV_IDEMPOTENT_RESUME)
+    if (
+        dev_first_resume.get("idempotent_reuse") is not False
+        or dev_first_resume.get("newly_completed_scenarios") != 30
+        or dev_idempotent_resume.get("idempotent_reuse") is not True
+        or dev_idempotent_resume.get("resumed_completed_scenarios") != 30
+        or dev_idempotent_resume.get("newly_completed_scenarios") != 0
+    ):
+        raise ValueError("V9 development resume/idempotence evidence is incomplete")
+    if (
+        dev_first_resume["identity_sha256"]
+        != dev_idempotent_resume["identity_sha256"]
+        or dev_first_resume["predictions_sha256"]
+        != dev_idempotent_resume["predictions_sha256"]
+    ):
+        raise ValueError("V9 development replay identity or semantic hash changed")
 
     selected_dev = {
         **selected["metrics"],
@@ -304,9 +341,14 @@ def build_report() -> dict[str, Any]:
         label: values["false_positive"]
         for label, values in selected_dev["relation_metrics"].items()
     }
-    dominant_label = max(
-        relation_false_positives,
-        key=lambda label: (relation_false_positives[label], label),
+    false_positive_edges = selected_dev["false_positive_edges"]
+    dominant_label = (
+        max(
+            relation_false_positives,
+            key=lambda label: (relation_false_positives[label], label),
+        )
+        if false_positive_edges
+        else None
     )
     report: dict[str, Any] = {
         "schema_version": "dialam_v9_selected_model_hard_negative_result_v1",
@@ -323,10 +365,24 @@ def build_report() -> dict[str, Any]:
         "v9_1_development_n8192": selected_dev,
         "v5_1_frozen_n8192": baseline["v5_1_frozen_n8192"],
         "development_diagnosis": {
-            "false_positive_edges": selected_dev["false_positive_edges"],
+            "failure_mode": "overcorrected_to_none_with_positive_recall_collapse",
+            "false_positive_edges": false_positive_edges,
             "false_negative_edges": selected_dev["false_negative_edges"],
             "dominant_false_positive_relation": dominant_label,
-            "dominant_false_positive_count": relation_false_positives[dominant_label],
+            "dominant_false_positive_count": (
+                relation_false_positives[dominant_label] if dominant_label else 0
+            ),
+            "gold_edge_count": (
+                selected_dev["true_positive_edges"]
+                + selected_dev["false_negative_edges"]
+            ),
+            "true_positive_edges": selected_dev["true_positive_edges"],
+            "support_true_positive_edges": selected_dev["relation_metrics"][
+                "SUPPORT"
+            ]["true_positive"],
+            "rephrase_true_positive_edges": selected_dev["relation_metrics"][
+                "REPHRASE"
+            ]["true_positive"],
             "none_scenarios_with_false_edges": selected_dev["none_diagnostics"][
                 "scenarios_with_false_edges"
             ],
@@ -367,7 +423,13 @@ def build_report() -> dict[str, Any]:
             "new_external_data": data["new_external_data"],
         },
         "mining_resumability": mining_resume,
-        "development_evaluation_resume": _load(DEV_RESUME),
+        "development_evaluation_resume": {
+            "first_run_modal_app_id": "ap-MoyJyJz9zLQiypyu7DjYY7",
+            "first_run": dev_first_resume,
+            "idempotent_replay_modal_app_id": "ap-asdvBImc63OJdvcV2j9LrM",
+            "idempotent_replay": dev_idempotent_resume,
+            "prediction_bytes_identical": True,
+        },
         "frozen_status": calibration["frozen_status"],
         "frozen_candidate_calls": 0,
         "frozen_judge_calls": 0,
@@ -382,6 +444,8 @@ def build_report() -> dict[str, Any]:
                 "idempotent_training_result": IDEMPOTENT_RESULT,
                 "development_raw_predictions": DEV_RAW,
                 "development_eval_resume": DEV_RESUME,
+                "development_idempotent_predictions": DEV_IDEMPOTENT,
+                "development_idempotent_resume": DEV_IDEMPOTENT_RESUME,
                 "development_selected_predictions": DEV_SELECTED,
                 "calibration": CALIBRATION,
             }

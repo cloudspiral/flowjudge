@@ -399,6 +399,31 @@
       "run_id": "v7-2-n8192-development",
       "source_artifact": "reports/dialam_v7_2_calibration.json",
       "status": "RETAIN_V5_1_V7_2_FAILED_DEVELOPMENT_GATE"
+    },
+    {
+      "evaluation_scope": "episode_disjoint_development_30",
+      "intervention": "QT30 prior-aware one-positive/two-hard-NONE groups with restricted four-label score cross-entropy",
+      "label": "v8.1/12288",
+      "metrics": {
+        "attack_f1": 0.6666666666666666,
+        "edge_f1": 0.52,
+        "edge_precision": 0.5,
+        "edge_recall": 0.5416666666666666,
+        "exact_patch_accuracy": 0.5,
+        "false_edges_per_update": 0.43333333333333335,
+        "json_validity_rate": 1.0,
+        "judge_robustness_mean": null,
+        "judge_spec_adherence_mean": null,
+        "none_scenarios_with_false_edges": 3,
+        "relation_macro_f1": 0.5317460317460317,
+        "rephrase_f1": 0.42857142857142855,
+        "schema_validity_rate": 1.0,
+        "support_f1": 0.5
+      },
+      "n": 12288,
+      "run_id": "v8-1-n12288-development",
+      "source_artifact": "reports/dialam_v8_calibration.json",
+      "status": "RETAIN_V5_1_V8_FAILED_DEVELOPMENT_GATE"
     }
   ],
   "schema_version": "dialam_experiment_history_v1",
@@ -447,6 +472,14 @@
     {
       "path": "reports/dialam_v7_2_calibration.json",
       "sha256": "f4495cee14467d2acf4fcb8d72ca40e2ef1c7f64405f3cd1832e23034fb18fd2"
+    },
+    {
+      "path": "reports/dialam_v8_calibration.json",
+      "sha256": "d6a05de0c34e0151b4588f46736451f9fcff947ed6288782534762d64833c0cc"
+    },
+    {
+      "path": "reports/dialam_v8_result.json",
+      "sha256": "25aa161f8d08a4487da025fbd8b9df32600da43a8c7d0c42d4a4f77bfd66dac9"
     }
   ]
 }

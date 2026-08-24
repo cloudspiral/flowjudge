@@ -30,6 +30,7 @@ results are deliberately separated; they are not interchangeable evaluation sets
 | v6.1/12288 | 12288 | 33.3% | 40.0% | 39.7% | 0.667 | 5 | RETAIN_V5_1_V6_FAILED_DEVELOPMENT_GATE |
 | v7.1/8192 | 8192 | 40.0% | 44.4% | 43.4% | 0.600 | 5 | RETAIN_V5_1_V7_FAILED_DEVELOPMENT_GATE |
 | v7.2/8192 | 8192 | 53.3% | 52.2% | 50.7% | 0.333 | 2 | RETAIN_V5_1_V7_2_FAILED_DEVELOPMENT_GATE |
+| v8.1/12288 | 12288 | 50.0% | 52.0% | 53.2% | 0.433 | 3 | RETAIN_V5_1_V8_FAILED_DEVELOPMENT_GATE |
 
 ## Interpretation
 

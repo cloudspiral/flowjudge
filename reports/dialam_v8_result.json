@@ -1,0 +1,958 @@
+{
+  "artifacts": {
+    "calibration": {
+      "bytes": 68696,
+      "path": "reports/dialam_v8_calibration.json",
+      "sha256": "d6a05de0c34e0151b4588f46736451f9fcff947ed6288782534762d64833c0cc"
+    },
+    "data_manifest": {
+      "bytes": 5041,
+      "path": "data/dialam/training/training_v8_manifest.json",
+      "sha256": "c0853ee8c3a1525a13581af2f29d4e0041c8ecf134484c4f74111e1172671633"
+    },
+    "development_eval_resume": {
+      "bytes": 401,
+      "path": "results/dialam_model_generation/v8_n12288_dev_raw/predictions.resume.json",
+      "sha256": "d64242c0e6432feb54e6a578175b4de897988664087dd31a5e638ad520f7a1f0"
+    },
+    "development_raw_predictions": {
+      "bytes": 38070,
+      "path": "results/dialam_model_generation/v8_n12288_dev_raw/predictions.jsonl",
+      "sha256": "2944684a552ab172212bea03897bb44222092721d5929abb4318061a77fe732d"
+    },
+    "development_selected_predictions": {
+      "bytes": 46753,
+      "path": "results/dialam_model_generation/v8_1_n12288_dev/predictions.jsonl",
+      "sha256": "c91353349da6395935d474795d6332f7abf274012d1b66544eaa327f910ddf45"
+    },
+    "idempotent_training_result": {
+      "bytes": 59291,
+      "path": "artifacts/dialam_qlora/v8_n12288/idempotent_reuse_result.json",
+      "sha256": "db1f69fca79a434ae8d51f9ec2152c229266a3bc4fe5f03e6ac15c68c51c4a78"
+    },
+    "preregistration": {
+      "bytes": 5861,
+      "path": "docs/dialam_v8_preregistration.md",
+      "sha256": "d4e48359870453080a1a4cff9a9e06dcb7f6a5dc441a68d08367646c7a419a15"
+    },
+    "resume_smoke": {
+      "bytes": 2403,
+      "path": "reports/dialam_v8_resume_smoke.json",
+      "sha256": "e84460425eae291245f897c7b5568d98dbb3ef252fbc8e389e7964cc255a976c"
+    },
+    "training_result": {
+      "bytes": 59292,
+      "path": "artifacts/dialam_qlora/v8_n12288/remote_training_result.json",
+      "sha256": "1f6bfdb9e6c1f16abb36aaed1ad99e5d6f5703f5e4735b99aa9976ab968c1ebe"
+    }
+  },
+  "corpus": {
+    "available_candidate_positive_rate": 0.07378884916113315,
+    "dialogue_leakage": false,
+    "group_count": 4096,
+    "group_policy": {
+      "distinct_candidate_targets_within_group": true,
+      "maximum_positive_occurrences": 4,
+      "negative_overlap_coefficient": {
+        "maximum": 1.0,
+        "mean": 0.17681737034746428,
+        "minimum": 0.0
+      },
+      "negative_shared_content_tokens": {
+        "maximum": 17,
+        "mean": 0.9737548828125,
+        "minimum": 0
+      },
+      "one_positive_two_none": true,
+      "repeated_positive_groups": 999,
+      "same_complete_block": true,
+      "semantic_candidate_retrieval": false,
+      "unique_positive_decisions": 3097,
+      "unique_positives_before_repetition": true
+    },
+    "new_external_data": false,
+    "row_label_counts": {
+      "ATTACK": 1366,
+      "NONE": 8192,
+      "REPHRASE": 1365,
+      "SUPPORT": 1365
+    }
+  },
+  "development_diagnosis": {
+    "dominant_false_positive_count": 10,
+    "dominant_false_positive_relation": "SUPPORT",
+    "false_negative_edges": 11,
+    "false_positive_edges": 13,
+    "none_scenarios_with_false_edges": 3,
+    "relation_false_positive_counts": {
+      "ATTACK": 0,
+      "REPHRASE": 3,
+      "SUPPORT": 10
+    }
+  },
+  "development_evaluation_resume": {
+    "adapter_tree_sha256": "3b9ab23292e85dfb00f24caa91fc5b8757b6fcc12ed3972e331a3bf51eea46f3",
+    "idempotent_reuse": true,
+    "identity_sha256": "e2bb267e5179d4ea054e4af9e28abc486ba7f890e5ec60ca1bd5b29af0d0d816",
+    "newly_completed_scenarios": 0,
+    "predictions_sha256": "549eee88b01aeef9c7c70b1b2d6acc162dcc1cb04cbc817be85f51c2b27da7e9",
+    "resumed_completed_scenarios": 30,
+    "total_scenarios": 30
+  },
+  "development_gate_checks": {
+    "edge_f1": false,
+    "exact_patch_accuracy": false,
+    "false_edges_per_update": false,
+    "json_validity": true,
+    "none_scenarios_with_false_edges": false,
+    "relation_macro_f1": false,
+    "schema_validity": true
+  },
+  "development_gate_passed": false,
+  "experiment": "v8.1/n12288 QT30 prior-aware listwise continuation",
+  "failed_development_conditions": [
+    "edge_f1",
+    "exact_patch_accuracy",
+    "false_edges_per_update",
+    "none_scenarios_with_false_edges",
+    "relation_macro_f1"
+  ],
+  "frozen_candidate_calls": 0,
+  "frozen_judge_calls": 0,
+  "frozen_status": "NOT_RUN_PREREGISTERED_DEVELOPMENT_GATE_FAILED",
+  "promotion_passed": false,
+  "schema_version": "dialam_v8_prior_aware_listwise_result_v1",
+  "selection_decision": "RETAIN_V5_1_V8_FAILED_DEVELOPMENT_GATE",
+  "training": {
+    "adapter_files": [
+      {
+        "bytes": 5234,
+        "path": "README.md",
+        "sha256": "34ab0170dfe77802e9df8dd644e7b26f9fb5f66f84daa9100de4d0d78fd2794a"
+      },
+      {
+        "bytes": 1202,
+        "path": "adapter_config.json",
+        "sha256": "fac8e621936e377ec686b29109c6ae1c33f487a7bb40d480b81528af6104b55c"
+      },
+      {
+        "bytes": 40422168,
+        "path": "adapter_model.safetensors",
+        "sha256": "983cf63c00689e6236d6308846ef7acb63d0820e5def15c0348b6af666373468"
+      },
+      {
+        "bytes": 734,
+        "path": "added_tokens.json",
+        "sha256": "7a208f10d02bfdf1708662e42ade85ea67af7158ab941bc5432bd715f4911216"
+      },
+      {
+        "bytes": 4905,
+        "path": "chat_template.jinja",
+        "sha256": "5da44855ab7e0641774d5ed0ff0b4f89671d01df7d316e54d06557a962211cb4"
+      },
+      {
+        "bytes": 1671853,
+        "path": "merges.txt",
+        "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+      },
+      {
+        "bytes": 613,
+        "path": "special_tokens_map.json",
+        "sha256": "bd1a530e68d3e09aa7a45be45eff6f3f6930f6111d227ac57fb75073adf954ec"
+      },
+      {
+        "bytes": 11422844,
+        "path": "tokenizer.json",
+        "sha256": "10ba4ba91270b1a50e5cd8e51023bccc66fc4ac4909dd7ae7ab29433411c9bb9"
+      },
+      {
+        "bytes": 5719,
+        "path": "tokenizer_config.json",
+        "sha256": "845d03eda3f97103fc27c54c12c18ce84de28f2d35ab954d87bc542e69775950"
+      },
+      {
+        "bytes": 2776833,
+        "path": "vocab.json",
+        "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+      }
+    ],
+    "adapter_tree_sha256": "3b9ab23292e85dfb00f24caa91fc5b8757b6fcc12ed3972e331a3bf51eea46f3",
+    "dataset_version": "v8",
+    "fixed_config": {
+      "base_model": "Qwen/Qwen3-0.6B",
+      "effective_batch_size": 8,
+      "epochs": 1.0,
+      "gradient_accumulation_steps": 4,
+      "ignore_data_skip": false,
+      "learning_rate": 2e-05,
+      "load_in_4bit": true,
+      "lora_alpha": 32,
+      "lora_dropout": 0.0,
+      "lora_r": 16,
+      "lr_scheduler_type": "cosine",
+      "max_seq_length": 2048,
+      "method": "Unsloth QLoRA adapter continuation with restricted-label cross-entropy",
+      "optimizer": "adamw_8bit",
+      "packing": false,
+      "per_device_batch_size": 2,
+      "prompt_masking": true,
+      "save_steps": {
+        "v8": 100,
+        "v8-smoke": 8
+      },
+      "save_strategy": "steps",
+      "save_total_limit": 2,
+      "seed": 20260823,
+      "source_adapter": "v5_n8192",
+      "source_adapter_tree_sha256": "cbd9a2a6cae8ab988d78b7694ac9f9829bf9262bbb7a6fab838894a5080f122a",
+      "target_modules": [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj"
+      ],
+      "warmup_ratio": 0.05
+    },
+    "global_step": 1536,
+    "idempotent_reuse_check": {
+      "adapter_tree_sha256": "3b9ab23292e85dfb00f24caa91fc5b8757b6fcc12ed3972e331a3bf51eea46f3",
+      "artifact_sha256": "db1f69fca79a434ae8d51f9ec2152c229266a3bc4fe5f03e6ac15c68c51c4a78",
+      "global_step": 1536,
+      "returned_without_training": true
+    },
+    "loss_config": {
+      "class_weights": false,
+      "generative_token_nll": false,
+      "label_smoothing": false,
+      "labels": [
+        "NONE",
+        "SUPPORT",
+        "ATTACK",
+        "REPHRASE"
+      ],
+      "loss": "cross_entropy(stack(four_label_scores), gold_label_index)",
+      "name": "restricted_four_label_score_cross_entropy",
+      "preference_loss": false,
+      "sequence_score": "mean label-token log probability",
+      "training_mix": {
+        "NONE": 8192,
+        "POSITIVE": 4096
+      }
+    },
+    "metrics": {
+      "epoch": 1.0,
+      "total_flos": 8.525765935104e+16,
+      "train_loss": 1.507201009736794,
+      "train_runtime": 5284.6413,
+      "train_samples_per_second": 2.325,
+      "train_steps_per_second": 0.291
+    },
+    "modal_training_app_id": "ap-Afa5s7UypSS7WgJHiOtRZp",
+    "reload_verified": true,
+    "resumability": {
+      "full_trainer_state": true,
+      "initial_action": "new",
+      "resume_events": [
+        {
+          "action": "new",
+          "checkpoint": null,
+          "from_global_step": 0,
+          "ignored_incomplete_checkpoints": [],
+          "started_at": "2026-08-24T01:00:43.508761+00:00"
+        }
+      ],
+      "resume_mode": "auto",
+      "resumed_from_step": 0,
+      "save_steps": 100,
+      "save_total_limit": 2,
+      "trainer_state_preserved_after_completion": true,
+      "volume_commit_on_save": true
+    },
+    "size": 12288,
+    "source_adapter": {
+      "files": [
+        {
+          "bytes": 5234,
+          "path": "README.md",
+          "sha256": "34ab0170dfe77802e9df8dd644e7b26f9fb5f66f84daa9100de4d0d78fd2794a"
+        },
+        {
+          "bytes": 1202,
+          "path": "adapter_config.json",
+          "sha256": "87664d7c466871d313ee3d7c7736352f5b2c13174387a10c301d3fd3204e6c4b"
+        },
+        {
+          "bytes": 40422168,
+          "path": "adapter_model.safetensors",
+          "sha256": "ac1a29ff52c89932fab12442b12b4bfd572970a2b4e92e0bf891725d4ad7ccd9"
+        },
+        {
+          "bytes": 734,
+          "path": "added_tokens.json",
+          "sha256": "7a208f10d02bfdf1708662e42ade85ea67af7158ab941bc5432bd715f4911216"
+        },
+        {
+          "bytes": 4905,
+          "path": "chat_template.jinja",
+          "sha256": "5da44855ab7e0641774d5ed0ff0b4f89671d01df7d316e54d06557a962211cb4"
+        },
+        {
+          "bytes": 1671853,
+          "path": "merges.txt",
+          "sha256": "8831e4f1a044471340f7c0a83d7bd71306a5b867e95fd870f74d0c5308a904d5"
+        },
+        {
+          "bytes": 499,
+          "path": "special_tokens_map.json",
+          "sha256": "8c8752b0d30549fb854ffee2d43b787c0053f507dfde7e0ccb6d1b42a8ae75ec"
+        },
+        {
+          "bytes": 11422943,
+          "path": "tokenizer.json",
+          "sha256": "64af246a059e79ec2e7641c4e0551eab01df498b032efe58881de2cc7aec6427"
+        },
+        {
+          "bytes": 5610,
+          "path": "tokenizer_config.json",
+          "sha256": "28d5debb24b06a4f905a086a7e58c384cafcc9188555736d7b813ed1d6f96baa"
+        },
+        {
+          "bytes": 2776833,
+          "path": "vocab.json",
+          "sha256": "ca10d7e9fb3ed18575dd1e277a2579c16d108e32f27439684afa0e10b1440910"
+        }
+      ],
+      "path": "/workspace/persistent/checkpoints/v5_n8192/adapter",
+      "tree_sha256": "cbd9a2a6cae8ab988d78b7694ac9f9829bf9262bbb7a6fab838894a5080f122a"
+    },
+    "train_sha256": "feb00779c5b97c3650204bf5af1aacda7acfa7c7a116ce1dbfaf2203541c97c7"
+  },
+  "v5_1_development_n8192": {
+    "block_example_count": 30,
+    "direction_accuracy": 1.0,
+    "direction_evaluable_edge_count": 12,
+    "edge_f1": 0.5333333333333333,
+    "edge_precision": 0.5714285714285714,
+    "edge_recall": 0.5,
+    "exact_patch_accuracy": 0.5333333333333333,
+    "exact_scenario_patch_accuracy": 0.5333333333333333,
+    "exact_scenario_patch_count": 16,
+    "example_count": 30,
+    "false_edges_per_update": 0.3,
+    "false_negative_edges": 12,
+    "false_positive_edges": 9,
+    "invalid_id_count": 0,
+    "invalid_relation_count": 0,
+    "json_validity_rate": 1.0,
+    "none_diagnostics": {
+      "false_edge_labels": {
+        "SUPPORT": 2
+      },
+      "false_positive_rate": 0.3333333333333333,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 2
+    },
+    "relation_macro_f1": 0.5427350427350427,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.6666666666666666,
+        "false_negative": 4,
+        "false_positive": 0,
+        "precision": 1.0,
+        "recall": 0.5,
+        "true_positive": 4
+      },
+      "REPHRASE": {
+        "f1": 0.4615384615384615,
+        "false_negative": 5,
+        "false_positive": 2,
+        "precision": 0.6,
+        "recall": 0.375,
+        "true_positive": 3
+      },
+      "SUPPORT": {
+        "f1": 0.5,
+        "false_negative": 3,
+        "false_positive": 7,
+        "precision": 0.4166666666666667,
+        "recall": 0.625,
+        "true_positive": 5
+      }
+    },
+    "scenario_count": 30,
+    "schema_validity_rate": 1.0,
+    "true_positive_edges": 12,
+    "update_count": 30
+  },
+  "v5_1_frozen_n8192": {
+    "block_example_count": 30,
+    "direction_accuracy": 1.0,
+    "direction_evaluable_edge_count": 10,
+    "edge_f1": 0.4761904761904762,
+    "edge_precision": 0.5555555555555556,
+    "edge_recall": 0.4166666666666667,
+    "exact_patch_accuracy": 0.5333333333333333,
+    "exact_scenario_patch_accuracy": 0.5333333333333333,
+    "exact_scenario_patch_count": 16,
+    "example_count": 30,
+    "failure_cases": [
+      {
+        "error": null,
+        "example_id": "qt30:qt30092021wtxt:nodeset23710:811355:b01",
+        "false_negative": [
+          [
+            "811355",
+            "811308",
+            "SUPPORT"
+          ]
+        ],
+        "false_positive": [],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt30092021wtxt:nodeset23740:814437:b01",
+        "false_negative": [
+          [
+            "814437",
+            "814433",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "814437",
+            "814433",
+            "REPHRASE"
+          ]
+        ],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt30092021wtxt:nodeset23753:815767:b01",
+        "false_negative": [
+          [
+            "815767",
+            "815746",
+            "REPHRASE"
+          ]
+        ],
+        "false_positive": [],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt16092021wtxt:nodeset23787:820340:b01",
+        "false_negative": [
+          [
+            "820340",
+            "820330",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "820340",
+            "820314",
+            "ATTACK"
+          ]
+        ],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt16092021wtxt:nodeset23788:820559:b01",
+        "false_negative": [
+          [
+            "820559",
+            "820552",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "820559",
+            "820545",
+            "REPHRASE"
+          ]
+        ],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt02092021wtxt:nodeset23810:866117:b01",
+        "false_negative": [
+          [
+            "866117",
+            "866113",
+            "SUPPORT"
+          ]
+        ],
+        "false_positive": [
+          [
+            "866117",
+            "866113",
+            "REPHRASE"
+          ]
+        ],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt02092021wtxt:nodeset23805:824182:b01",
+        "false_negative": [
+          [
+            "824182",
+            "824170",
+            "REPHRASE"
+          ]
+        ],
+        "false_positive": [],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt19082021wtxt:nodeset23861:829797:b01",
+        "false_negative": [
+          [
+            "829797",
+            "829781",
+            "SUPPORT"
+          ]
+        ],
+        "false_positive": [],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt05082021wtxt:nodeset23901:834095:b01",
+        "false_negative": [
+          [
+            "834095",
+            "834091",
+            "SUPPORT"
+          ]
+        ],
+        "false_positive": [
+          [
+            "834095",
+            "834091",
+            "ATTACK"
+          ]
+        ],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt05082021wtxt:nodeset23888:832098:b01",
+        "false_negative": [
+          [
+            "832098",
+            "832089",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "832098",
+            "832089",
+            "SUPPORT"
+          ]
+        ],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt05082021wtxt:nodeset23922:836801:b01",
+        "false_negative": [
+          [
+            "836801",
+            "836797",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "836801",
+            "836760",
+            "REPHRASE"
+          ]
+        ],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt22072021wtxt:nodeset23972:841792:b01",
+        "false_negative": [
+          [
+            "841792",
+            "841781",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt22072021wtxt:nodeset23940:838550:b01",
+        "false_negative": [
+          [
+            "838550",
+            "838559",
+            "REPHRASE"
+          ]
+        ],
+        "false_positive": [
+          [
+            "838550",
+            "838559",
+            "ATTACK"
+          ]
+        ],
+        "invalid_relations": []
+      },
+      {
+        "error": null,
+        "example_id": "qt30:qt22072021wtxt:nodeset23973:841843:b01",
+        "false_negative": [
+          [
+            "841843",
+            "841836",
+            "REPHRASE"
+          ]
+        ],
+        "false_positive": [],
+        "invalid_relations": []
+      }
+    ],
+    "false_edges_per_update": 0.26666666666666666,
+    "false_negative_edges": 14,
+    "false_positive_edges": 8,
+    "invalid_id_count": 0,
+    "invalid_relation_count": 0,
+    "json_validity_rate": 1.0,
+    "judge_metrics": {
+      "judge_validity_rate": 1.0,
+      "mean_robustness": 3.033333333333333,
+      "mean_spec_adherence": 4.0,
+      "valid_judgments": 30
+    },
+    "none_diagnostics": {
+      "false_edge_labels": {},
+      "false_positive_rate": 0.0,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 0
+    },
+    "relation_macro_f1": 0.4743589743589744,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.3076923076923077,
+        "false_negative": 6,
+        "false_positive": 3,
+        "precision": 0.4,
+        "recall": 0.25,
+        "true_positive": 2
+      },
+      "REPHRASE": {
+        "f1": 0.5,
+        "false_negative": 4,
+        "false_positive": 4,
+        "precision": 0.5,
+        "recall": 0.5,
+        "true_positive": 4
+      },
+      "SUPPORT": {
+        "f1": 0.6153846153846154,
+        "false_negative": 4,
+        "false_positive": 1,
+        "precision": 0.8,
+        "recall": 0.5,
+        "true_positive": 4
+      }
+    },
+    "scenario_count": 30,
+    "scenario_failure_cases": [
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "824182",
+            "824170",
+            "REPHRASE"
+          ]
+        ],
+        "false_positive": [],
+        "update_id": "qt30:qt02092021wtxt:nodeset23805:824182"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "866117",
+            "866113",
+            "SUPPORT"
+          ]
+        ],
+        "false_positive": [
+          [
+            "866117",
+            "866113",
+            "REPHRASE"
+          ]
+        ],
+        "update_id": "qt30:qt02092021wtxt:nodeset23810:866117"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "832098",
+            "832089",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "832098",
+            "832089",
+            "SUPPORT"
+          ]
+        ],
+        "update_id": "qt30:qt05082021wtxt:nodeset23888:832098"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "834095",
+            "834091",
+            "SUPPORT"
+          ]
+        ],
+        "false_positive": [
+          [
+            "834095",
+            "834091",
+            "ATTACK"
+          ]
+        ],
+        "update_id": "qt30:qt05082021wtxt:nodeset23901:834095"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "836801",
+            "836797",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "836801",
+            "836760",
+            "REPHRASE"
+          ]
+        ],
+        "update_id": "qt30:qt05082021wtxt:nodeset23922:836801"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "820340",
+            "820330",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "820340",
+            "820314",
+            "ATTACK"
+          ]
+        ],
+        "update_id": "qt30:qt16092021wtxt:nodeset23787:820340"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "820559",
+            "820552",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "820559",
+            "820545",
+            "REPHRASE"
+          ]
+        ],
+        "update_id": "qt30:qt16092021wtxt:nodeset23788:820559"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "829797",
+            "829781",
+            "SUPPORT"
+          ]
+        ],
+        "false_positive": [],
+        "update_id": "qt30:qt19082021wtxt:nodeset23861:829797"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "838550",
+            "838559",
+            "REPHRASE"
+          ]
+        ],
+        "false_positive": [
+          [
+            "838550",
+            "838559",
+            "ATTACK"
+          ]
+        ],
+        "update_id": "qt30:qt22072021wtxt:nodeset23940:838550"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "841792",
+            "841781",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [],
+        "update_id": "qt30:qt22072021wtxt:nodeset23972:841792"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "841843",
+            "841836",
+            "REPHRASE"
+          ]
+        ],
+        "false_positive": [],
+        "update_id": "qt30:qt22072021wtxt:nodeset23973:841843"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "811355",
+            "811308",
+            "SUPPORT"
+          ]
+        ],
+        "false_positive": [],
+        "update_id": "qt30:qt30092021wtxt:nodeset23710:811355"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "814437",
+            "814433",
+            "ATTACK"
+          ]
+        ],
+        "false_positive": [
+          [
+            "814437",
+            "814433",
+            "REPHRASE"
+          ]
+        ],
+        "update_id": "qt30:qt30092021wtxt:nodeset23740:814437"
+      },
+      {
+        "block_failures": [],
+        "false_negative": [
+          [
+            "815767",
+            "815746",
+            "REPHRASE"
+          ]
+        ],
+        "false_positive": [],
+        "update_id": "qt30:qt30092021wtxt:nodeset23753:815767"
+      }
+    ],
+    "schema_validity_rate": 1.0,
+    "true_positive_edges": 10,
+    "update_count": 30
+  },
+  "v8_1_development_n12288": {
+    "block_example_count": 30,
+    "direction_accuracy": 1.0,
+    "direction_evaluable_edge_count": 13,
+    "edge_f1": 0.52,
+    "edge_precision": 0.5,
+    "edge_recall": 0.5416666666666666,
+    "exact_patch_accuracy": 0.5,
+    "exact_scenario_patch_accuracy": 0.5,
+    "exact_scenario_patch_count": 15,
+    "example_count": 30,
+    "false_edges_per_update": 0.43333333333333335,
+    "false_negative_edges": 11,
+    "false_positive_edges": 13,
+    "invalid_id_count": 0,
+    "invalid_relation_count": 0,
+    "json_validity_rate": 1.0,
+    "none_diagnostics": {
+      "false_edge_labels": {
+        "SUPPORT": 3
+      },
+      "false_positive_rate": 0.5,
+      "none_scenarios": 6,
+      "scenarios_with_false_edges": 3
+    },
+    "relation_macro_f1": 0.5317460317460317,
+    "relation_metrics": {
+      "ATTACK": {
+        "f1": 0.6666666666666666,
+        "false_negative": 4,
+        "false_positive": 0,
+        "precision": 1.0,
+        "recall": 0.5,
+        "true_positive": 4
+      },
+      "REPHRASE": {
+        "f1": 0.42857142857142855,
+        "false_negative": 5,
+        "false_positive": 3,
+        "precision": 0.5,
+        "recall": 0.375,
+        "true_positive": 3
+      },
+      "SUPPORT": {
+        "f1": 0.5,
+        "false_negative": 2,
+        "false_positive": 10,
+        "precision": 0.375,
+        "recall": 0.75,
+        "true_positive": 6
+      }
+    },
+    "scenario_count": 30,
+    "schema_validity_rate": 1.0,
+    "true_positive_edges": 13,
+    "update_count": 30
+  }
+}

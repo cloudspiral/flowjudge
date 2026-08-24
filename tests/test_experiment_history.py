@@ -41,6 +41,15 @@ def test_experiment_history_separates_frozen_and_development_points() -> None:
     ):
         assert by_id["v6-1-n12288-frozen"]["evaluation_scope"] == "frozen_30"
 
+    v8_result_path = Path("reports/dialam_v8_result.json")
+    if v8_result_path.exists():
+        v8 = by_id["v8-1-n12288-development"]
+        assert v8["evaluation_scope"] == "episode_disjoint_development_30"
+        assert v8["metrics"]["exact_patch_accuracy"] == 0.5
+        assert v8["metrics"]["edge_f1"] == pytest.approx(0.52)
+        assert v8["metrics"]["none_scenarios_with_false_edges"] == 3
+        assert v8["status"] == "RETAIN_V5_1_V8_FAILED_DEVELOPMENT_GATE"
+
 
 def test_experiment_history_renderers_include_scope_warning_and_series() -> None:
     ledger = build_experiment_ledger()
@@ -51,5 +60,8 @@ def test_experiment_history_renderers_include_scope_warning_and_series() -> None
     assert "Episode-disjoint 30-scenario development set" in markdown
     assert "v3/4096" in markdown
     assert "v5.1/8192" in markdown
+    if Path("reports/dialam_v8_result.json").exists():
+        assert "v8.1/12288" in markdown
+        assert "v8.1/12288" in svg
     assert "DialAM improvement history" in svg
     assert "Edge F1" in svg

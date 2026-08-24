@@ -41,6 +41,47 @@ def calibrated_pairwise_label(
     return "NONE"
 
 
+def transition_complete_none_margins(
+    predictions: list[dict[str, Any]],
+    *,
+    lower_bound: float,
+) -> tuple[float, ...]:
+    """Return every NONE-margin state transition above a fixed lower bound.
+
+    The candidate set depends only on persisted model scores, never gold labels.
+    Because ``calibrated_pairwise_label`` emits a relation exactly when the best
+    positive score minus the NONE score is greater than the margin, evaluating
+    the lower bound and every distinct larger gap covers every possible output
+    configuration at or above that boundary.
+    """
+
+    if lower_bound < 0:
+        raise ValueError("NONE-margin lower bound must be nonnegative")
+    transitions = {float(lower_bound)}
+    expected_labels = {"NONE", *POSITIVE_TIE_ORDER}
+    for row in predictions:
+        decisions = row.get("pairwise_decisions")
+        if not isinstance(decisions, list):
+            raise ValueError("transition scan requires persisted pairwise decisions")
+        for decision in decisions:
+            scores = decision.get("label_scores")
+            if not isinstance(scores, dict) or set(scores) != expected_labels:
+                raise ValueError(
+                    "transition scan requires all four fixed label scores"
+                )
+            best_positive = max(
+                POSITIVE_TIE_ORDER,
+                key=lambda label: (
+                    scores[label],
+                    -POSITIVE_TIE_ORDER.index(label),
+                ),
+            )
+            gap = float(scores[best_positive] - scores["NONE"])
+            if gap > lower_bound:
+                transitions.add(gap)
+    return tuple(sorted(transitions))
+
+
 def calibrate_prediction_rows(
     examples: list[PatchExample],
     predictions: list[dict[str, Any]],

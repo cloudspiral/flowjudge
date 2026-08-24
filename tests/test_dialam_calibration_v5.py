@@ -2,10 +2,13 @@ from __future__ import annotations
 
 import json
 
+import pytest
+
 from flowjudge.dialam_calibration_v5 import (
     calibrate_prediction_rows,
     calibrated_pairwise_label,
     select_none_margin,
+    transition_complete_none_margins,
 )
 from test_dialam_training_v5 import _example
 
@@ -92,3 +95,67 @@ def test_margin_calibration_preserves_ids_and_selects_passing_grid_point() -> No
         ]
     }
     assert calibrated[0]["dataset_version"] == "v5.1"
+
+
+def test_transition_complete_margins_cover_each_distinct_score_boundary() -> None:
+    predictions = [
+        {
+            "pairwise_decisions": [
+                {
+                    "label_scores": {
+                        "NONE": -5.0,
+                        "SUPPORT": -2.0,
+                        "ATTACK": -9.0,
+                        "REPHRASE": -10.0,
+                    }
+                },
+                {
+                    "label_scores": {
+                        "NONE": -5.0,
+                        "SUPPORT": -1.75,
+                        "ATTACK": -8.0,
+                        "REPHRASE": -9.0,
+                    }
+                },
+            ]
+        },
+        {
+            "pairwise_decisions": [
+                {
+                    "label_scores": {
+                        "NONE": -7.0,
+                        "SUPPORT": -3.0,
+                        "ATTACK": -9.0,
+                        "REPHRASE": -10.0,
+                    }
+                },
+                {
+                    "label_scores": {
+                        "NONE": -4.0,
+                        "SUPPORT": -5.0,
+                        "ATTACK": -6.0,
+                        "REPHRASE": -7.0,
+                    }
+                },
+            ]
+        },
+    ]
+
+    assert transition_complete_none_margins(
+        predictions,
+        lower_bound=3.0,
+    ) == (3.0, 3.25, 4.0)
+
+
+def test_transition_complete_margins_require_four_scores() -> None:
+    with pytest.raises(ValueError, match="all four fixed label scores"):
+        transition_complete_none_margins(
+            [
+                {
+                    "pairwise_decisions": [
+                        {"label_scores": {"NONE": -1.0, "SUPPORT": -2.0}}
+                    ]
+                }
+            ],
+            lower_bound=3.0,
+        )
